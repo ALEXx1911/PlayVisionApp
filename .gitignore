@@ -1,0 +1,3 @@
+# Ignore backend virtual environment
+/PlayVisionV1/backend/venv/
+/PlayVisionV1/.env
