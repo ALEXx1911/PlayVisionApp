@@ -1,0 +1,19 @@
+services:
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: django_backend
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes: 
+      - ./backend:/app
+      - media_data:/app/media
+    expose:
+      - 8000
+    depends_on:
+      - db
+
+volumes:
+  media_data:
+  postgres_data:
