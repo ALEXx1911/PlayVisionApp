@@ -19,6 +19,28 @@ export interface TeamModel{
     preferred_formation: string;
 }
 
+export interface TeamCompetitionStat{
+    team: TeamModel
+    matches_played: number,
+    win: number,
+    draw: number,
+    lose: number,
+    goals_for: number,
+    goals_against: number,
+    goal_difference: number,
+    point: number,
+}
+
+export interface Competition{
+    id: number
+    title: string,
+    slug: string,
+    country: string,
+    competition_type: string,
+    logo_url: string
+    team_competition_stats: TeamCompetitionStat[]
+}
+
 export interface CompetitionShort{
     title: string,
     logo_url: string,
@@ -81,4 +103,15 @@ export interface HomeDataAPI{
     top_media_players: PlayerStat[],
     top_goalkeepers: PlayerStat[],
     top_players_lineup: PlayerSlotLineup[],
+}
+
+export interface Country{
+    id: number,
+    country_name: string,
+    flag_url: string,
+    competitions: Competition[],
+}
+
+export interface CountriesDataFromAPI{
+    countries: Country[],
 }

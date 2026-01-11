@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.db.models import Prefetch
-from .models import Season, PlayerSeasonStats, Match, Competition
-from .serializer import PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer
+from .models import Season, PlayerSeasonStats, Match, Competition , Country
+from .serializer import PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer
 
 #Get homepage data
 @api_view(["GET"])
@@ -41,4 +41,13 @@ def homepage(request):
         "top_media_players" : top_media_player_serializer.data,
         "most_yellow_cards" : most_yellow_card_serializer.data,
         "top_goalkeepers" : top_goalkeepers_serializer.data
+    })
+
+@api_view(["GET"])
+def competition_list(request):
+    comp_qs = Competition.objects.filter(competition_type = 'league').order_by('title')
+    countries_qs = Country.objects.prefetch_related(Prefetch("competition_country",queryset=comp_qs))
+    serializer = CountryCompetitionSerializer(countries_qs,many=True)
+    return Response({
+        "countries" : serializer.data
     })

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { HomeDataAPI } from '../models/competition-models';
+import { CountriesDataFromAPI, HomeDataAPI } from '../models/app-models';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,11 @@ export class AppService {
   getHomeData():Observable<HomeDataAPI>{
     return this.http.get<HomeDataAPI>(`${this.apiHost}home/`,{
       mode:"cors"
+    });
+  }
+  getAllCompetitions():Observable<CountriesDataFromAPI>{
+    return this.http.get<CountriesDataFromAPI>(`${this.apiHost}competitions/`,{
+      mode: "cors",
     });
   }
 }
