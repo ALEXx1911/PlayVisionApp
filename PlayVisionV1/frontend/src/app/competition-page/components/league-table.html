@@ -1,0 +1,66 @@
+<p-table [value]="teamData()" class="w-full border-2 border-black" [scrollable]="true" [tableStyle]="{'min-width': '45rem'}" [stripedRows]="true">
+    <ng-template #header>
+        <tr class="bg-black text-white text-[1.1rem] font-semibold h-8">
+            <th class="text-center! w-10">Pos</th>
+            <th class="w-7"></th>
+            <th class="w-35">Club</th>
+            <th pSortableColumn="point" class="w-20 text-center!">
+                <div class="flex items-center gap-2">
+                    Points
+                    <p-sortIcon field="point"/>
+                </div>
+            </th>
+            <th class="text-center!">MP</th>
+            <th class="text-center!">W</th>
+            <th class="text-center!">D</th>
+            <th class="text-center!">L</th>
+            <th pSortableColumn="goals_for" class="w-13 text-center">
+                <div class="flex items-center gap-2">
+                    GF
+                    <p-sortIcon field="goals_for"/>
+                </div>
+            </th>
+            <th class="text-center!">GA</th>
+            <th class="text-center!">GD</th>
+            <th class="text-center!">Last Results</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-teaminfo let-rowIndex="rowIndex">
+        <tr class="text-[1.1rem] font-semibold h-9 {{rowIndex == 0 || rowIndex == 1 || rowIndex == 2 || rowIndex == 3 ? 'bg-blue-200!' :''}}
+        {{rowIndex == 4 ? 'bg-amber-200!' : ''}} {{rowIndex == 5 ? 'bg-green-200!' : ''}}
+        {{rowIndex == teamData().length-1 || rowIndex == teamData().length-2 || rowIndex == teamData().length-3  ? 'bg-red-200!' : ''}}">
+            <td>
+                <p class="text-center font-medium">
+                    {{rowIndex+1}}
+                </p>
+            </td>
+            <td><img src="{{teaminfo.team.logo_url}}" alt="logo" class="w-8 h-8"></td>
+            <td>
+                <span [routerLink]="['/teams', teaminfo.team.title] " class="cursor-pointer">
+                    {{teaminfo.team.title}}
+                </span>
+            </td>
+            <td class="text-center!">{{teaminfo.point}}</td>
+            <td class="text-center!">{{teaminfo.matches_played}}</td>
+            <td class="text-center!">{{teaminfo.win}}</td>
+            <td class="text-center!">{{teaminfo.draw}}</td>
+            <td class="text-center!">{{teaminfo.lose}}</td>
+            <td class="text-center!">{{teaminfo.goals_for}}</td>
+            <td class="text-center!">{{teaminfo.goals_against}}</td>
+            <td class="text-center!">{{teaminfo.goal_difference}}</td>
+            <td class="text-center!">
+                <div class="w-full flex flex-row items-center justify-center gap-x-2">
+                    @for(result of teaminfo.last_results; track $index) {
+                        <div class="w-5 h-5 p-3 mr-1 flex items-center justify-center rounded-full text-white font-bold
+                        {{result == 'W' ? 'bg-green-500' : ''}}
+                        {{result == 'D' ? 'bg-gray-500' : ''}}
+                        {{result == 'L' ? 'bg-red-500' : ''}}">
+                            {{result}}
+                        </div>
+
+                    }
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

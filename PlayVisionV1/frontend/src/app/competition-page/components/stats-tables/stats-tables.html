@@ -1,0 +1,148 @@
+<p-table [value]="scorersStats()" class="border-2 border-black">
+    <ng-template #caption>
+        <div class="bg-black text-center py-0.5">
+            <span class="text-white text-[1.3rem] font-semibold">Top Scorers</span>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr class="text-[1.2rem] text-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-white font-semibold h-8">
+            <th class="text-center!">Pº</th>
+            <th class="text-center!"></th>
+            <th>Name</th>
+            <th class="text-center!">MP</th>
+            <th class="text-center!">HG</th>
+            <th class="text-center!">PG</th>
+            <th class="text-center!">TH</th>
+            <th class="text-center!">Total</th>
+        </tr>
+    </ng-template>
+    <ng-template let-playerStatsInfo #body let-rowIndex="rowIndex">
+        <tr class="text-[1rem] font-semibold">
+            <td class="text-center! font-semibold">{{rowIndex+1}}</td>
+            <td>
+                <img class="w-6 h-6"
+                src="{{playerStatsInfo.player.team_logo_url}}" alt="team_logo">
+            </td>
+            <td>
+                <a [routerLink]="['/players', playerStatsInfo.player.slug]" class="cursor-pointer">
+                    {{playerStatsInfo.player.common_name}}
+                </a>
+            </td>
+            <td class="text-center!">{{playerStatsInfo.matches_played}}</td>
+            <td class="text-center!">{{playerStatsInfo.head_goals}}</td>
+            <td class="text-center!">{{playerStatsInfo.penalty_goals}}</td>
+            <td class="text-center!">{{playerStatsInfo.freekick_goals}}</td>
+            <td class="text-center! font-semibold">{{playerStatsInfo.goals}}</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-table [value]="mediaPlayerStats()" class="mt-2 border-2 border-black">
+    <ng-template #caption>
+        <div class="bg-black text-center py-0.5">
+            <span class="text-white text-[1.3rem] font-semibold">Top Players</span>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr class="text-center text-[1.2rem] bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-white font-semibold">
+            <th class="text-center!">Pº</th>
+            <th></th>
+            <th>Name</th>
+            <th class="text-center!">MP</th>
+            <th class="text-center!">MtP</th>
+            <th class="text-center!">CPM</th>
+            <th class="text-center!">G</th>
+            <th class="text-center!">A</th>
+            <th class="text-center!">Media</th>
+        </tr>
+    </ng-template>
+    <ng-template let-playerStatsInfo #body let-rowIndex="rowIndex">
+        <tr class="text-[1rem] font-semibold">
+            <td class="text-center! font-semibold">{{rowIndex+1}}</td>
+            <td>
+                <img class="w-6 h-6" src="{{playerStatsInfo.player.team_logo_url}}" alt="team_logo">
+            </td>
+            <td>
+                <a [routerLink]="['/players', playerStatsInfo.player.slug]" class="cursor-pointer">
+                    {{playerStatsInfo.player.common_name}}
+                </a>
+            </td>
+            <td class="text-center!">{{playerStatsInfo.matches_played}}</td>
+            <td class="text-center!">{{playerStatsInfo.minutes_played}}'</td>
+            <td class="text-center!">{{playerStatsInfo.correctpassesmedia}}</td>
+            <td class="text-center!">{{playerStatsInfo.goals}}</td>
+            <td class="text-center!">{{playerStatsInfo.assists}}</td>
+            <td class="text-center! font-semibold">{{playerStatsInfo.media}}</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-table [value]="mostYellowCardData()" class="mt-2 border-2 border-black">
+    <ng-template #caption>
+        <div class="bg-black text-center py-0.5">
+            <span class="text-white text-[1.3rem] font-semibold">Most Yellow Cards</span>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr class="text-center text-[1.2rem] bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-white font-semibold">
+            <th class="text-center!">Pº</th>
+            <th class="text-center!"></th>
+            <th class="text-center!">Name</th>
+            <th class="text-center!">MP</th>
+            <th class="text-center!">Tackles</th>
+            <th class="text-center!">Yellow Cards</th>
+        </tr>
+    </ng-template>
+    <ng-template let-playerStatsInfo #body let-rowIndex="rowIndex">
+        <tr class="text-[1rem] font-semibold">
+            <td class="text-center! font-semibold">{{rowIndex+1}}</td>
+            <td>
+            <img class="w-6 h-6" src="{{playerStatsInfo.player.team_logo_url}}" alt="team_logo">
+            </td>
+            <td>
+                <a [routerLink]="['/players', playerStatsInfo.player.slug]" class="cursor-pointer">
+                    {{playerStatsInfo.player.common_name}}
+                </a>
+            </td>
+            <td class="text-center!">{{playerStatsInfo.matches_played}}</td>
+            <td class="text-center!">{{playerStatsInfo.tackles}}</td>
+            <td class="text-center! font-semibold">{{playerStatsInfo.yellow_cards}}</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-table [value]="goalkeepersStats()" class="mt-2 border-2 border-black">
+    <ng-template #caption>
+        <div class="bg-black text-center py-0.5">
+            <span class="text-white text-[1.3rem] font-semibold">Top Goalkeepers</span>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr class="text-center text-[1.2rem] bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-white font-semibold">
+            <th class="text-center!">Pº</th>
+            <th class="text-center!"></th>
+            <th class="text-center!">Name</th>
+            <th class="text-center!">MP</th>
+            <th class="text-center!">MtsP</th>
+            <th class="text-center!">YC</th>
+            <th class="text-center!">Clean Sheets</th>
+        </tr>
+    </ng-template>
+    <ng-template let-playerStatsInfo #body let-rowIndex="rowIndex">
+        <tr class="text-[1rem] font-semibold">
+            <td class="text-center! font-semibold">{{rowIndex+1}}</td>
+            <td>
+                <img class="w-6 h-6" src="{{playerStatsInfo.player.team_logo_url}}" alt="team_logo">
+            </td>
+            <td>
+                <a [routerLink]="['/players', playerStatsInfo.player.slug]" class="cursor-pointer">
+                    {{playerStatsInfo.player.common_name}}
+                </a>
+            </td>
+            <td class="text-center!">{{playerStatsInfo.matches_played}}</td>
+            <td class="text-center!">{{playerStatsInfo.minutes_played}}</td>
+            <td class="text-center!">{{playerStatsInfo.yellow_cards}}</td>
+            <td class="text-center! font-semibold">{{playerStatsInfo.cleansheets}}</td>
+        </tr>
+    </ng-template>
+</p-table>

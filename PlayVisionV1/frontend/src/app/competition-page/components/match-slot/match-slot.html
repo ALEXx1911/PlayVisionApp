@@ -1,0 +1,23 @@
+<div class="col-start-1 row-start-1 row-end-2 flex w-50 items-center">
+        <img class="w-[50px] h-[50px] sm:w-16 sm:h-16" src="{{matchData().home_team.logo_url}}" alt="logo1">
+        <a [routerLink]="['/teams', matchData().home_team.slug]" class="text-sm sm:text-lg font-semibold ml-2">{{matchData().home_team.title}}</a>
+</div>
+<div class="col-start-2 row-start-1 row-end-2 w-35 flex flex-col items-center py-2">
+    <span class="font-semibold text-[#5131f3]">
+        @if (matchData().status == "Finished") {
+            FT - {{matchData().match_date}}
+        }
+    </span>
+    <span class="col-start-2 row-start-1 text-main font-bold text-xl">{{matchData().home_goals}} - {{matchData().away_goals}}</span>
+    <div class="flex gap-1 mb-1">
+        <a [routerLink]="['/matches',matchData().id]">
+            <span class="font-medium underline text-[#5131f3]">
+                {{matchData().status == "Finished" ? 'Stats' : 'Preview'}}
+            </span>
+        </a>
+    </div>
+</div>
+<div class="col-start-3 row-start-1 row-end-2 flex w-50 justify-end items-center">
+    <a [routerLink]="['/teams', matchData().away_team.slug]" class="text-sm sm:text-lg font-semibold mr-2">{{matchData().away_team.title}}</a>
+    <img class="w-[50px] h-[50px] sm:w-16 sm:h-16" src="{{matchData().away_team.logo_url}}" alt="logo2">
+</div>

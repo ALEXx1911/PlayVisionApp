@@ -95,6 +95,18 @@ export interface CompetitionMatches {
     country: string,
     competition_matches: Match[]
 }
+export interface CompetitionMatchesFromAPI{
+    matches: Match[],
+    total_matches: number,
+}
+
+export interface DataFromCompetitionAPI{
+    competition:Competition,
+    top_scorers: PlayerStat[],
+    most_yellow_cards: PlayerStat[],
+    top_media_players: PlayerStat[],
+    top_goalkeepers: PlayerStat[],
+}
 
 export interface HomeDataAPI{
     competitions: CompetitionMatches[],

@@ -1,10 +1,17 @@
 from rest_framework import serializers
-from .models import PlayerSeasonStats , Player, Team , Match, Competition , Country
+from .models import PlayerSeasonStats , Player, Team, TeamCompetitionStats , Match, Competition , Country , PlayerCompetitionStats
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ("title","stadium","logo_url","shortname","coach")
+
+class TeamCompetitionStatSerializer(serializers.ModelSerializer):
+    team = TeamSerializer(many=False,read_only=True)
+    class Meta:
+        model = TeamCompetitionStats
+        fields = ("team","matches_played","win","draw","lose","goals_for","goals_against","goal_difference","point")
+
 
 class PlayerListDataSerializer(serializers.ModelSerializer):
     team_name = serializers.CharField(source='team.title', read_only=True)
@@ -26,6 +33,20 @@ class PlayerSeasonStatsSerializer(serializers.ModelSerializer):
             fields[f] = self.fields[f]
         return fields
 
+class PlayerCompetitionStatsSerializer(serializers.ModelSerializer):
+    player = PlayerListDataSerializer(read_only=True)
+    class Meta:
+        model = PlayerCompetitionStats
+        fields = "__all__"
+        extra_field = ["player"]
+    
+    def get_fields(self):
+        fields = super().get_fields()
+        for f in getattr(self.Meta,"extra_fields",[]):
+            fields[f] = self.fields[f]
+        return fields
+
+
 class CompetitionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competition
@@ -43,6 +64,13 @@ class CompetitionsMatchesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competition
         fields = ("id", "title", "country","logo_url","competition_matches")
+
+class CompetitonTeamStatSerializer(serializers.ModelSerializer):
+    team_competition_stats = TeamCompetitionStatSerializer(many=True,read_only=True)
+    class Meta:
+        model = Competition
+        fields = ("id", "title", "country", "competition_type","logo_url","team_competition_stats")
+
 
 class CountryCompetitionSerializer(serializers.ModelSerializer):
     competitions = CompetitionSerializer(many=True, read_only=True, source='competition_country')
