@@ -1,0 +1,19 @@
+<div class="w-full h-17.5 sm:h-28 bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-white flex flex-wrap items-center">
+        <div class="w-full flex justify-between items-center">
+            <a [routerLink]="['/home']" href="/home" class="flex w-auto items-center gap-1 ml-5">
+                <img src="logo.png" alt="logo" class="w-10 h-10 sm:w-18 sm:h-18">
+                <img src="letrasLogo.png" alt="letras" class=" ml-3 w-35 sm:w-50 h-8 sm:h-11">
+            </a>
+            <a [routerLink]="['/login']" class="flex justify-between gap-1 items-center mr-2 font-bold sm:text-2xl">
+                <mat-icon aria-hidden="false" fontIcon="person"></mat-icon>
+                Login
+            </a>
+        </div>
+        <div class="w-full flex justify-around">
+            @for (option of navOptions; track option.label) {
+                <a [routerLink]="option.route" routerLinkActive="bg-black/50" class="w-full py-1 rounded-xs text-center font-bold text-[1.3rem]">
+                    {{option.label}}
+                </a>
+            }
+        </div>
+</div>
