@@ -1,0 +1,115 @@
+    <div class="flex flex-col items-center px-1">
+        <div class="w-full sm:w-3/4 text-white my-2.5 h-32 rounded-xl overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]">
+            <div class="w-full h-full flex items-center justify-center gap-10">
+                <img class=" w-30 h-30 sm:w-60 sm:h-24" alt="Logo" src="laliga.png"/>
+                <div class="font-semibold tracking-[0] leading-[normal]">
+                    <div class="flex items-center gap-5 mb-1">
+                        <span class="text-xl">Match data:</span>
+                    </div>
+                    <p class="text-[1.1rem]">Stadium: {{matchData().data.stadium}}</p>
+                    <p class="text-[1.1rem]">Match Date: {{matchData().data.match_date}}</p>
+                    <p class="text-[1.1rem]">Round: {{matchData().data.description}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="w-full sm:w-3/4 font-bold text-white mt-2.5 h-[fit] rounded-t-md overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]
+            flex text-sm p-2">
+            <div class="w-full h-full flex flex-col items-center">
+                <img src="{{matchData().data.home_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
+                <span [routerLink]="['/teams',matchData().data.home_team.title]" class="text-xl cursor-pointer" >{{matchData().data.home_team.title}}</span>
+            </div>
+            <div class="w-full h-full flex flex-col items-center mt-1">
+                <p class="text-xl mb-1">{{matchData().data.status}}</p>
+                <p class="text-2xl">{{matchData().data.home_goals}} - {{matchData().data.away_goals}}</p>
+            </div>
+            <div class="w-full h-full flex flex-col items-center">
+                <img src="{{matchData().data.away_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
+                <span [routerLink]="['/teams',matchData().data.away_team.title]"  class="text-xl cursor-pointer">{{matchData().data.away_team.title}}</span>
+            </div>
+        </div>
+        @if(finishedMatch$ | async; as finishedMatch) {
+            <div class="w-full sm:w-3/4 h-fit py-1 flex flex-col items-center border-2 rounded-b-lg gap-1 border-main">
+                @for(eventData of finishedMatch.match_events; track $index) {
+                    <div class="w-full grid grid-cols-3 grid-rows-1 justify-items-center">
+                                @switch (eventData.event_type) {
+                                    @case ('Goal') {
+                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.data.home_team.title 
+                                    ? 'col-start-1 col-end-2' : 'col-start-3 col-end-4'}}">    
+                                        <p class="mr-1.5 font-semibold">{{eventData.player_name.pname}}</p>
+                                        <mat-icon [fontIcon]="'sports_soccer'" class="mb-0.5"></mat-icon>
+                                    </div>
+                                    <p class="row-start-1 font-bold row-end-2 col-start-2 col-end-3 sm:text-lg">{{eventData.minute}}'</p>
+
+                                }
+                                @case ('Yellow Card') {
+                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.data.home_team.title 
+                                    ? 'col-start-1 col-end-2' : 'col-start-3 col-end-4'}}">
+                                        <p class="mr-1.5 font-semibold">{{eventData.player_name.pname}}</p>
+                                        <img src="yellow_card.png" alt="" class="w-5 h-6.5 mb-0.5 border-2 border-black"/>
+                                    </div>
+                                    <p class="row-start-1 font-bold row-end-2 col-start-2 col-end-3 sm:text-lg">{{eventData.minute}}'</p>
+                                }
+                                @case ('Red Card') {
+                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.data.home_team.title 
+                                    ? 'col-start-1 col-end-2' : 'col-start-3 col-end-4'}}">
+                                        <p class="mr-1.5 font-semibold">{{eventData.player_name.pname}}</p>
+                                        <img src="red_card.png" alt="" class="w-5 h-6.5 mb-0.5 border-2 border-black"/>
+                                    </div>
+                                    <p class="row-start-1 font-bold row-end-2 col-start-2 col-end-3 sm:text-lg">{{eventData.minute}}'</p>
+                                }
+                                @case ('Substitution') {
+                                    @if (showPlayersChanges() == true) {
+                                        <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.data.home_team.title 
+                                        ? 'col-start-1 col-end-2' : 'col-start-3 col-end-4'}}">
+                                            <div class="w-full flex flex-col items-center">
+                                                <div class="flex flex-row">
+                                                    <p class="mr-1.5 font-semibold">In: {{eventData.player_name.pname}}</p>
+                                                    <img src="change_icon.png" alt="" class="w-8 h-6.5 mb-0.5"/>
+                                                </div>
+                                                <p class="mr-1.5">Out: {{eventData.out_player.pname}}</p>
+                                            </div>
+                                        </div>
+                                        <p class="row-start-1 font-bold row-end-2 col-start-2 col-end-3 sm:text-lg">{{eventData.minute}}'</p>
+                                    }
+                                }
+                                @default {}
+                            }
+                    </div>
+                }
+                <button (click)="changePlayersChangesVisibility()" class="w-fit mt-2 text-[#5131f3] font-semibold text-[1rem] cursor-pointer rounded-md px-3 py-1 border-2 border-[#5131f3]
+                hover:bg-[#5131f3] hover:text-white hover:ease-in-out hover:duration-200">
+                    {{showPlayersChanges() ? 'Hide ' : 'Show '}} Players Changes
+                </button>
+            </div>
+            
+            <cdk-accordion class="w-full sm:w-3/4 mt-4 border-2 border-black">
+                    <cdk-accordion-item #accordionItem="cdkAccordionItem" [expanded]="true">
+                        <div class="w-full mb-2 h-8.5 sm:h-10 p-1 bg-black bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                            <div class="w-full flex flex-row">
+                                <div class="w-full flex flex-row items-center justify-center gap-2">
+                                    <span class="text-white text-[1.2rem] font-semibold"> Match Stats</span>
+                                    <button class="text-white box-border mt-0.5">
+                                        <mat-icon fontIcon="bar_chart" ></mat-icon>
+                                    </button>
+                                </div>
+                                <button (click)="accordionItem.toggle()" class="text-white cursor-pointer">
+                                    <mat-icon [fontIcon]="accordionItem.expanded ? 'arrow_upward' : 'arrow_downward'"></mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        @if (accordionItem.expanded) {
+                            <div class="w-full h-fit py-1 flex flex-col gap-1">
+                                @for (itemData of finishedMatch.match_stats; track $index) {
+                                    <div class="w-full grid grid-cols-3 justify-items-center">
+                                        <p class="col-start-1 col-end-2 text-[1.1rem] font-semibold px-2 py-1 {{itemData.home_data > itemData.away_data ? 'bg-[#5131f3] text-white rounded-2xl' : ''}}">{{itemData.home_data}}</p>
+                                        <p class="col-start-2 col-end-3 text-[1.1rem] font-semibold px-2 py-1 sm:text-lg">{{itemData.field}}</p>
+                                        <p class="col-start-3 col-end-4 text-[1.1rem] font-semibold px-2 py-1 {{itemData.away_data > itemData.home_data ? 'bg-[#5131f3] text-white rounded-2xl' : ''}}">{{itemData.away_data}}</p>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </cdk-accordion-item>
+                </cdk-accordion>
+        }
+    </div>
+

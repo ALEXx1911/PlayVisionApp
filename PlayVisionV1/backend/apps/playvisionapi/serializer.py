@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PlayerSeasonStats , Player, Team, TeamCompetitionStats , Match, Competition , Country , PlayerCompetitionStats
+from .models import PlayerSeasonStats , Player, Team, TeamCompetitionStats , Match, MatchEvent, Competition , Country , PlayerCompetitionStats
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
@@ -89,3 +89,24 @@ class CountryCompetitionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
         fields = ("id", "country_name", "flag_url","competitions")
+
+class CompetitionListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Competition
+        fields = ("title","logo_url")
+
+class MatchSerializer(serializers.ModelSerializer):
+    home_team = TeamSerializer(read_only=True)
+    away_team = TeamSerializer(read_only=True)
+    competition = CompetitionListSerializer(read_only=True)
+    class Meta:
+        model = Match
+        fields = ("match_date","home_goals","away_goals","stadium","start_time","status","description","home_team","away_team","competition")
+
+class MatchEventSerializer(serializers.ModelSerializer):
+    player_name = PlayerListDataSerializer(read_only=True, source='player')
+    assist_player = PlayerListDataSerializer(read_only=True, source='player_assist')
+    out_player = PlayerListDataSerializer(read_only=True, source='player_out')
+    class Meta:
+        model = MatchEvent
+        fields = ("event_type","minute","description","player_name","assist_player","out_player")

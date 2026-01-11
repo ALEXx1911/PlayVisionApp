@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI,  } from '../models/app-models';
+import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI,  } from '../models/app-models';
 
 @Injectable({
   providedIn: 'root',
@@ -61,4 +61,26 @@ export class AppService {
       mode: "cors",
     });
   }
+
+  getMatchDetails(matchId:number):Observable<MatchDataFromAPI>{
+    const encodedIdMatch = encodeURIComponent(matchId);
+    return this.http.get<MatchDataFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+    mode: "cors",
+    });
+  }
+
+  getPreviewMatchDetails(matchId:number):Observable<ToPlayMatchFromAPI>{
+    const encodedIdMatch = encodeURIComponent(matchId);
+    return this.http.get<ToPlayMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+    mode: "cors",
+    });
+  }
+
+  getFinishedMatchDetails(matchId:number):Observable<FinishedMatchFromAPI>{
+    const encodedIdMatch = encodeURIComponent(matchId);
+    return this.http.get<FinishedMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+    mode: "cors",
+    });
+  }
+
 }

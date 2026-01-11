@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.db.models import Prefetch , Q
-from .models import Team,Season, Player, PlayerSeasonStats, Match, Competition , Country , PlayerCompetitionStats
-from .serializer import TeamSerializer, PlayerSerializer, PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer , CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer , CompetitionMatchesListSerializer
+from .models import Team,Season, Player, PlayerSeasonStats, Match, Competition , Country , PlayerCompetitionStats , TeamCompetitionStats, MatchStats, MatchEvent
+from .serializer import MatchSerializer, MatchEventSerializer, TeamSerializer, TeamCompetitionStatSerializer , PlayerSerializer, PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer , CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer , CompetitionMatchesListSerializer
 
 #Get homepage data
 @api_view(["GET"])
@@ -157,3 +157,102 @@ def player_details(request,pname):
         "season_stats" : player_season_stat_serializer.data,
         "competition_stats" : player_competition_stats_serializer.data
     })
+
+@api_view(["GET"])
+def match_details(request,matchid):
+    match_qs = get_object_or_404(Match, id = matchid)
+
+    match_serializer = MatchSerializer(match_qs,many=False)
+
+    if not match_qs:
+        return Response({"detail":"No se encontró el partido"},status=404)
+    
+    if match_qs.status == "Not Started":
+        home_team_qs = get_object_or_404(Team, id = match_qs.home_team.id) 
+        away_team_qs = get_object_or_404(Team, id = match_qs.away_team.id) 
+        home_team_last_matches_qs = Match.objects.filter(Q(home_team = home_team_qs) | Q(away_team= home_team_qs)).order_by("-match_date")[:5]
+        away_team_last_matches_qs = Match.objects.filter(Q(home_team = away_team_qs) | Q(away_team= away_team_qs)).order_by("-match_date")[:5]
+        home_team_obj = TeamCompetitionStats.objects.filter(team=home_team_qs).first()
+        away_team_obj = TeamCompetitionStats.objects.filter(team=away_team_qs).first()
+
+        home_stats_serializer = TeamCompetitionStatSerializer(home_team_obj,many=False)
+        away_stats_serializer = TeamCompetitionStatSerializer(away_team_obj,many=False)
+        home_matches_serializer = CompetitionMatchesListSerializer(home_team_last_matches_qs,many=True)
+        away_matches_serializer = CompetitionMatchesListSerializer(away_team_last_matches_qs,many=True)
+        
+        return Response({
+            "data" : match_serializer.data,
+            "home_team_stats" : home_stats_serializer.data,
+            "away_team_stats" : away_stats_serializer.data,
+            "home_last_matches" : home_matches_serializer.data,
+            "away_last_matches" : away_matches_serializer.data
+        })
+    
+    if match_qs.status == "Finished":
+        match_stats_qs = MatchStats.objects.filter(match = match_qs).first()
+        match_events_qs = MatchEvent.objects.filter(match = match_qs).order_by("minute")
+        #match_stats_serializer = MatchStatsSerializer(match_stats_qs,many=False)
+        match_events_serializer = MatchEventSerializer(match_events_qs,many=True)
+        match_stats = []
+        for item in match_stats_header:
+            match_stats.append({
+                "field": item["field"],
+                "home_data": getattr(match_stats_qs, item["home_data"]),
+                "away_data": getattr(match_stats_qs, item["away_data"])
+            })
+
+        return Response({
+            "data" : match_serializer.data,
+            #"match_stats" : match_stats_serializer.data,
+            "match_stats" : match_stats,
+            "match_events" : match_events_serializer.data
+        })
+    
+match_stats_header = [
+    {
+        "field":"Shots",
+        "home_data":"home_shots",
+        "away_data":"away_shots"
+     },
+     {
+        "field":"Shots on Target",
+        "home_data":"home_shots_ontarget",
+        "away_data":"away_shots_ontarget"
+     },
+     {
+        "field":"Corners",
+        "home_data":"home_corners",
+        "away_data":"away_corners"
+     },
+     {
+        "field":"Possession %",
+        "home_data":"home_possession",
+        "away_data":"away_possession"
+     },
+     {
+        "field":"Passes",
+        "home_data":"home_passes",
+        "away_data":"away_passes"
+     },
+     {
+        "field":"Fouls",
+        "home_data":"home_fouls",
+        "away_data":"away_fouls"
+     },
+     {
+        "field":"Yellow Cards",
+        "home_data":"home_yellow_cards",
+        "away_data":"away_yellow_cards"
+     },
+     {
+        "field":"Red Cards",
+        "home_data":"home_red_cards",
+        "away_data":"away_red_cards"
+     },
+     {
+        "field":"Offsides",
+        "home_data":"home_offsides",
+        "away_data":"away_offsides"
+     }
+
+]

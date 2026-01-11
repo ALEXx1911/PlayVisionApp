@@ -1,0 +1,12 @@
+@if(matchData$ | async; as matchData) {
+    @switch (matchData.data.status) {
+        @case ("Finished") {
+            <app-match-finished [matchData]="matchData"></app-match-finished>
+        }
+        @case ("Not Started") {
+            <app-match-to-play></app-match-to-play>
+
+        }
+    }
+
+}

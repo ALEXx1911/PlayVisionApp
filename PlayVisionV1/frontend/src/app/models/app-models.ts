@@ -93,6 +93,43 @@ export interface Match{
     competition: CompetitionShort,
 }
 
+export interface MatchDataFromAPI{
+    data: Match,
+    home_team: TeamCompetitionStat,
+    away_team: TeamCompetitionStat,
+    home_last_matches: Match[],
+    away_last_matches: Match[],
+}
+
+export interface MatchEvent{
+    event_type: string,
+    minute: number,
+    description: string,
+    player_name: Player,
+    assist_player: Player,
+    out_player: Player,
+}
+
+export interface MatchStat{
+    field: string,
+    home_data: number,
+    away_data: number,
+}
+
+export interface ToPlayMatchFromAPI{
+    data: Match,
+    home_team_stats: TeamCompetitionStat,
+    away_team_stats: TeamCompetitionStat,
+    home_last_matches: Match[],
+    away_last_matches: Match[],
+}
+
+export interface FinishedMatchFromAPI{
+    data: Match,
+    match_events: MatchEvent[],
+    match_stats: MatchStat[],
+}
+
 export interface PlayerDetails{
     slug: string,
     pname: string,
