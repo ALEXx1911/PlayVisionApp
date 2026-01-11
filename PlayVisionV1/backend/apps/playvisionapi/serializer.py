@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PlayerSeasonStats , Player, Team, TeamCompetitionStats , Match, MatchEvent, Competition , Country , PlayerCompetitionStats
+from .models import PlayerSeasonStats , Player, Team, TeamInsights , TeamCompetitionStats , Match, MatchEvent, Competition , Country , PlayerCompetitionStats
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
@@ -110,3 +110,18 @@ class MatchEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchEvent
         fields = ("event_type","minute","description","player_name","assist_player","out_player")
+
+class PlayerLineupSerializer(serializers.ModelSerializer):
+    pname= serializers.CharField(source='player.common_name', read_only=True)
+    dorsal = serializers.IntegerField(source='player.team_dorsal', read_only=True)
+    position = serializers.CharField(source='player.position', read_only=True)
+    team_name = serializers.CharField(source='team.title', read_only=True)
+    team_logo_url = serializers.CharField(source='team.logo_url', read_only=True)
+    class Meta:
+        model = PlayerSeasonStats
+        fields = ("pname","position","dorsal","media","team_name","team_logo_url")
+
+class TeamInsightsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamInsights
+        fields = ("insight_type","title","description","category")

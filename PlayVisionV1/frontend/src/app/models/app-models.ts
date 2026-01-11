@@ -218,3 +218,26 @@ export interface Country{
 export interface CountriesDataFromAPI{
     countries: Country[],
 }
+
+export interface SearchTermsData{
+    search_results: [
+        {
+            field: string,
+            players_data: PlayerDetails[]
+        },
+        {
+            field: string,
+            teams_data: TeamModel[]
+        },
+        {
+            field: string,
+            competitions_data: Competition[]
+        }
+    ]
+}
+
+export interface MostSearchedItems{
+    most_searched_players: PlayerDetails[],
+    most_searched_teams:  TeamModel[],
+    most_searched_competitions: Competition[],
+}

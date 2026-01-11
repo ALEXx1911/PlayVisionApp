@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI,  } from '../models/app-models';
+import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData,  } from '../models/app-models';
 
 @Injectable({
   providedIn: 'root',
@@ -80,6 +80,20 @@ export class AppService {
     const encodedIdMatch = encodeURIComponent(matchId);
     return this.http.get<FinishedMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
     mode: "cors",
+    });
+  }
+
+  searchTerms(term: string): Observable<SearchTermsData> {
+    const params = new HttpParams().set('searchTerm', term);
+    return this.http.get<SearchTermsData>(`${this.apiHost}search/`, {
+      params,
+      mode: 'cors',
+    });
+  }
+
+  getMostSearchedItems():Observable<MostSearchedItems>{
+    return this.http.get<MostSearchedItems>(`${this.apiHost}mostsearched/items`,{
+      mode: "cors",
     });
   }
 

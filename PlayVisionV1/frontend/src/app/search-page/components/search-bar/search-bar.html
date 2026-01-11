@@ -1,0 +1,42 @@
+    <div class="w-full mt-2.5 h-[fit] flex flex-col items-center rounded-md overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]
+     gap-y-2 text-sm p-2 md:text-lg">
+        <div class="text-center text-white font-bold text-xl md:text-2xl">
+            {{isSearchPage() == true ? 'Search Players, Teams, Competitions...' : 'Search Players to compare...'}}
+        </div>
+        <div class="w-100 h-10 relative mt-2 border-2 border-black bg-gray-200 flex items-center gap-2.5 {{overlayOpen() ? 'rounded-t-lg' : 'rounded-2xl'}}"
+        cdkOverlayOrigin #overlayPosition="cdkOverlayOrigin">
+            <form role="search" (submit)="$event.preventDefault()" class="flex flex-row items-center w-full">
+                <button mat-icon-button (click)="confirmSearch()" class="cursor-pointer mx-2 mt-0.5">
+                    <mat-icon class="text-xl">search</mat-icon>
+                </button>
+                <input #searchInput name="searchInput" type ="text" [formControl]="fc" placeholder="Search..." class="text-xl text-gray-500 w-70 outline-0 bg-inherit "
+                    (click)="overlayOpen.set(true)" autocomplete="off" (focus)="overlayOpen.set(true)" (keydown.enter)="confirmSearch(); $event.preventDefault()"/>
+                    @if (fc.value) {
+                        <button mat-icon-button (click)="clearSearch()" class="cursor-pointer">
+                            <mat-icon class="absolute top-1/5 right-2">close</mat-icon>
+                        </button>
+                    }
+            </form>
+        </div>
+            <ng-template cdkConnectedOverlay [cdkConnectedOverlayOpen]="overlayOpen()"
+                [cdkConnectedOverlayOrigin]="overlayPosition" (overlayOutsideClick)="overlayOpen.set(false)">
+                <div class="w-100 rounded-b-lg  bg-white pb-4">
+                    <mat-divider/>
+                        @if (recentSearchesData$ | async; as  searchResultsData) {
+                            <mat-action-list class="w-full h-fit">
+                                @for (search of searchResultsData; track search) {
+                                    <mat-list-item (click)="useRecentSearch(search)" class="w-full h-2 flex items-center!">
+                                        <mat-icon matListItemIcon>history</mat-icon>
+                                        <p matListItemTitle class="ml-3 text-[1.1rem]">{{search}}</p>
+                                        <button matListItemMeta mat-icon-button class="rounded-xl p-1 cursor-pointer hover:text-cyan-400! hover:bg-gray-400!" (click)="deleteRecentSearch(search); $event.stopPropagation()">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </mat-list-item>
+                                }
+                            </mat-action-list>
+                        }
+                </div>
+            </ng-template>
+    </div>
+
+    

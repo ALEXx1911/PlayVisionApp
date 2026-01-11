@@ -1,0 +1,119 @@
+<div class="w-full flex flex-col items-center">
+    <app-search-bar (searchResults)="onSearchResults($event)" (searchTermChange)="onSearchTermChange($event)" [isSearchPage]="true" class="w-full sm:w-3/4"></app-search-bar>
+    <div class="w-full sm:w-3/4 h-fit flex flex-col items-center border-2 border-black mt-2 px-6">
+        @if (hasSearched()) {
+            <p class="text-[1.1rem] font-semibold my-2">Results for: '<span class="font-bold">{{currentSearchTerm()}}</span>'</p>
+            @for (item of searchResultsData().search_results; track $index) {
+                @if (hasPlayersData(item)) {
+                    <div class="w-full">
+                        <div class="w-full mb-2 h-8.5 sm:h-10 p-1 bg-black flex justify-center items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                            <p class="text-[1.1rem] text-white font-semibold">{{item.field}}</p>
+                        </div>
+                        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-3">
+                            @for (playerItem of item.players_data; track $index) {
+                                <div [routerLink]="['/players', playerItem.slug]" class="border-2 border-gray-400 rounded-lg p-2 my-2 hover:bg-gray-200 hover:border-black
+                                    grid grid-cols-[1fr_2fr] gap-2 items-center text-[1rem] cursor-pointer">
+                                    <img src="default-user.png" alt="playerimg" class="w-14 h-14 rounded-full justify-self-center"/>
+                                    <div class="flex flex-col">
+                                        <p class="font-bold">Name: {{playerItem.pname}} {{playerItem.lastname}}</p>
+                                        <p>Position: {{playerItem.position}}</p>
+                                        <p>Team: {{playerItem.team.title}}</p>
+                                        <div class="flex items-center">Nationality: <img src="{{playerItem.nationality_flag}}" alt="country_flag" class="w-6 h-6 ml-1"></div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }@else if (hasTeamsData(item)) {
+                    <div class="w-full">
+                        <div class="w-full mb-2 h-8.5 sm:h-10 p-1 bg-black flex justify-center items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                            <p class="text-[1.1rem] text-white font-semibold">{{item.field}}</p>
+                        </div>
+                        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-3">
+                            @for (teamItem of item.teams_data; track $index) {
+                                <div [routerLink]="['/teams',teamItem.slug]" class="border-2 border-gray-400 rounded-lg p-2 my-2 hover:bg-gray-200 hover:border-black cursor-pointer
+                                grid grid-cols-[1fr_2fr] gap-2 items-center text-[1rem]">
+                                    <img src="{{teamItem.logo_url}}" alt="team_logo" class="w-14 h-14 mb-1 justify-self-center"/>
+                                    <div class="flex flex-col">
+                                        <p class="font-bold">Name: {{teamItem.title}}</p>
+                                        <div class="flex items-center">Country: <img src="spain_flag.png" alt="country_flag" class="w-6 h-6 ml-1"></div>
+                                        <p>National League: La Liga</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }@else if (hasCompetitionsData(item)) {
+                    <div class="w-full">
+                        <div class="w-full mb-2 h-8.5 sm:h-10 p-1 bg-black flex justify-center items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                            <p class="text-[1.1rem] text-white font-semibold">{{item.field}}</p>
+                        </div>
+                        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-3">
+                            @for (competitionItem of item.competitions_data; track $index) {
+                                <div [routerLink]="['/competitions', competitionItem.slug]" class="border-2 border-gray-400 rounded-lg p-2 my-2 hover:bg-gray-200 hover:border-black cursor-pointer text-[1rem]">
+                                    <p class="font-bold">{{competitionItem.title}}</p>
+                                    <p>{{competitionItem.country}}</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        } @else {
+            <p class="text-[1.2rem] font-semibold my-2">No search has been made yet. Please use the search bar above to find players to compare.</p>}
+    </div>
+    <div class="w-full sm:w-3/4 flex flex-col items-center justify-center border-2 border-black mt-2 gap-2">
+        @if (mostSearchedItems$ | async; as mostSearchedItemsData) {
+            <div class="w-full">
+                <div class="flex justify-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                    <span class="text-[1.3rem] font-semibold text-white py-2">Most Searched Players</span>
+                </div>
+                <div class="w-full grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 px-3">
+                    @for (playerItem of mostSearchedItemsData.most_searched_players; track $index) {
+                        <div [routerLink]="['/players', playerItem.slug]" class="border-2 border-gray-400 rounded-lg p-2 my-2 hover:bg-gray-200 hover:border-black
+                            grid grid-cols-[1fr_2fr] gap-2 items-center text-[1rem] cursor-pointer">
+                            <img src="default-user.png" alt="playerimg" class="w-14 h-14 rounded-full justify-self-center"/>
+                            <div class="flex flex-col">
+                                <p class="font-bold">Name: {{playerItem.pname}} {{playerItem.lastname}}</p>
+                                <p>Position: {{playerItem.position}}</p>
+                                <p>Team: {{playerItem.team.title}}</p>
+                                <div class="flex items-center">Nationality: <img src="{{playerItem.nationality_flag}}" alt="country_flag" class="w-6 h-6 ml-1"></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="w-full">
+                <div class="flex justify-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                    <span class="text-[1.3rem] font-semibold text-white py-2">Most Searched Teams</span>
+                </div>
+                <div class="w-full grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 px-3">
+                    @for (teamItem of mostSearchedItemsData.most_searched_teams; track $index) {
+                        <div [routerLink]="['/teams',teamItem.slug]" class="border-2 border-gray-400 rounded-lg p-2 my-2 hover:bg-gray-200 hover:border-black cursor-pointer
+                            grid grid-cols-[1fr_2fr] gap-2 items-center text-[1rem]">
+                            <img src="{{teamItem.logo_url}}" alt="team_logo" class="w-14 h-14 mb-1 justify-self-center"/>
+                            <div class="flex flex-col">
+                                <p class="font-bold">Team: {{teamItem.title}}</p>
+                                <div class="flex items-center">Country: <img src="spain_flag.png" alt="country_flag" class="w-6 h-6 ml-1"></div>
+                                <p>National League: La Liga</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="w-full">
+                <div class="flex justify-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                    <span class="text-[1.3rem] font-semibold text-white py-2">Most Searched Competitions</span>
+                </div>
+                <div class="w-full grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 px-3">
+                    @for (competitionItem of mostSearchedItemsData.most_searched_competitions; track $index) {
+                        <div [routerLink]="['/competitions', competitionItem.slug]" class="border-2 border-gray-400 rounded-lg p-2 my-2 hover:bg-gray-200 hover:border-black cursor-pointer text-[1rem]">
+                            <p class="font-bold">{{competitionItem.title}}</p>
+                            <p>{{competitionItem.country}}</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

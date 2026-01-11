@@ -5,43 +5,59 @@ from rest_framework.response import Response
 from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.db.models import Prefetch , Q
-from .models import Team,Season, Player, PlayerSeasonStats, Match, Competition , Country , PlayerCompetitionStats , TeamCompetitionStats, MatchStats, MatchEvent
-from .serializer import MatchSerializer, MatchEventSerializer, TeamSerializer, TeamCompetitionStatSerializer , PlayerSerializer, PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer , CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer , CompetitionMatchesListSerializer
+from .models import Team, TeamInsights ,Season, Player, PlayerSeasonStats, Match, Competition , Country , PlayerCompetitionStats , TeamCompetitionStats, MatchStats, MatchEvent
+from .serializer import CompetitionSerializer, MatchSerializer, MatchEventSerializer, TeamSerializer, TeamInsightsSerializer , TeamCompetitionStatSerializer , PlayerSerializer, PlayerLineupSerializer , PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer , CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer , CompetitionMatchesListSerializer
+from .utils.utils import match_stats_header , get_last_matches_results , FORMATION_POSITIONS
 
 #Get homepage data
 @api_view(["GET"])
 def homepage(request):
     date_str = request.query_params.get("date")
+    positions = FORMATION_POSITIONS.get("4-3-3",[])
+    top_player_lineup = []
     if date_str :
         target_date = parse_date(date_str)
         actual_season = target_date.year
         if target_date is None:
-            return Response({"detail":"Invalid date format"},status=400)
+            return Response({"detail":"Formato no válido"},status=400)
     else:
         target_date = timezone.localdate()
         actual_season = 2024 #datetime.now().year
+        
+    for position in positions:
+        player_obj = (
+            PlayerSeasonStats.objects
+            .filter(player__position=position, season__year_start=actual_season)
+            .order_by("-media")
+            .select_related("player","team")
+            .first()
+        )
+        if player_obj:
+            top_player_lineup.append(player_obj)
 
     season_obj = Season.objects.filter(year_start=actual_season).first()
-    top_goals_player_obj = PlayerSeasonStats.objects.filter(season = season_obj).order_by("-goals")[:5]
-    top_media_player_obj = PlayerSeasonStats.objects.filter(season = season_obj).order_by("-media")[:5]
-    most_yellow_card_obj = PlayerSeasonStats.objects.filter(season = season_obj).order_by("-yellow_cards")[:5]
-    top_goalkeepers_obj = PlayerSeasonStats.objects.filter(season = season_obj).order_by("-cleansheets")[:5]
-    matches_obj = Match.objects.filter(match_date="2024-08-17").select_related("home_team","away_team")
+    top_goals_player_qs = PlayerSeasonStats.objects.filter(season = season_obj).order_by("-goals")[:5]
+    top_media_player_qs = PlayerSeasonStats.objects.filter(season = season_obj).order_by("-media")[:5]
+    most_yellow_card_qs = PlayerSeasonStats.objects.filter(season = season_obj).order_by("-yellow_cards")[:5]
+    top_goalkeepers_qs = PlayerSeasonStats.objects.filter(season = season_obj).order_by("-cleansheets")[:5]
+    matches_qs = Match.objects.filter(match_date="2024-08-17").select_related("home_team","away_team")
     competition_qs = Competition.objects.all().prefetch_related(
-        Prefetch("match_competition",queryset=matches_obj.order_by("start_time"),to_attr="competition_matches")
+        Prefetch("match_competition",queryset=matches_qs.order_by("start_time"),to_attr="competition_matches")
     )
-    competition_obj = competition_qs.filter(match_competition__match_date="2024-08-17").distinct()
-    top_goals_player_serializer = PlayerSeasonStatsSerializer(top_goals_player_obj,many=True)
-    top_media_player_serializer = PlayerSeasonStatsSerializer(top_media_player_obj,many=True)
-    most_yellow_card_serializer = PlayerSeasonStatsSerializer(most_yellow_card_obj,many=True)
-    top_goalkeepers_serializer = PlayerSeasonStatsSerializer(top_goalkeepers_obj,many=True)
-    competitions_matches_serializer = CompetitionsMatchesSerializer(competition_obj, many=True, context ={"request":request})
+    competition_qs = competition_qs.filter(match_competition__match_date="2024-08-17").distinct()
+    top_goals_player_serializer = PlayerSeasonStatsSerializer(top_goals_player_qs,many=True)
+    top_media_player_serializer = PlayerSeasonStatsSerializer(top_media_player_qs,many=True)
+    most_yellow_card_serializer = PlayerSeasonStatsSerializer(most_yellow_card_qs,many=True)
+    top_goalkeepers_serializer = PlayerSeasonStatsSerializer(top_goalkeepers_qs,many=True)
+    competitions_matches_serializer = CompetitionsMatchesSerializer(competition_qs, many=True, context ={"request":request})
+    top_player_lineup_serializer = PlayerLineupSerializer(top_player_lineup,many=True)
     return Response({
         "competitions" : competitions_matches_serializer.data,
         "top_scorers" : top_goals_player_serializer.data,
         "top_media_players" : top_media_player_serializer.data,
         "most_yellow_cards" : most_yellow_card_serializer.data,
-        "top_goalkeepers" : top_goalkeepers_serializer.data
+        "top_goalkeepers" : top_goalkeepers_serializer.data,
+        "top_players_lineup": top_player_lineup_serializer.data
     })
 
 @api_view(["GET"])
@@ -59,16 +75,40 @@ def competition_details(request,ctitle):
     if not season_param:
         #season_param = datetime.now().year
         season_param = 2024
-        #return Response({"detail":"Invalid date format"},status=400)
+        #return Response({"detail":"Formato no válido"},status=400)
     
     season_obj = Season.objects.filter(year_start=season_param).first()
-    competition_qs = get_object_or_404(Competition, title=ctitle)
+    competition_qs = get_object_or_404(Competition, slug=ctitle)
+    stats_qs = TeamCompetitionStats.objects.filter(competition=competition_qs,season=season_obj).select_related("team")
+    team_ids = list(stats_qs.values_list("id",flat=True))
+    matches_qs = Match.objects.filter(competition=competition_qs,season=season_obj).filter(
+        Q(home_team__id__in=team_ids) | Q(away_team__id__in=team_ids)
+    ).select_related("home_team","away_team").order_by("-match_date")
+    last_matches_by_team = {team_id: [] for team_id in team_ids}
+    remaining  ={team_id: 5 for team_id in team_ids}
+
+    for match in matches_qs:
+        if not any(v > 0 for v in remaining.values()):
+            break
+        home_team_id = match.home_team.id
+        away_team_id = match.away_team.id
+        
+        if remaining.get(home_team_id,0) > 0:
+            last_matches_by_team[home_team_id].append(match)
+            remaining[home_team_id] -= 1
+
+        if remaining.get(away_team_id,0) > 0:
+            last_matches_by_team[away_team_id].append(match)
+            remaining[away_team_id] -= 1
+
     top_goals_player_qs = PlayerCompetitionStats.objects.filter(season = season_obj).order_by("-goals")[:5]
     top_media_player_qs = PlayerCompetitionStats.objects.filter(season = season_obj).order_by("-media")[:5]
     most_yellow_card_qs = PlayerCompetitionStats.objects.filter(season = season_obj).order_by("-yellow_cards")[:5]
     top_goalkeepers_qs = PlayerCompetitionStats.objects.filter(season = season_obj).order_by("-cleansheets")[:5]
 
-    competition_serializer = CompetitonTeamStatSerializer(competition_qs,many=False)
+    competition_serializer = CompetitonTeamStatSerializer(competition_qs,many=False,context={
+        "last_matches_by_team": last_matches_by_team
+    })
     top_goals_player_serializer = PlayerCompetitionStatsSerializer(top_goals_player_qs,many=True)
     top_media_player_serializer = PlayerCompetitionStatsSerializer(top_media_player_qs,many=True)
     most_yellow_card_serializer = PlayerCompetitionStatsSerializer(most_yellow_card_qs,many=True)
@@ -91,10 +131,10 @@ def competition_matches(request,ctitle):
     if not season_param:
         #season_param = datetime.now().year
         season_param = 2024
-        #return Response({"detail":"Invalid date format"},status=400)
+        #return Response({"detail":"Formato no válido"},status=400)
     
     season_obj = Season.objects.filter(year_start=season_param).first()
-    competition_qs = get_object_or_404(Competition, title=ctitle)
+    competition_qs = get_object_or_404(Competition, slug=ctitle)
     matches_qs = Match.objects.filter(season=season_obj,competition=competition_qs).order_by("description")
     paginator = Paginator(matches_qs, limit)
     page_number = (start // limit) + 1
@@ -117,23 +157,31 @@ def competition_matches(request,ctitle):
 @api_view(["GET"])
 def team_details(request, title):
     season_param = request.query_params.get("season")
+    last_five_results = []
     if not season_param:
         #season_param = datetime.now().year
         season_param = 2024
-        #return Response({"detail":"Invalid date format"},status=400)
+        #return Response({"detail":"Formato no válido"},status=400)
     
     season_obj = Season.objects.filter(year_start=season_param).first()
-    team_qs = get_object_or_404(Team, title=title)
-    player_season_stats_qs = PlayerSeasonStats.objects.filter(team = team_qs, season = season_obj)
-    team_matches_qs = Match.objects.filter(Q(away_team = team_qs) | Q(home_team = team_qs),season = season_obj)
+    team_obj = get_object_or_404(Team, slug=title)
+    player_season_stats_obj = PlayerSeasonStats.objects.filter(team = team_obj, season = season_obj)
+    team_insights_obj = TeamInsights.objects.filter(team=team_obj)
+    team_matches_obj = Match.objects.filter(Q(away_team = team_obj) | Q(home_team = team_obj),season = season_obj)
+    last_five_results_obj = Match.objects.filter(Q(away_team = team_obj) | Q(home_team = team_obj),season = season_obj).order_by("-match_date")[:5]
 
-    team_serializer = TeamSerializer(team_qs)
-    player_season_serializer = PlayerSeasonStatsSerializer(player_season_stats_qs,many=True)
-    team_matches_serializer = CompetitionMatchesListSerializer(team_matches_qs,many=True)
+    last_five_results = get_last_matches_results(last_five_results_obj,team_obj)
+
+    team_serializer = TeamSerializer(team_obj)
+    team_insights_serializer = TeamInsightsSerializer(team_insights_obj,many=True)
+    player_season_serializer = PlayerSeasonStatsSerializer(player_season_stats_obj,many=True)
+    team_matches_serializer = CompetitionMatchesListSerializer(team_matches_obj,many=True)
     return Response({
         "team" : team_serializer.data,
+        "insights" : team_insights_serializer.data,
         "player_stats" : player_season_serializer.data,
-        "matches" : team_matches_serializer.data
+        "matches" : team_matches_serializer.data,
+        "last_five_results": last_five_results
     })
 
 @api_view(["GET"])
@@ -142,10 +190,10 @@ def player_details(request,pname):
     if not season_param:
         #season_param = datetime.now().year
         season_param = 2024
-        #return Response({"detail":"Invalid date format"},status=400)
+        #return Response({"detail":"Formato no válido"},status=400)
 
     season_obj = Season.objects.filter(year_start = season_param).first()
-    player_qs = get_object_or_404(Player, pname = pname)
+    player_qs = get_object_or_404(Player, slug = pname)
     player_season_stats_qs = PlayerSeasonStats.objects.filter(player = player_qs,season = season_obj)
     player_competition_stats_qs = PlayerCompetitionStats.objects.filter(player = player_qs, season = season_obj)
     
@@ -207,6 +255,51 @@ def match_details(request,matchid):
             "match_stats" : match_stats,
             "match_events" : match_events_serializer.data
         })
+    
+@api_view (["GET"])
+def search_page(request):
+    searchParam = request.query_params.get("searchTerm").strip()
+    
+    if not searchParam or searchParam.strip() == "":
+        return Response({"detail":"El término de búsqueda no puede estar vacío."},status=400)
+    
+    player_obj = Player.objects.filter(pname=searchParam)
+    team_obj = Team.objects.filter(title=searchParam)
+    competition_obj = Competition.objects.filter(title=searchParam)
+
+    if not player_obj.exists():
+        player_obj = Player.objects.filter(pname__istartswith=searchParam)
+    if not team_obj.exists():
+        team_obj = Team.objects.filter(title__istartswith=searchParam)
+    if not competition_obj.exists():
+        competition_obj = Competition.objects.filter(title__istartswith=searchParam)
+
+    player_serializer = PlayerSerializer(player_obj,many=True)
+    team_serializer = TeamSerializer(team_obj,many=True)
+    competition_serializer = CompetitionSerializer(competition_obj,many=True)
+    search_results = []
+    if player_serializer.data:
+        search_results.append(
+        {
+            "field":"Players Results",
+            "players_data": player_serializer.data}
+        )
+    if team_serializer.data:
+        search_results.append(
+        {
+            "field":"Teams Results",
+            "teams_data": team_serializer.data},
+        )
+    if competition_serializer.data:
+        search_results.append(    
+        {
+            "field":"Competitions Results",
+            "competitions_data": competition_serializer.data}
+        )
+
+    return Response({
+        "search_results" : search_results,
+    })
     
 match_stats_header = [
     {
