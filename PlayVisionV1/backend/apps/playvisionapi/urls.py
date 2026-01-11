@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from playvisionapi import views
+from . import views
 
 urlpatterns = [ 
     path("api/home/", views.homepage),
@@ -22,4 +22,5 @@ urlpatterns = [
     #URLS for Most Searched Items
     path("api/mostsearched/items", views.most_searched_items),
     path("api/mostsearched/players", views.most_searched_players),
+    path("api/xd/", views.xd),
 ]

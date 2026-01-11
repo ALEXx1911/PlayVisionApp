@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class PlayvisionapiConfig(AppConfig):
-    name = 'playvisionapi'
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.playvisionapi'

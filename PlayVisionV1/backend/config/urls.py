@@ -19,5 +19,5 @@ from django.urls import path , include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('playVision/', include('playvisionapi.urls')),
+    path('playVision/', include('apps.playvisionapi.urls')),
 ]

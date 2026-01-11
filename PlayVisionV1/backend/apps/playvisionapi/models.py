@@ -143,7 +143,7 @@ class Player(models.Model):
     pname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     age = models.IntegerField()
-    height = models.DecimalField(decimal_places=2,max_digits=3,null=True,default=0)
+    height = models.DecimalField(decimal_places=2,max_digits=5,null=True,default=0)
     nationality = models.CharField(max_length=100)
     nationality_flag = models.ImageField(upload_to="flags/")
     position = models.CharField(max_length=100,choices=PlayerPosition.choices, default=PlayerPosition.CM)
