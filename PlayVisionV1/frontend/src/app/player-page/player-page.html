@@ -1,0 +1,90 @@
+<div class="w-full flex flex-col items-center">
+    @if (playerData$ | async; as playerData) {
+        <div class="w-full sm:w-3/4 flex flex-col gap-4">
+            <div class="w-full text-white mt-2.5 h-[fit] rounded-md overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]
+            grid grid-cols-2-[auto-2fr] grid-rows-2- gap-y-2 text-sm p-2 md:text-lg">
+                <div class="w-full h-full flex justify-center items-center col-start-1 col-end-2 row-start-1 row-end-3 sm:h-32">
+                    <img src="default-user.png" alt="Escudo" class="w-16 h-16 sm:w-25 sm:h-25 rounded-[4rem]"/>
+                </div>
+                <div class="col-start-2 col-end-3 row-start-1 row-end-2 flex gap-6">
+                    <div class="flex flex-col gap-2">
+                        <div class="font-semibold">Name: {{playerData.player_data.pname}}</div>
+                        <div class="font-semibold">Age: {{playerData.player_data.age}}</div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="font-semibold">Last Name: {{playerData.player_data.lastname}}</div>
+                        <div class="font-semibold">Height: {{playerData.player_data.height}}</div>
+                    </div>
+                </div>
+                <div class="col-start-2 col-end-3 row-start-2 row-end-3 flex gap-6">
+                    <div class="flex flex-col gap-2">
+                        <div class="font-semibold flex gap-2 items-center">
+                            Nacionalidad: 
+                            <img src="{{playerData.player_data.nationality_flag}}" alt="{{playerData.player_data.nationality}}" class="w-5 h-3.5 sm:w-8 sm:h-5" />
+                        </div>
+                        <div class="font-semibold">Position: {{playerData.player_data.position}}</div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="font-semibold">Number: {{playerData.player_data.team_dorsal}}</div>
+                        <div class="font-semibold">Foot: {{playerData.player_data.foot}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w-full sm:w-3/4 border-2 border-black my-2.5 h-auto flex flex-col justify-between items-center">
+            <div class="w-full py-2 mb-2 flex flex-row justify-center content-center [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]">
+                <span class="text-white text-[1.1rem] font-semibold">Competition Stats</span>
+            </div>
+            <p-table [value]="playerData.competition_stats" class="w-full">
+                            <ng-template #caption>
+                    <div class="bg-black text-center">
+                        <span class="text-white text-base font-semibold">La Liga</span>
+                    </div>
+                </ng-template>
+                <ng-template #header>
+                    <tr class="text-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-white font-semibold">
+                        <th class="text-center!">Pº</th>
+                        <th></th>
+                        <th>Name</th>
+                        <th class="text-center!">MP</th>
+                        <th class="text-center!">MtsP</th>
+                        <th class="text-center!">CPM</th>
+                        <th class="text-center!">G</th>
+                        <th class="text-center!">A</th>
+                        <th class="text-center!">Media</th>
+                    </tr>
+                </ng-template>
+                <ng-template let-playerStatsInfo #body let-rowIndex="rowIndex">
+                    <tr>
+                        <td class="text-center! font-semibold">{{rowIndex+1}}</td>
+                        <td></td>
+                        <td>{{playerStatsInfo.player.pname}}</td>
+                        <td class="text-center!">{{playerStatsInfo.matches_played}}</td>
+                        <td class="text-center!">{{playerStatsInfo.minutes_played}}'</td>
+                        <td class="text-center!">{{playerStatsInfo.correctpassesmedia}}</td>
+                        <td class="text-center!">{{playerStatsInfo.goals}}</td>
+                        <td class="text-center!">{{playerStatsInfo.assists}}</td>
+                        <td class="text-center! font-semibold">{{playerStatsInfo.media}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <cdk-accordion class="w-full sm:w-3/4 border-2 border-black ">
+            <cdk-accordion-item #accordionItem="cdkAccordionItem" [expanded]="true">
+                <div class="w-full mb-2 h-8.5 sm:h-10 px-1 bg-black flex justify-between items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                    <div class="w-full flex flex-row content-center justify-between">
+                        <span class="ml-2 text-white text-[1.1rem] font-semibold">Season Stats</span>
+                        <button (click)="accordionItem.toggle()" class="text-white">
+                            <mat-icon fontIcon="{{accordionItem.expanded ? 'arrow_upward' : 'arrow_downward'}}"></mat-icon>
+                        </button>
+                    </div>
+                </div>
+                @if (accordionItem.expanded) {
+                    <div class="w-full flex flex-col items-center mt-2">
+                        <app-horizontal-bar-chart [playerData]="playerData.season_stats[0]" class="w-full "></app-horizontal-bar-chart>
+                    </div>
+                }
+            </cdk-accordion-item>
+        </cdk-accordion>
+    }
+</div>

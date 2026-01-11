@@ -12,6 +12,18 @@ class TeamCompetitionStatSerializer(serializers.ModelSerializer):
         model = TeamCompetitionStats
         fields = ("team","matches_played","win","draw","lose","goals_for","goals_against","goal_difference","point")
 
+class PlayerSerializer(serializers.ModelSerializer):
+    team = TeamSerializer(read_only=True)
+    class Meta:
+        model = Player
+        fields = "__all__"
+        extra_field = ["team"]
+    
+    def get_fields(self):
+        fields = super().get_fields()
+        for f in getattr(self.Meta,"extra_fields",[]):
+            fields[f] = self.fields[f]
+        return fields
 
 class PlayerListDataSerializer(serializers.ModelSerializer):
     team_name = serializers.CharField(source='team.title', read_only=True)

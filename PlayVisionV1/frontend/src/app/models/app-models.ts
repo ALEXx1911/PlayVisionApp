@@ -9,6 +9,24 @@ export interface Player{
     team_name: string,
     team_logo_url: string,
 }
+
+export interface PlayerStatBasic{
+    id: number,
+    matches_played: number,
+    minutes_played: number,
+    goals: number,
+    head_goals: number,
+    penalty_goals: number,
+    freekikgoals: number,
+    assists: number,
+    yellow_cards: number,
+    red_cards: number,
+    correctpassesmedia: number,
+    cleansheets: number,
+    tackles: number,
+    media: number,
+}
+
 export interface TeamModel{
     title: string;
     slug: string;
@@ -75,6 +93,21 @@ export interface Match{
     competition: CompetitionShort,
 }
 
+export interface PlayerDetails{
+    slug: string,
+    pname: string,
+    lastname: string,
+    common_name: string,
+    position: string,
+    age: number,
+    foot: string,
+    height: string,
+    nationality: string,
+    nationality_flag: string,
+    team_dorsal: number,
+    team: TeamModel,
+}
+
 export interface PlayerStat{
     id: number,
     matches_played: number,
@@ -91,6 +124,12 @@ export interface PlayerStat{
     tackles: number,
     media: number,
     player: Player
+}
+
+export interface PlayerDataFromAPI{
+    player_data: PlayerDetails,
+    competition_stats: PlayerStat[],
+    season_stats: PlayerStat[],
 }
 
 export interface PlayerSlotLineup{
