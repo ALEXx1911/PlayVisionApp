@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI } from '../models/app-models';
+import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI,  } from '../models/app-models';
 
 @Injectable({
   providedIn: 'root',
@@ -39,5 +39,19 @@ export class AppService {
       mode: "cors",
       params: qparams
     });
+  }
+
+  private teamCache = new Map<string, Observable<TeamDataFromAPI>>();
+
+  getTeamDetails(teamName:string):Observable<TeamDataFromAPI>{
+    const encodedTeamName = encodeURIComponent(teamName);
+    
+    if (!this.teamCache.has(encodedTeamName)) {
+      const request$ = this.http.get<TeamDataFromAPI>(`${this.apiHost}teams/${encodedTeamName}`,{
+        mode: "cors",
+      }).pipe(shareReplay(1));
+      this.teamCache.set(encodedTeamName, request$);
+    }
+    return this.teamCache.get(encodedTeamName)!;
   }
 }

@@ -19,6 +19,21 @@ export interface TeamModel{
     preferred_formation: string;
 }
 
+export interface TeamDataFromAPI{
+    team: TeamModel,
+    insights: TeamInsights[],
+    player_stats: PlayerStat[],
+    matches: Match[],
+    last_five_results: string[],
+}
+
+export interface TeamInsights{
+    insight_type: string,
+    title: string,
+    category: string,
+    description: string,
+}
+
 export interface TeamCompetitionStat{
     team: TeamModel
     matches_played: number,

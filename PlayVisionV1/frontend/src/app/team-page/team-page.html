@@ -1,0 +1,127 @@
+<div class="w-full flex flex-col items-center">
+    @if (teamData$(); as team) {
+        <div class="w-full sm:w-3/4 text-white my-2.5 h-32 rounded-xl overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]">
+            <div class="w-full h-full flex items-center justify-center gap-10">
+                <img class=" w-[60px] h-[60px] sm:w-24 sm:h-24"
+                  alt="FC Barcelona Logo" src="{{team.team.logo_url}}"/>
+                <div class="font-semibold tracking-[0] leading-[normal]">
+                    <div class="flex items-center gap-5 mb-1">
+                        <span class="text-2xl">{{team.team.title}}</span>
+                        <img class=" w-6 h-6 sm:w-10 sm:h-10"
+                            alt="Spain flag" src="spain_flag.png"/>
+                    </div>
+                    <p class="text-[1.2rem]">Stadium: {{team.team.stadium}}</p>
+                    <p class="text-[1.2rem]">Coach: {{team.team.coach}}</p>
+                    <p class="text-[1.2rem]">Preferred Formation: {{team.team.preferred_formation}}</p>
+                </div>
+            </div>
+        </div>
+        <p-table [value]="team.player_stats" [scrollable]="true" scrollHeight="40rem" class="w-full sm:w-3/4 border-2 border-black" [tableStyle]="{'min-width' : '45rem'}"  [stripedRows]="true">
+            <ng-template #caption>
+                <div class="bg-black text-center py-0.5">
+                    <span class="text-white text-[1.3rem] font-semibold">Season Squad</span>
+                </div>
+            </ng-template>
+            <ng-template #header let-columns>
+                <tr class="text-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-[1.2rem] text-white font-semibold">
+                    <td class="w-30">Name</td>
+                    <td class="w-6"></td>
+                    <td>Pos</td>
+                    <td>MP</td>
+                    <td>MtsP</td>
+                    <td>G</td>
+                    <td>A</td>
+                    <td>YC</td>
+                    <td>RC</td>
+                    <td>T</td>
+                    <td>CPM</td>
+                    <td>Media</td>
+                </tr>
+            </ng-template>
+            <ng-template #body let-rowData>
+                <tr class="hover:bg-black/15! text-[1rem] font-semibold">
+                    <td class="text-center!">
+                        <a [routerLink]="['/players', rowData.player.slug]" class="cursor-pointer">
+                            {{rowData.player.common_name}}
+                        </a>
+                    </td>
+                    <td><img src="{{rowData.player.nationality_flag}}" alt="flag"></td>
+                    <td class="text-center!">{{rowData.player.position}}</td>
+                    <td class="text-center!">{{rowData.matches_played}}</td>
+                    <td class="text-center!">{{rowData.minutes_played}}'</td>
+                    <td class="text-center!">{{rowData.goals}}</td>
+                    <td class="text-center!">{{rowData.assists}}</td>
+                    <td class="text-center!">{{rowData.yellow_cards}}</td>
+                    <td class="text-center!">{{rowData.red_cards}}</td>
+                    <td class="text-center!">{{rowData.tackles}}</td>
+                    <td class="text-center!">{{rowData.correctpassesmedia}}</td>
+                    <td class="text-center!">{{rowData.media}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        
+        <div class="w-full sm:w-3/4 my-2 text-center text-[1.1rem] bg-gray-200/80 p-2 rounded-md">
+            <p>
+                <span class="font-bold">Legend: </span> MP (Matches Played), MtsP (Minutes Played), YC (Yellow Cards), RC (Red Cards), T (Tackles), CPM (Correct Passes Media)
+            </p>
+        </div>
+    
+    }
+    @if (teamData$(); as team) {
+        <p-table class="w-full sm:w-3/4 border-2 border-black" [value]="team.matches"[stripedRows]="true" [paginator]="true" [rows]="5">
+            <ng-template #caption>
+                <div class="py-1 bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-center">
+                    <span class="text-white text-[1.3rem] font-semibold">Matches</span>
+                    <span class="text-white text-[1.3rem] font-bold">
+                      <mat-icon class="align-middle text-white ml-2" fontIcon="scoreboard"></mat-icon> 
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template #body let-rowData>
+                <tr>
+                    <p-skeleton />
+                    <match-slot [matchData]="rowData" class="w-full h-fit border-2 border-main grid grid-cols-[1fr,auto,1fr] grid-rows-[auto,auto] rounded-2xl my-1.5"></match-slot>
+                </tr>
+            </ng-template>
+        </p-table>
+        
+        <div class="w-full sm:w-3/4 flex flex-col items-center justify-center border-2 border-black my-2 text-center text-[1.1rem]">
+            <div class="w-full flex items-center justify-center py-2 bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                <span class="text-[1.3rem] text-white font-semibold">Best Team Lineup</span>
+            </div>
+            <span class="text-[1.2rem] font-semibold mt-1.5">Formation: {{team.team.preferred_formation}}</span>
+            <app-formation-pitch [playersLineup]="playerSlotWithCoords()" class="w-full px-15 xl:px-20 py-2"></app-formation-pitch>
+        </div>
+        <div class="w-full sm:w-3/4 flex flex-col items-center justify-center border-2 border-black my-2 text-center text-[1.1rem]">
+            <div class="w-full flex items-center justify-center py-2 bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                <span class="text-[1.3rem] text-white font-semibold">Team strengths and weaknesses</span>
+            </div>
+            <div class="w-full my-2">
+                <span class="text-[1.3rem] font-bold">
+                    Strengths
+                    <mat-icon class="align-middle text-green-500 ml-2 w-2.5 h-2.5" fontIcon="mood"></mat-icon> 
+                </span>
+                <div class="w-full mt-1 py-1 px-4 text-[1.1rem] font-semibold space-y-1.5 bg-green-500/20 rounded-md">
+                    @for (strength of team.insights; track $index) {
+                        @if (strength.insight_type.toLowerCase() == "strength") {
+                            <p>{{strength.description}}</p>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="w-full my-2">
+                <span class="text-[1.3rem] font-bold">
+                    Weaknesses
+                    <mat-icon class="align-middle text-red-500 ml-2 w-2.5 h-2.5" fontIcon="mood_bad"></mat-icon> 
+                </span>
+                <div class="w-full mt-1 py-1 px-4 text-[1.1rem] font-semibold space-y-1.5 bg-red-500/20 rounded-md">
+                    @for (strength of team.insights; track $index) {
+                        @if (strength.insight_type.toLowerCase() == "weakness") {
+                            <p>{{strength.description}}</p>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

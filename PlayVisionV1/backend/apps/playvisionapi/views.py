@@ -4,9 +4,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.utils.dateparse import parse_date
 from django.utils import timezone
-from django.db.models import Prefetch
-from .models import Season, PlayerSeasonStats, Match, Competition , Country , PlayerCompetitionStats
-from .serializer import PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer , CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer , CompetitionMatchesListSerializer
+from django.db.models import Prefetch , Q
+from .models import Team,Season, PlayerSeasonStats, Match, Competition , Country , PlayerCompetitionStats
+from .serializer import TeamSerializer, PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer , CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer , CompetitionMatchesListSerializer
 
 #Get homepage data
 @api_view(["GET"])
@@ -113,3 +113,26 @@ def competition_matches(request,ctitle):
         "matches": matches_cmpt_serializer.data,
         "total": paginator.count
     })
+
+@api_view(["GET"])
+def team_details(request, title):
+    season_param = request.query_params.get("season")
+    if not season_param:
+        #season_param = datetime.now().year
+        season_param = 2024
+        #return Response({"detail":"Invalid date format"},status=400)
+    
+    season_obj = Season.objects.filter(year_start=season_param).first()
+    team_qs = get_object_or_404(Team, title=title)
+    player_season_stats_qs = PlayerSeasonStats.objects.filter(team = team_qs, season = season_obj)
+    team_matches_qs = Match.objects.filter(Q(away_team = team_qs) | Q(home_team = team_qs),season = season_obj)
+
+    team_serializer = TeamSerializer(team_qs)
+    player_season_serializer = PlayerSeasonStatsSerializer(player_season_stats_qs,many=True)
+    team_matches_serializer = CompetitionMatchesListSerializer(team_matches_qs,many=True)
+    return Response({
+        "team" : team_serializer.data,
+        "player_stats" : player_season_serializer.data,
+        "matches" : team_matches_serializer.data
+    })
+

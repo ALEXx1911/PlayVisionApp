@@ -1,6 +1,6 @@
 import { Component, input, InputSignal, computed } from '@angular/core';
 import { TableModule } from 'primeng/table'
-import {  DataFromCompetitionAPI, TeamCompetitionStat } from '../models/competition-models';
+import {  DataFromCompetitionAPI, TeamCompetitionStat } from '../../models/app-models';
 import { RouterLink } from "@angular/router";
 
 @Component({

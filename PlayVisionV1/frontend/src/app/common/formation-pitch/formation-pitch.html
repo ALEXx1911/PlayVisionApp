@@ -1,0 +1,27 @@
+<div class="box-border w-full h-80 shadow-xs rounded-sm relative overflow-hidden">
+      <div class="border-4 border-white w-full h-full relative z-10 bg-green-500">
+              <div class=" absolute top-0 left-[calc(50%-1px)] h-full border-2 border-white"></div>
+              <div class=" absolute w-20.5 h-20.5 border-4 border-white rounded-full top-[calc(50%-41px)] left-[calc(50%-41px)]"></div>
+        
+              <div class=" absolute w-19.75 h-19.75 border-4 border-white rounded-full top-[calc(50%-39.5px)] left-0"></div>
+              <div class=" absolute w-19.75 h-19.75 border-4 border-white rounded-full top-[calc(50%-39.5px)] right-0"></div>            
+              <div class=" absolute w-17 h-41 border-4 border-white bg-green-500 top-[calc(50%-82px)] -left-0.75"></div>
+              <div class=" absolute w-17 h-41 border-4 border-white bg-green-500 top-[calc(50%-82px)] -right-0.75"></div>
+        
+              <div class=" absolute w-6.75 h-27.5 border-4 border-white top-[calc(50%-55px)] -left-0.75">
+                <div class="penalty absolute w-0.5 h-0.5 bg-white rounded-full top-[calc(50%-4px)] -left-3.5"></div>
+              </div>
+              <div class=" absolute w-6.75 h-27.5 border-4 border-white top-[calc(50%-55px)] -right-0.75">
+                <div class="penalty absolute w-0.5 h-0.5 bg-white rounded-full top-[calc(50%-4px)] -right-3.5"></div>
+              </div>
+              
+      </div>
+    @for (item of playerSlotsWithCoordsComputed(); track $index) {
+        <div class="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-10" [style.left.%]="item.x" [style.top.%]="item.y">
+            <div class="w-8 h-8 rounded-full bg-black font-semibold text-sm">
+                
+            </div>
+            <span class="font-semibold text-[1rem] text-black">{{item.media}} {{item.pname}}</span>
+        </div>
+    }
+</div>
