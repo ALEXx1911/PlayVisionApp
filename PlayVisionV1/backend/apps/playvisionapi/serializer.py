@@ -24,6 +24,11 @@ class PlayerSerializer(serializers.ModelSerializer):
         for f in getattr(self.Meta,"extra_fields",[]):
             fields[f] = self.fields[f]
         return fields
+    
+class PlayerSeasonStatSerializerBasic(serializers.ModelSerializer):
+    class Meta:
+        model = PlayerSeasonStats
+        fields = "__all__"
 
 class PlayerListDataSerializer(serializers.ModelSerializer):
     team_name = serializers.CharField(source='team.title', read_only=True)

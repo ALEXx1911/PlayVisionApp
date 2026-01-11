@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData,  } from '../models/app-models';
+import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData, PlayerCompareDataFromAPI, MostSearchedPlayers,  } from '../models/app-models';
 
 @Injectable({
   providedIn: 'root',
@@ -94,6 +94,43 @@ export class AppService {
   getMostSearchedItems():Observable<MostSearchedItems>{
     return this.http.get<MostSearchedItems>(`${this.apiHost}mostsearched/items`,{
       mode: "cors",
+    });
+  }
+
+  getMostSearchedPlayers():Observable<MostSearchedPlayers>{
+    return this.http.get<MostSearchedPlayers>(`${this.apiHost}mostsearched/players`,{
+      mode: "cors",
+    });
+  }
+
+  getPlayerCompareData(player1Name?:string, player2Name?:string):Observable<PlayerCompareDataFromAPI>{
+    let encodedPlayerName1;
+    let encodedPlayerName2;
+    let qparams = new HttpParams();
+    
+    
+    if(player1Name == undefined && player2Name !== undefined){
+      encodedPlayerName2 = encodeURIComponent(player2Name);
+      qparams = qparams.set("player2", encodedPlayerName2);
+    console.log("AAAa");
+    }
+
+    if(player1Name !== undefined && player2Name == undefined){
+      encodedPlayerName1 = encodeURIComponent(player1Name);
+      qparams = qparams.set("player1", encodedPlayerName1);
+    console.log("BBBBBB");
+    }
+
+    if(player1Name !== undefined && player2Name !== undefined){
+      encodedPlayerName1 = encodeURIComponent(player1Name);
+      encodedPlayerName2 = encodeURIComponent(player2Name);
+      qparams = qparams.set("player1", encodedPlayerName1);
+      qparams = qparams.set("player2", encodedPlayerName2);
+    }
+    
+    return this.http.get<PlayerCompareDataFromAPI>(`${this.apiHost}compare/players/`,{
+      mode: "cors",
+      params: qparams
     });
   }
 

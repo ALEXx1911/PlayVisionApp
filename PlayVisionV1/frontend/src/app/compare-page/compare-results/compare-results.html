@@ -1,0 +1,51 @@
+@if (compareData$() | async; as comparePlayersData) {
+    <div class="w-full flex flex-col items-center justify-center border-2 border-black gap-2">
+        <div class="w-full flex justify-center items-center p-2 bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+            <span class="text-[1.3rem] font-semibold text-white">Personal Data</span>
+            <span class="ml-2 text-white">
+                <mat-icon fontIcon="person_book"></mat-icon>
+            </span>
+        </div>
+        <div class="w-full grid grid-cols-2 gap-4 p-2.5 text-[1rem] font-semibold">
+            <div class="w-full grid grid-cols-2 grid-rows-[1fr_2fr] px-4 items-center border-2 border-[#5131f3] rounded-2xl">
+                <div class="w-full flex justify-center row-start-1 row-end-2 col-span-2">
+                    <img src="default-user.png" alt="playerImg" class="w-16 h-16 rounded-full mt-2"/>
+                </div>
+                <div class="w-full col-start-1 col-end-2 row-start-2 row-end-3 flex flex-col items-center pl-4 gap-1">
+                    <p>Name: {{comparePlayersData.player1_data.pname}}</p>
+                    <p>Age: {{comparePlayersData.player1_data.age}}</p>
+                    <p>Team: {{comparePlayersData.player1_data.team.title}}</p>
+                    <p>Position: {{comparePlayersData.player1_data.position}}</p>
+                </div>
+                <div class="w-full col-start-2 col-end-3 row-start-2 row-end-3 flex flex-col items-center pl-4 gap-1">
+                    <p>Height: {{comparePlayersData.player1_data.height}}</p>
+                    <p>Nationality: <img src="{{comparePlayersData.player1_data.nationality_flag}}" alt="country_flag"></p>
+                </div>
+            </div>
+            <div class="w-full flex flex-col items-center border-2 border-[#5131f3] rounded-2xl">
+                <img src="default-user.png" alt="playerImg" class="w-12 h-12 rounded-full mt-2"/>
+                <p>Name: {{comparePlayersData.player2_data.pname}}</p>
+                <p>Age: {{comparePlayersData.player2_data.age}}</p>
+                <p>Team: {{comparePlayersData.player2_data.team.title}}</p>
+                <p>Position: {{comparePlayersData.player2_data.position}}</p>
+                <p>Height: {{comparePlayersData.player2_data.height}}</p>
+                <div class="flex flex-row">
+                    <p>Nationality: </p>
+                    <img src="{{comparePlayersData.player2_data.nationality_flag}}" alt="country_flag">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w-full flex flex-col items-center justify-center border-2 border-black gap-2">
+        <div class="w-full flex justify-center items-center p-2 bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+            <span class="text-[1.3rem] font-semibold text-white">Individual Stats</span>
+            <span class="ml-2 text-white">
+                <mat-icon fontIcon="bar_chart"></mat-icon>
+            </span>
+        </div>
+        <div class="w-full grid grid-cols-2 gap-4 p-2.5">
+            <app-horizontal-bar-chart [playerData]="comparePlayersData.player1_season_stats"></app-horizontal-bar-chart>
+            <app-horizontal-bar-chart [playerData]="comparePlayersData.player2_season_stats"></app-horizontal-bar-chart>
+        </div>
+    </div>
+}

@@ -6,7 +6,7 @@ from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.db.models import Prefetch , Q
 from .models import Team, TeamInsights ,Season, Player, PlayerSeasonStats, Match, Competition , Country , PlayerCompetitionStats , TeamCompetitionStats, MatchStats, MatchEvent
-from .serializer import CompetitionSerializer, MatchSerializer, MatchEventSerializer, TeamSerializer, TeamInsightsSerializer , TeamCompetitionStatSerializer , PlayerSerializer, PlayerLineupSerializer , PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer , CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer , CompetitionMatchesListSerializer
+from .serializer import CompetitionSerializer, MatchSerializer, MatchEventSerializer, TeamSerializer, TeamInsightsSerializer , TeamCompetitionStatSerializer , PlayerSerializer , PlayerSeasonStatSerializerBasic , PlayerLineupSerializer , PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer , CountryCompetitionSerializer , CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer , CompetitionMatchesListSerializer
 from .utils.utils import match_stats_header , get_last_matches_results , FORMATION_POSITIONS
 
 #Get homepage data
@@ -299,6 +299,52 @@ def search_page(request):
 
     return Response({
         "search_results" : search_results,
+    })
+
+@api_view (["GET"])
+def compare_players(request):
+    season_param = request.query_params.get("season")
+    player1_name = request.query_params.get("player1")
+    player2_name = request.query_params.get("player2")
+    player_label = ""
+
+    if not season_param:
+        #season_param = datetime.now().year
+        season_param = 2024
+    
+    season_obj = Season.objects.filter(year_start = season_param).first()
+
+    if not player1_name and not player2_name:
+        return Response({"detail":"El nombre del jugador es obligatorio."},status=400)
+
+    if (not player1_name and player2_name) or (player1_name and not player2_name):
+        player_label = "player 1" if player1_name else "player 2"
+        player_qs = get_object_or_404(Player, pname = player1_name.strip())
+        player_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player_qs,season = season_obj)
+        
+        player_serializer = PlayerSerializer(player_qs,many=False)
+        player_season_stat_serializer = PlayerSeasonStatSerializerBasic(player_season_stats_qs,many =False)
+        return Response({
+            "player_data" : player_serializer.data,
+            "season_stats" : player_season_stat_serializer.data,
+            "label": player_label
+        })
+
+    player1_qs = get_object_or_404(Player, pname = player1_name.strip())
+    player1_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player1_qs,season = season_obj)
+    player2_qs = get_object_or_404(Player, pname = player2_name.strip())
+    player2_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player2_qs,season = season_obj)
+
+    player_serializer = PlayerSerializer(player1_qs,many=False)
+    player_season_stat_serializer = PlayerSeasonStatSerializerBasic(player1_season_stats_qs,many =False)
+    player2_serializer = PlayerSerializer(player2_qs,many=False)
+    player2_season_stat_serializer = PlayerSeasonStatSerializerBasic(player2_season_stats_qs,many =False)
+
+    return Response({
+        "player1_data" : player_serializer.data,
+        "player1_season_stats" : player_season_stat_serializer.data,
+        "player2_data" : player2_serializer.data,
+        "player2_season_stats" : player2_season_stat_serializer.data
     })
     
 match_stats_header = [

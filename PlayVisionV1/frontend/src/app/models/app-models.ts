@@ -236,8 +236,19 @@ export interface SearchTermsData{
     ]
 }
 
+export interface PlayerCompareDataFromAPI{
+    player1_data: PlayerDetails,
+    player1_season_stats: PlayerStatBasic,
+    player2_data: PlayerDetails,
+    player2_season_stats: PlayerStatBasic,
+}
+
 export interface MostSearchedItems{
     most_searched_players: PlayerDetails[],
     most_searched_teams:  TeamModel[],
     most_searched_competitions: Competition[],
+}
+
+export interface MostSearchedPlayers{
+    most_searched_players: PlayerDetails[],
 }
