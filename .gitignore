@@ -1,3 +1,9 @@
 # Ignore backend virtual environment
 /PlayVisionV1/backend/venv/
 /PlayVisionV1/.env
+/PlayVisionV1/backend/staticfiles/
+/PlayVisionV1/backend/apps/playvisionapi/management/commands/__pycache__/
+/PlayVisionV1/backend/apps/playvisionapi/__pycache__/
+/PlayVisionV1/backend/config/__pycache__/
+/PlayVisionV1/backend/apps/playvisionapi/migrations/__pycache__/
+/PlayVisionV1/backend/apps/playvisionapi/utils/__pycache__/

@@ -22,5 +22,4 @@ urlpatterns = [
     #URLS for Most Searched Items
     path("api/mostsearched/items", views.most_searched_items),
     path("api/mostsearched/players", views.most_searched_players),
-    path("api/xd/", views.xd),
 ]
