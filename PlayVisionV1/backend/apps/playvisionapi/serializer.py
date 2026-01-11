@@ -1,16 +1,26 @@
 from rest_framework import serializers
-from .models import PlayerSeasonStats , Player, Team, TeamInsights , TeamCompetitionStats , Match, MatchEvent, Competition , Country , PlayerCompetitionStats
+from .models import PlayerSeasonStats , Player, Team, TeamInsights , TeamCompetitionStats , Match, MatchStats, MatchEvent, Competition , Country , PlayerCompetitionStats
+from .utils.utils import get_last_matches_results
+
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ("title","stadium","logo_url","shortname","coach")
+        fields = "__all__"
 
 class TeamCompetitionStatSerializer(serializers.ModelSerializer):
     team = TeamSerializer(many=False,read_only=True)
+    last_results = serializers.SerializerMethodField()
     class Meta:
         model = TeamCompetitionStats
-        fields = ("team","matches_played","win","draw","lose","goals_for","goals_against","goal_difference","point")
+        fields = ("team","matches_played","win","draw","lose","goals_for","goals_against","goal_difference","point","last_results")
+
+    def get_last_results(self, obj):
+        mapping = self.context.get("last_matches_by_team",{})
+        team_id = obj.team.id
+        matches = mapping.get(team_id,[])
+        results = get_last_matches_results(matches, obj.team)
+        return results
 
 class PlayerSerializer(serializers.ModelSerializer):
     team = TeamSerializer(read_only=True)
@@ -32,10 +42,10 @@ class PlayerSeasonStatSerializerBasic(serializers.ModelSerializer):
 
 class PlayerListDataSerializer(serializers.ModelSerializer):
     team_name = serializers.CharField(source='team.title', read_only=True)
-    team_logo_url = serializers.ImageField(source='team.logo_url', read_only=True)
+    team_logo_url = serializers.CharField(source='team.logo_url', read_only=True)
     class Meta:
         model = Player
-        fields = ("pname","lastname","nationality_flag","position","team_name","team_logo_url")
+        fields = ("slug","pname","lastname","common_name","nationality_flag","position","team_name","team_logo_url")
 
 class PlayerSeasonStatsSerializer(serializers.ModelSerializer):
     player = PlayerListDataSerializer(read_only=True)
@@ -67,7 +77,7 @@ class PlayerCompetitionStatsSerializer(serializers.ModelSerializer):
 class CompetitionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competition
-        fields = ("id", "title", "country", "competition_type","logo_url")
+        fields = ("id", "title","slug", "country", "competition_type","logo_url")
 
 class CompetitionMatchesListSerializer(serializers.ModelSerializer):
     home_team = TeamSerializer(read_only=True)
@@ -115,6 +125,14 @@ class MatchEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchEvent
         fields = ("event_type","minute","description","player_name","assist_player","out_player")
+
+class MatchStatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MatchStats
+        fields = ("home_shots","away_shots","home_shots_ontarget","away_shots_ontarget",
+                  "home_corners","away_corners","home_possession","away_possession",
+                  "home_passes","away_passes","home_fouls","away_fouls","home_yellow_cards","away_yellow_cards",
+                  "home_red_cards","away_red_cards","home_offsides","away_offsides")
 
 class PlayerLineupSerializer(serializers.ModelSerializer):
     pname= serializers.CharField(source='player.common_name', read_only=True)

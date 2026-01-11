@@ -5,7 +5,6 @@ from . import views
 urlpatterns = [ 
     path("api/home/", views.homepage),
     #URLS for Teams
-    path("api/teams/", views.team_list),
     path("api/teams/<str:title>/", views.team_details),
     #URLS for Competitions
     path("api/competitions/", views.competition_list),

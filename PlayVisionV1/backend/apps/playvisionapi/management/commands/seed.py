@@ -46,7 +46,7 @@ class Command(BaseCommand):
                 Competition.objects.create(
                     slug=fake.slug(),
                     title=fake.company(),
-                    competition_type=fake.random_element(elements=('League', 'Cup')),
+                    competition_type='league',
                     logo_url=fake.image_url(width=100, height=100, placeholder_url='https://via.placeholder.com/100x100'),
                     
                     country=Country.objects.first(),

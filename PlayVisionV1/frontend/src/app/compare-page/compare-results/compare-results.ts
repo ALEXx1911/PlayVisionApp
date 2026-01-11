@@ -23,7 +23,7 @@ export class CompareResults {
             const p1 = this.player1();
             const p2 = this.player2();
             
-            if (p1 && p2) {
+            if (p1 && p2 && p1.length > 0 && p2.length > 0) {
                 this.compareData$.set(this.appService.getPlayerCompareData(p1, p2));
             }
         });

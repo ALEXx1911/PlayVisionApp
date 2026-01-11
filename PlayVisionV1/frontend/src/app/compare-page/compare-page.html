@@ -36,8 +36,8 @@
     </div>
     @if (isSubmited() == true && player1Selected() == true && player2Selected() == true) {
         <app-compare-results
-        [player1]="player1().pname" 
-        [player2]="player2().pname" 
+        [player1]="player1().slug" 
+        [player2]="player2().slug" 
         class="w-full sm:w-3/4 mt-4">
         </app-compare-results>
     }@else {

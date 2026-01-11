@@ -236,7 +236,7 @@ def match_details(request,matchid):
             "away_last_matches" : away_matches_serializer.data
         })
     
-    if match_qs.status == "Finished":
+    if match_qs.status == "Finished" or match_qs.status == "FT":
         match_stats_qs = MatchStats.objects.filter(match = match_qs).first()
         match_events_qs = MatchEvent.objects.filter(match = match_qs).order_by("minute")
         #match_stats_serializer = MatchStatsSerializer(match_stats_qs,many=False)
@@ -304,8 +304,8 @@ def search_page(request):
 @api_view (["GET"])
 def compare_players(request):
     season_param = request.query_params.get("season")
-    player1_name = request.query_params.get("player1")
-    player2_name = request.query_params.get("player2")
+    player1_slug = request.query_params.get("player1")
+    player2_slug = request.query_params.get("player2")
     player_label = ""
 
     if not season_param:
@@ -314,12 +314,12 @@ def compare_players(request):
     
     season_obj = Season.objects.filter(year_start = season_param).first()
 
-    if not player1_name and not player2_name:
+    if not player1_slug and not player2_slug:
         return Response({"detail":"El nombre del jugador es obligatorio."},status=400)
 
-    if (not player1_name and player2_name) or (player1_name and not player2_name):
-        player_label = "player 1" if player1_name else "player 2"
-        player_qs = get_object_or_404(Player, pname = player1_name.strip())
+    if (not player1_slug and player2_slug) or (player1_slug and not player2_slug):
+        player_label = "player 1" if player1_slug else "player 2"
+        player_qs = get_object_or_404(Player, slug = player1_slug.strip())
         player_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player_qs,season = season_obj)
         
         player_serializer = PlayerSerializer(player_qs,many=False)
@@ -330,9 +330,9 @@ def compare_players(request):
             "label": player_label
         })
 
-    player1_qs = get_object_or_404(Player, pname = player1_name.strip())
+    player1_qs = get_object_or_404(Player, slug = player1_slug.strip())
     player1_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player1_qs,season = season_obj)
-    player2_qs = get_object_or_404(Player, pname = player2_name.strip())
+    player2_qs = get_object_or_404(Player, slug = player2_slug.strip())
     player2_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player2_qs,season = season_obj)
 
     player_serializer = PlayerSerializer(player1_qs,many=False)
