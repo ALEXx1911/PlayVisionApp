@@ -19,7 +19,7 @@ def homepage(request):
         target_date = parse_date(date_str)
         actual_season = target_date.year
         if target_date is None:
-            return Response({"detail":"Formato no válido"},status=400)
+            return Response({"detail":"Invalid format"},status=400)
     else:
         target_date = timezone.localdate()
         actual_season = 2024 #datetime.now().year
@@ -213,7 +213,7 @@ def match_details(request,matchid):
     match_serializer = MatchSerializer(match_qs,many=False)
 
     if not match_qs:
-        return Response({"detail":"No se encontró el partido"},status=404)
+        return Response({"detail":"Match not found"},status=404)
     
     if match_qs.status == "Not Started":
         home_team_qs = get_object_or_404(Team, id = match_qs.home_team.id) 
@@ -261,7 +261,7 @@ def search_page(request):
     searchParam = request.query_params.get("searchTerm").strip()
     
     if not searchParam or searchParam.strip() == "":
-        return Response({"detail":"El término de búsqueda no puede estar vacío."},status=400)
+        return Response({"detail":"The search term cannot be empty."},status=400)
     
     player_obj = Player.objects.filter(pname=searchParam)
     team_obj = Team.objects.filter(title=searchParam)
@@ -315,7 +315,7 @@ def compare_players(request):
     season_obj = Season.objects.filter(year_start = season_param).first()
 
     if not player1_slug and not player2_slug:
-        return Response({"detail":"El nombre del jugador es obligatorio."},status=400)
+        return Response({"detail":"The player name is required."},status=400)
 
     if (not player1_slug and player2_slug) or (player1_slug and not player2_slug):
         player_label = "player 1" if player1_slug else "player 2"

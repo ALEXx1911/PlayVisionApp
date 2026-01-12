@@ -1,31 +1,33 @@
 <div class="bottom-0 bg-linear-to-t from-slate-950 from-75% to-[#5131f3] to-90% text-white h-34 w-full mt-2.5 sm:h-40">
     <div class="flex flex-col items-center gap-1">
-        <img src="letrasLogo.png" alt="letras" class=" mt-1.5 w-30 sm:w-40 h-6 sm:h-8">
-        <div class="flex justify-center gap-10 w-250">
+        <img src="letrasLogo.png" alt="letras" class=" mt-1.5 w-30 sm:w-44 h-6 sm:h-10">
+        <div class="flex flex-row flex-wrap justify-center gap-10 sm:w-250">
             <div class="flex flex-col items-center">
-                <p class="text-[12px] sm:text-[1rem] font-bold">Contact</p>
+                <p class="text-[1rem] sm:text-[1.1rem] font-bold">Contact</p>
                 <div class="flex gap-1 items-center">
                     <mat-icon aria-hidden="false" fontIcon="mail"></mat-icon>
-                    <span class="text-[10px] sm:text-[1rem]">playvision&#64;gmail.com</span>
+                    <span class="text-[1rem] sm:text-[1rem]">playvision&#64;gmail.com</span>
                 </div>
             </div>
-            <div>
-                <p class="text-[12px] sm:text-[1rem] font-bold">Social Accounts</p>
-                <div class="flex gap-1 items-center justify-center">
-                    <mat-icon aria-hidden="false" fontIcon="gite"></mat-icon>
-                    <mat-icon aria-hidden="false" fontIcon="commit"></mat-icon>
+            <!--
+                <div>
+                    <p class="text-[.9rem] sm:text-[1.1rem] font-bold">Social Accounts</p>
+                    <div class="flex gap-1 items-center justify-center">
+                        <mat-icon aria-hidden="false" fontIcon="gite"></mat-icon>
+                        <mat-icon aria-hidden="false" fontIcon="commit"></mat-icon>
+                    </div>
                 </div>
+            -->
+            <div class="flex flex-col items-center gap-1">
+                <p class="text-[1rem] sm:text-[1.1rem] font-bold">Meet us</p>
+                <a [routerLink]="['/aboutUs']" class="text-[1rem] sm:text-[1.1rem] underline">About us</a>
             </div>
             <div class="flex flex-col items-center gap-1">
-                <p class="text-[12px] sm:text-[1rem] font-bold">Meet us</p>
-                <a [routerLink]="['/aboutUs']" class="text-[12px] sm:text-[1rem] underline">About us</a>
-            </div>
-            <div class="flex flex-col items-center gap-1">
-                <p class="text-[12px] sm:text-[1rem] font-bold">Users</p>
-                <a [routerLink]="['/login']" class="text-[12px] sm:text-[1rem] underline">Login</a>
-                <a [routerLink]="['/login']" class="text-[12px] sm:text-[1rem] underline">Register</a>
+                <p class="text-[1rem] sm:text-[1.1rem] font-bold">Users</p>
+                <a [routerLink]="['/login']" class="text-[1rem] sm:text-[1.1rem] underline">Login</a>
+                <a [routerLink]="['/login']" class="text-[1rem] sm:text-[1.1rem] underline">Register</a>
             </div>
         </div>
-        <p class="text-[12px] sm:text-[1.2rem] mt-1">©2025 PlayVision All rights reserved.</p>
+        <p class="text-[1rem] sm:text-[1.2rem] mt-1">©2025 PlayVision All rights reserved.</p>
     </div>
 </div>

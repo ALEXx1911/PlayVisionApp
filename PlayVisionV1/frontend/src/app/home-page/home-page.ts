@@ -8,10 +8,11 @@ import { RouterLink } from '@angular/router';
 import { FormationPitch } from "../common/formation-pitch/formation-pitch";
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapPlayersToFormationSlots } from '../common/formation-pitch/formations';
+import { MediaUrlPipe } from '../common/pipes/media-url.pipe';
 
 @Component({
   selector: 'app-home-page',
-  imports: [ MatchSlot, RouterLink, CdkAccordion, CdkAccordionItem, MatIcon, StatsTable, FormationPitch],
+  imports: [ MatchSlot, RouterLink, CdkAccordion, CdkAccordionItem, MatIcon, StatsTable, FormationPitch, MediaUrlPipe],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css',
 })

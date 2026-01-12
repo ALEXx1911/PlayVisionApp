@@ -18,10 +18,10 @@
       </div>
     @for (item of playerSlotsWithCoordsComputed(); track $index) {
         <div class="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-10" [style.left.%]="item.x" [style.top.%]="item.y">
-            <div class="w-8 h-8 rounded-full bg-black font-semibold text-sm">
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black font-semibold text-sm">
                 
             </div>
-            <span class="font-semibold text-[1rem] text-black">{{item.media}} {{item.pname}}</span>
+            <span class="font-semibold text-[.95rem] sm:text-[1rem] text-black">{{item.media}} {{item.pname}}</span>
         </div>
     }
 </div>

@@ -25,24 +25,34 @@ export class AppService {
       mode: "cors",
     });
   }
-  
+  private competitionDetailsCache = new Map<string, Observable<DataFromCompetitionAPI>>();
   getCompetitionDetails(competition:string):Observable<DataFromCompetitionAPI>{
     //const params = new HttpParams()
     //  .set("title",competition);
-    return this.http.get<DataFromCompetitionAPI>(`${this.apiHost}competitions/${competition}`,{
-      mode: "cors",
-      //params
-    })
+    if (!this.competitionDetailsCache.has(competition)) {
+      const request$ = this.http.get<DataFromCompetitionAPI>(`${this.apiHost}competitions/${competition}`,{
+        mode: "cors",
+        //params
+      }).pipe(shareReplay(1));
+      this.competitionDetailsCache.set(competition, request$);
+    }
+    return this.competitionDetailsCache.get(competition)!;
+  
   }
 
+  private competitionMatchesCache = new Map<string, Observable<CompetitionMatchesFromAPI>>();
   getCompetitionMatches(competition:string,start:number,limit:number):Observable<CompetitionMatchesFromAPI>{
     let qparams = new HttpParams()
       .set("start", start.toString())
       .set("limit", limit.toString());
-    return this.http.get<CompetitionMatchesFromAPI>(`${this.apiHost}competitions/${competition}/matches`,{
-      mode: "cors",
-      params: qparams
-    });
+    if (!this.competitionMatchesCache.has(competition)) {
+      const  request$ = this.http.get<CompetitionMatchesFromAPI>(`${this.apiHost}competitions/${competition}/matches`,{
+        mode: "cors",
+        params: qparams
+      }).pipe(shareReplay(1));
+      this.competitionMatchesCache.set(competition, request$);
+    }
+    return this.competitionMatchesCache.get(competition)!;
   }
 
   private teamCache = new Map<string, Observable<TeamDataFromAPI>>();

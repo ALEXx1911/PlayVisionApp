@@ -1,51 +1,49 @@
 <div class="flex flex-col w-full items-center">
-    <div class="flex flex-row w-102 h-60 border-none shadow-none my-2 sm:w-160 sm:h-76">
-        <div class="w-44 h-full bg-linear-to-b from-indigo-950 to-indigo-600 flex items-center justify-center sm:w-52">
-            <img class="w-40 shadow-2xl h-7.5 object-cover" alt="PlayVision Logo" src="letrasLogo.png"/>
+    <div class="flex flex-row w-102 h-90 shadow-none my-2 border-2 border-black sm:w-160 sm:h-76">
+        <div class="w-38 h-full bg-linear-to-b from-indigo-950 to-indigo-600 flex items-center justify-center sm:w-52">
+            <img class="w-35 sm:w-40 shadow-2xl h-7.5 object-cover" alt="PlayVision Logo" src="letrasLogo.png"/>
         </div>
         <div class="flex-1 p-3 pt-4">
             <h2 class="font-bold text-center text-[1rem] mb-3 font-['Inter-Bold',Helvetica] sm:text-lg">Our History</h2>
-            <div class="text-[10px] ml-2 font-['Inter-Regular',Helvetica] space-y-4 sm:text-[1rem]">
+            <div class="text-[1rem] ml-2 font-['Inter-Regular',Helvetica] space-y-2 sm:space-y-4 sm:text-[1rem]">
                 @for (item of infoCard1; track $index) {
                     <p>{{item}}</p>}
             </div>
         </div>
     </div>
-    <div class="flex flex-row w-102 h-57.5 border-none mb-2 sm:w-160 sm:h-76">
+    <div class="flex flex-row w-102 h-76 mb-2 border-2 border-black sm:w-160 sm:h-76">
           <div class="flex-1 w-57.5 p-3 pt-3">
-            <h2 class="font-bold text-center text-[1rem] font-['Inter-Bold',Helvetica] mb-3 sm:text-lg">Our Mision</h2>
-            <div class="text-[10px] font-['Inter-Regular',Helvetica] space-y-4 sm:text-[1rem]">
+            <h2 class="font-bold text-center text-[1rem] font-['Inter-Bold',Helvetica] mb-3 sm:text-lg">Our Mission</h2>
+            <div class="text-[1rem] font-['Inter-Regular',Helvetica] space-y-2 sm:space-y-4 sm:text-[1rem]">
                 @for (item of infoCard2; track $index) {
                     <p>{{item}}</p>
                 }
             </div>
           </div>
-            <div class="flex items-center justify-center w-42.5 h-full bg-linear-to-b from-indigo-950 to-indigo-600 sm:w-52">
-                <img class="w-20 h-20 object-cover sm:w-25 sm:h-25" alt="PlayVisionLogo" src="logo.png"/>
+            <div class="flex items-center justify-center w-38 h-full bg-linear-to-b from-indigo-950 to-indigo-600 sm:w-52">
+                <img class="w-24 h-24 object-cover sm:w-25 sm:h-25" alt="PlayVisionLogo" src="logo.png"/>
             </div>
     </div>
-    <div class="w-100 sm:w-160">
-        <div class="w-full bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% p-1 flex justify-center items-center">
-          <h3 class="font-bold text-white text-[1rem] tracking-[0] sm:text-lg"> Join Us</h3>
+    <div class="w-100 sm:w-160 border-2 border-black">
+        <div class="w-full  bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% p-1 flex justify-center items-center">
+          <h3 class="font-bold text-white text-[1.1rem] tracking-[0] sm:text-lg"> Contact With Us</h3>
         </div>
         <div class="flex flex-col items-center gap-1.5 p-2">
-            <p class="w-full text-[10px] font-normal text-black tracking-[0] sm:text-[1rem]">
-                Registrate en PlayVision para poder disfrutar de más funcionalidades, 
-                como: añadir equipos, jugadores o ligas a tus favoritos para estar al tanto de sus últimas novedades, 
-                compartir tus predicciones, (pensar más xd) entre otras.
+            <!--
+                <p class="w-full text-[1rem] font-normal text-black tracking-[0] sm:text-[1rem]">
+                    Registrate en PlayVision para poder disfrutar de más funcionalidades, 
+                    como: añadir equipos, jugadores o ligas a tus favoritos para estar al tanto de sus últimas novedades, 
+                    compartir tus predicciones, (pensar más xd) entre otras.
+                </p>
+                <a [routerLink]="['/login']" class="w-auto h-auto my-1 py-1.5 px-5 text-[1rem] text-white font-bold rounded-2xl bg-linear-to-b from-blue-700 to-purple-700 sm:text-lg">
+                    Register
+                </a>
+        --> 
+            <p class="text-[1rem] font-normal sm:text-[1.1rem]">
+                If you have any questions, suggestions, or would like to collaborate with us, feel free to contact us at:
             </p>
-            <a [routerLink]="['/login']" class="w-auto h-auto my-1 py-1.5 px-5 text-xs text-white font-bold rounded-2xl bg-linear-to-b from-blue-700 to-purple-700 sm:text-lg">
-                Register
-            </a>
-        
-            <p class="text-[10px] font-normal sm:text-[1rem]">
-                Si tienes alguna otra duda acerca de PlayVision, deseas contactar con
-                nosotros o enviar sugerencias. No dudes en contactarnos a través del
-                email:
-            </p>
-        
-            <a class="text-[12px] font-semibold text-black tracking-[0] leading-normal underline whitespace-nowrap sm:text-lg" href="mailto:playvision@gmail.com"rel="noopener noreferrer" target="_blank">
-              playvisiongmail.com
+            <a class="text-[1rem] font-semibold text-black tracking-[0] leading-normal underline whitespace-nowrap sm:text-lg" href="mailto:playvision@gmail.com"rel="noopener noreferrer" target="_blank">
+              playvision@gmail.com
             </a>
         </div>
     </div>

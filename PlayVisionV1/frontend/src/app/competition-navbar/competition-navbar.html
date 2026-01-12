@@ -2,13 +2,13 @@
     <p class="mt-3 font-bold text-[1.1rem] md:text-[1.4rem] xl:text-[1.4rem] 2xl:text-[1.4rem]">Competitions</p>
     @if (competitionsData$ | async; as data) {
         @for (item of data.countries; track $index) {
-            <div class="w-full h-full my-2 flex flex-col items-center gap-2">
+            <div class="w-full h-25 my-2 flex flex-col items-center gap-2">
                 <cdk-accordion class="w-full mt-4">
                     <cdk-accordion-item #accordionItem="cdkAccordionItem" [expanded]="false">
                         <div class="w-full mb-2 h-8.5 sm:h-10 p-1 flex cursor-pointer justify-between items-center bg-linear-to-r from-slate-950 from-43% to-[#5131f3] to-90%">
                             <div class="w-full flex flex-row content-center justify-between" (click)="accordionItem.toggle()">
                                 <div class="flex flex-row items-center gap-2">
-                                    <img src="{{item.flag_url}}" alt="logoxd" srcset="" class="w-7 h-7">
+                                    <img src="{{item.flag_url}}" alt="logo" srcset="" class="w-7 h-7">
                                     <span class="text-white text-base font-semibold text-[1.3rem]">{{item.country_name}}</span>
                                 </div>
                                 <button  class="text-white cursor-pointer">

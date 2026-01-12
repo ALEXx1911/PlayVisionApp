@@ -2,7 +2,7 @@
     @if (competitionData$ | async; as competition) {
         <div class="w-full sm:w-3/4 text-white my-2.5 h-32 rounded-xl overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]">
             <div class="w-full h-full flex items-center justify-center gap-10">
-                <img class=" w-30 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{competition.competition.logo_url}}"/>
+                <img class=" w-35 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{competition.competition.logo_url}}"/>
                 <div class="font-semibold tracking-[0] leading-[normal]">
                     <div class="flex items-center gap-5 mb-1">
                         <span class="text-xl">Competition data:</span>
@@ -14,8 +14,8 @@
             </div>
         </div>
         <league-table class="w-full sm:w-3/4" [data]="(competitionData$ | async) ?? this.eje"></league-table>
-        <div class="w-full flex flex-col justify-center
-         items-center h-18 sm:w-3/4 border-2 border-black rounded-2xl mt-2">
+        <div class="w-full h-22 px-3 flex flex-col gap-1 sm:gap-0 justify-center
+         items-center sm:h-18 sm:w-3/4 border-2 border-black rounded-2xl mt-2">
             <span class="flex flex-row text-[1.1rem] font-semibold">Qualified for: 
                 <div class="w-5 h-5 p-3 mx-1 rounded-full bg-blue-200"></div> Champions League
                 <div class="w-5 h-5 p-3 mx-1 rounded-full bg-yellow-200"></div> Europa League
@@ -27,7 +27,7 @@
         </div>
         <cdk-accordion class="w-full sm:w-3/4">
             <cdk-accordion-item #accordionItem="cdkAccordionItem">
-                <div class="w-full mt-4 mb-2 h-8.5 sm:h-10 px-1 bg-black flex justify-between items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                <div class="w-full mt-4 mb-2 h-10 sm:h-10 px-1 bg-black flex justify-between items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
                     <div class="w-full flex flex-row content-center justify-between px-2">
                         <span class="text-white text-[1.3rem] font-semibold">Most relevants Players</span>
                         <button (click)="accordionItem.toggle()" class="text-white">

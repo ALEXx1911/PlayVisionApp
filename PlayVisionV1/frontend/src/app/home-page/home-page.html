@@ -10,7 +10,7 @@
                     <div class="w-full mb-2 h-8.5 sm:h-10 p-1 bg-black flex justify-between items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
                         <div class="w-full flex flex-row content-center justify-between">
                             <div class="flex flex-row items-center gap-2">
-                                <img src="{{item.logo_url}}" alt="logoxd" srcset="" class="w-7 h-7">
+                                <img [src]="item.logo_url | mediaUrl" alt="logo" srcset="" class="w-7 h-7">
                                 <span [routerLink]="['/competitions',item.slug]" class="text-white text-[1.3rem] font-semibold cursor-pointer">{{item.title}}</span>
                             </div>
                             <button (click)="accordionItem.toggle()" class="text-white cursor-pointer">
@@ -19,9 +19,9 @@
                         </div>
                     </div>
                     @if (accordionItem.expanded) {
-                        <div class="w-full p-4">
+                        <div class="w-full py-2 px-1 sm:p-4">
                             @for (match of item.competition_matches; track $index) {
-                                <match-slot [matchData]="match" class="w-full h-fit border-2 border-main grid grid-cols-[1fr,auto,1fr] grid-rows-[auto,auto] rounded-2xl mt-2 px-3"></match-slot>
+                                <match-slot [matchData]="match" class="w-full h-30 sm:h-fit border-2 border-main grid grid-cols-[1fr,auto,1fr] grid-rows-[auto,auto] rounded-2xl mt-2 px-0 sm:px-3"></match-slot>
                             }
                         </div>
                     }
@@ -35,7 +35,7 @@
                 <span class="text-white font-semibold text-[1.3rem]">Best XI Lineup</span>
             </div>
             <span class="text-[1.1rem] font-semibold my-2">Season: 2024/2025</span>
-            <app-formation-pitch [playersLineup]="playersSlotWithCoords()" class="w-full px-20 py-2"></app-formation-pitch>    
+            <app-formation-pitch [playersLineup]="playersSlotWithCoords()" class="w-full px-1 sm:px-20 py-2"></app-formation-pitch>    
         </div>
         }@else {
         <p>Not have title</p>

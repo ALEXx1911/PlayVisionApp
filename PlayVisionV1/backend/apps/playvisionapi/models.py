@@ -34,7 +34,7 @@ class Season(models.Model):
 class Team(models.Model):
     slug = models.SlugField(max_length=150,unique=True,blank=True)
     title = models.CharField(max_length=200)
-    logo_url = models.ImageField(upload_to="logos/")
+    logo_url = models.ImageField(upload_to="teamlogos/")
     shortname = models.CharField(max_length=200,default="URL")
     stadium = models.CharField(max_length=200, null=True)
     coach = models.CharField(max_length=200, null=True)
