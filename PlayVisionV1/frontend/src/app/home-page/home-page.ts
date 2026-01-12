@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { AppService } from '../services/app-service';
+import { AppService } from '../services/app-services/app-service';
 import { MatchSlot } from "../competition-page/components/match-slot/match-slot";
 import { CdkAccordion, CdkAccordionItem } from "@angular/cdk/accordion";
 import { MatIcon } from "@angular/material/icon";
@@ -8,6 +8,7 @@ import { RouterLink } from '@angular/router';
 import { FormationPitch } from "../common/formation-pitch/formation-pitch";
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapPlayersToFormationSlots } from '../common/formation-pitch/formations';
+
 @Component({
   selector: 'app-home-page',
   imports: [ MatchSlot, RouterLink, CdkAccordion, CdkAccordionItem, MatIcon, StatsTable, FormationPitch],

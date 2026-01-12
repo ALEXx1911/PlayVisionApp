@@ -1,8 +1,17 @@
 <app-header/>
-<div class="flex flex-row">
-    <app-competition-navbar class="sticky top-0 z-10 w-44 h-screen"/>
-    <div class="w-full">
-        <router-outlet class="w-full h-screen"/>
-    </div>
-</div>
+<mat-drawer-container class="w-full">
+        <mat-drawer #mobileDrawer class="block w-44! sm:hidden" [opened]="competitionNavbarOpen()" 
+            (openedChange)="competitionNavbarOpen.set($event)" (backdropClick)="closeDrawer()" 
+            mode="over" position="start" hasBackdrop="true">
+            <app-competition-navbar class="sticky top-0 z-10 h-full w-full" (closeRequest)="closeDrawer()"/>
+        </mat-drawer>
+        <mat-drawer-content  #drawer class="w-full" mode="side">
+            <div class="flex flex-row">
+                <app-competition-navbar class="hidden sm:block sm:sticky sm:top-0 sm:z-10 sm:w-44"/>
+                <div class="w-full">
+                    <router-outlet class="w-full h-screen"/>
+                </div>
+            </div>
+        </mat-drawer-content>
+</mat-drawer-container>
 <app-footer/>

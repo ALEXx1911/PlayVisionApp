@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { AppService } from '../services/app-service';
+import { AppService } from '../services/app-services/app-service';
 import {  ReactiveFormsModule } from '@angular/forms';
 import { OverlayModule } from "@angular/cdk/overlay";
 import { Competition, PlayerDetails, SearchTermsData, TeamModel } from '../models/app-models';

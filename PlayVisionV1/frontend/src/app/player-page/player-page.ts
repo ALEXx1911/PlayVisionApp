@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { AppService } from '../services/app-service';
+import { AppService } from '../services/app-services/app-service';
 import { ActivatedRoute } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
 import { PlayerDataFromAPI, PlayerStat } from '../models/app-models';

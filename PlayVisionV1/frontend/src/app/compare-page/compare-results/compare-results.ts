@@ -1,5 +1,5 @@
 import { Component, effect, inject, input, signal } from "@angular/core";
-import { AppService } from "../../services/app-service";
+import { AppService } from "../../services/app-services/app-service";
 import { AsyncPipe } from "@angular/common";
 import { asyncScheduler, Observable, scheduled } from "rxjs";
 import { PlayerCompareDataFromAPI } from "../../models/app-models";

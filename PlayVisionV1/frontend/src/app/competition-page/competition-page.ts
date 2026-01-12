@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { AppService } from '../services/app-service';
+import { AppService } from '../services/app-services/app-service';
 import { LeagueTable } from "./components/league-table";
 import { AsyncPipe } from '@angular/common';
 import { CompetitionMatchesFromAPI, DataFromCompetitionAPI, Match, TeamCompetitionStat } from '../models/app-models';

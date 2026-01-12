@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { AppService } from '../services/app-service';
+import { AppService } from '../services/app-services/app-service';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { CdkAccordion, CdkAccordionItem } from "@angular/cdk/accordion";

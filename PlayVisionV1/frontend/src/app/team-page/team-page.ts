@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { AppService } from '../services/app-service';
+import { AppService } from '../services/app-services/app-service';
 import {  switchMap } from 'rxjs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';

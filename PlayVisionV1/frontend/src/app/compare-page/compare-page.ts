@@ -1,6 +1,6 @@
 import { Component, computed, inject, Signal, signal } from '@angular/core';
 import { SearchBar } from "../search-page/components/search-bar/search-bar";
-import { AppService } from '../services/app-service';
+import { AppService } from '../services/app-services/app-service';
 import { PlayerDetails, SearchTermsData } from '../models/app-models';
 import { DEFAULT_PLAYER, DEFAULT_SEARCH_RESULTS } from './utils/utils';
 import { AsyncPipe } from '@angular/common';

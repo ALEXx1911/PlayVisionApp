@@ -1,5 +1,5 @@
-<div class="flex flex-col items-center w-full h-screen text-white border-r-2  border-black bg-linear-to-r from-slate-950 from-43% to-[#5131f3] to-90% box-border overflow-y-auto">
-    <p class="mt-3 font-bold text-[1.4rem]">Competitions</p>
+<div class="flex flex-col items-center w-full h-full text-white border-r-2  border-black bg-linear-to-r sm:bg-linear-to-r xl:bg-linear-to-r 2xl:bg-linear-to-r from-slate-950 from-43% to-[#5131f3] to-90% box-border overflow-y-auto">
+    <p class="mt-3 font-bold text-[1.1rem] md:text-[1.4rem] xl:text-[1.4rem] 2xl:text-[1.4rem]">Competitions</p>
     @if (competitionsData$ | async; as data) {
         @for (item of data.countries; track $index) {
             <div class="w-full h-full my-2 flex flex-col items-center gap-2">

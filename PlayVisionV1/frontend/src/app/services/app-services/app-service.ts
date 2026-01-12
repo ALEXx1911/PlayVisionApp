@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData, PlayerCompareDataFromAPI, MostSearchedPlayers,  } from '../models/app-models';
+import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData, PlayerCompareDataFromAPI, MostSearchedPlayers,  } from '../../models/app-models';
 
 @Injectable({
   providedIn: 'root',
@@ -10,10 +10,14 @@ export class AppService {
   private http = inject(HttpClient);
   private apiHost = 'http://localhost:80/playVision/api/';
 
+  private homeDataCache$?: Observable<HomeDataAPI>;
   getHomeData():Observable<HomeDataAPI>{
-    return this.http.get<HomeDataAPI>(`${this.apiHost}home/`,{
-      mode:"cors"
-    });
+    if (!this.homeDataCache$) {
+      this.homeDataCache$ = this.http.get<HomeDataAPI>(`${this.apiHost}home/`,{
+        mode:"cors"
+      }).pipe(shareReplay(1));
+    }
+    return this.homeDataCache$!;
   }
   
   getAllCompetitions():Observable<CountriesDataFromAPI>{

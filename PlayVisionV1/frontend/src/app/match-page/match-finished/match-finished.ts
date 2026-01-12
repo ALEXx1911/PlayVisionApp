@@ -4,7 +4,7 @@ import { MatIcon } from "@angular/material/icon";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { AsyncPipe } from "@angular/common";
 import { FinishedMatchFromAPI, MatchDataFromAPI } from "../../models/app-models";
-import { AppService } from "../../services/app-service";
+import { AppService } from "../../services/app-services/app-service";
 import { map, Observable, switchMap } from "rxjs";
 
 @Component({

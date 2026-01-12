@@ -1,6 +1,6 @@
 import { Component, inject, signal } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
-import { AppService } from "../../services/app-service";
+import { AppService } from "../../services/app-services/app-service";
 import { map, switchMap } from "rxjs";
 import { AsyncPipe } from "@angular/common";
 import { MatchSlot } from "../../competition-page/components/match-slot/match-slot";

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, input, Output, signal } from "@angular/core";
 import { RecentSearchService } from "../../services/recent-search.service";
-import { AppService } from "../../../services/app-service";
+import { AppService } from "../../../services/app-services/app-service";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { catchError, filter, map, of, shareReplay, startWith, Subject, switchMap, tap, withLatestFrom } from "rxjs";
 import { Competition, PlayerDetails, SearchTermsData, TeamModel } from "../../../models/app-models";

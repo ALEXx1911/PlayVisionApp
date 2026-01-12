@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AppService } from '../services/app-service';
+import { AppService } from '../services/app-services/app-service';
 import { AsyncPipe } from '@angular/common';
 import { MatchFinished } from "./match-finished/match-finished";
 import { MatchToPlay } from "./match-to-play/match-to-play";
