@@ -107,9 +107,9 @@
                 </div>
                 <div class="w-full grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 px-3">
                     @for (competitionItem of mostSearchedItemsData.most_searched_competitions; track $index) {
-                        <div [routerLink]="['/competitions', competitionItem.slug]" class="border-2 border-gray-400 rounded-lg p-2 my-2 hover:bg-gray-200 hover:border-black cursor-pointer text-[1rem]">
+                        <div [routerLink]="['/competitions', competitionItem.slug]" class="flex flex-col items-center border-2 border-gray-400 rounded-lg p-2 my-2 hover:bg-gray-200 hover:border-black cursor-pointer text-[1rem]">
+                            <img src="{{competitionItem.logo_url}}" alt="logo" class="w-20 h-20 mt-2"/>
                             <p class="font-bold">{{competitionItem.title}}</p>
-                            <p>{{competitionItem.country}}</p>
                         </div>
                     }
                 </div>

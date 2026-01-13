@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomePage } from './home-page/home-page';
+import { competitionGuard, matchGuard, playerGuard, teamGuard } from './services/route-guards/resource.guard';
 
 export const routes: Routes = [
     {
@@ -13,18 +14,22 @@ export const routes: Routes = [
     },
     {
         path: "competitions/:competitionName",
+        canActivate: [competitionGuard],
         loadComponent: () => import("./competition-page/competition-page").then(m => m.CompetitionPage),
     },
     {
-        path: "teams/:teamName",
+        path: "teams/:teamSlug",
+        canActivate: [teamGuard],
         loadComponent: () => import("./team-page/team-page").then(m => m.TeamPage),
     },
     {
         path: "players/:playerName",
+        canActivate: [playerGuard],
         loadComponent: () => import("./player-page/player-page").then(m => m.PlayerPage),
     },
     {
         path: "matches/:matchId",
+        canActivate: [matchGuard],
         loadComponent: () => import("./match-page/match-page").then(m => m.MatchPage),
     },
     {

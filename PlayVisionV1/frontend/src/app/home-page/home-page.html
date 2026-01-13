@@ -10,7 +10,7 @@
                     <div class="w-full mb-2 h-8.5 sm:h-10 p-1 bg-black flex justify-between items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
                         <div class="w-full flex flex-row content-center justify-between">
                             <div class="flex flex-row items-center gap-2">
-                                <img [src]="item.logo_url | mediaUrl" alt="logo" srcset="" class="w-7 h-7">
+                                <img [src]="item.country_logo_url | mediaUrl" alt="logo" srcset="" class="w-7 h-7">
                                 <span [routerLink]="['/competitions',item.slug]" class="text-white text-[1.3rem] font-semibold cursor-pointer">{{item.title}}</span>
                             </div>
                             <button (click)="accordionItem.toggle()" class="text-white cursor-pointer">

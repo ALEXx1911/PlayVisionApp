@@ -182,7 +182,7 @@ export interface CompetitionMatches {
     id: number,
     title: string,
     slug: string,
-    logo_url: string,
+    country_logo_url: string,
     country: string,
     competition_matches: Match[]
 }

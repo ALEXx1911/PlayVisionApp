@@ -20,12 +20,12 @@ export class TeamPage {
   readonly appService = inject(AppService);
   private activatedRoute = inject(ActivatedRoute);
   private routeParams= toSignal(this.activatedRoute.paramMap, { initialValue: null });
-  teamName = computed(() => 
-    this.routeParams()?.get('teamName') ?? ''
+  teamSlug = computed(() => 
+    this.routeParams()?.get('teamSlug') ?? ''
   );
   teamData$ = toSignal(
-    toObservable(this.teamName).pipe(
-      switchMap((name) => name ? this.appService.getTeamDetails(name) : []),
+    toObservable(this.teamSlug).pipe(
+      switchMap((slug) => slug ? this.appService.getTeamDetails(slug) : []),
     ),
     { initialValue: null }
   );
