@@ -4,7 +4,7 @@
             <div class="w-full text-white mt-2.5 h-[fit] rounded-md overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]
             grid grid-cols-2-[auto-2fr] grid-rows-2- gap-y-2 text-sm p-2 md:text-lg">
                 <div class="w-full h-full flex justify-center items-center col-start-1 col-end-2 row-start-1 row-end-3 sm:h-32">
-                    <img src="default-user.png" alt="Escudo" class="w-16 h-16 sm:w-25 sm:h-25 rounded-[4rem]"/>
+                    <img src="default-user.png" alt="logo" class="w-16 h-16 sm:w-25 sm:h-25 rounded-[4rem]"/>
                 </div>
                 <div class="col-start-2 col-end-3 row-start-1 row-end-2 flex gap-6">
                     <div class="flex flex-col gap-2">
@@ -19,7 +19,7 @@
                 <div class="col-start-2 col-end-3 row-start-2 row-end-3 flex gap-6">
                     <div class="flex flex-col gap-2">
                         <div class="font-semibold flex gap-2 items-center">
-                            Nacionalidad: 
+                            Nationality: 
                             <img src="{{playerData.player_data.nationality_flag}}" alt="{{playerData.player_data.nationality}}" class="w-7 h-7 sm:w-8 sm:h-8" />
                         </div>
                         <div class="font-semibold">Position: {{playerData.player_data.position}}</div>
@@ -38,11 +38,11 @@
             <p-table [value]="playerData.competition_stats" class="w-full">
                             <ng-template #caption>
                     <div class="bg-black text-center">
-                        <span class="text-white text-base font-semibold">La Liga</span>
+                        <span class="text-white text-[1.2rem] font-semibold">La Liga</span>
                     </div>
                 </ng-template>
                 <ng-template #header>
-                    <tr class="text-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-white font-semibold">
+                    <tr class="text-center text-[1.1rem] bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-white font-semibold">
                         <th class="text-center!">Pº</th>
                         <th></th>
                         <th>Name</th>
@@ -58,12 +58,12 @@
                     <tr>
                         <td class="text-center! font-semibold">{{rowIndex+1}}</td>
                         <td></td>
-                        <td>{{playerStatsInfo.player.pname}}</td>
-                        <td class="text-center!">{{playerStatsInfo.matches_played}}</td>
-                        <td class="text-center!">{{playerStatsInfo.minutes_played}}'</td>
-                        <td class="text-center!">{{playerStatsInfo.correctpassesmedia}}</td>
-                        <td class="text-center!">{{playerStatsInfo.goals}}</td>
-                        <td class="text-center!">{{playerStatsInfo.assists}}</td>
+                        <td class="font-semibold">{{playerStatsInfo.player.pname}}</td>
+                        <td class="text-center! font-semibold">{{playerStatsInfo.matches_played}}</td>
+                        <td class="text-center! font-semibold">{{playerStatsInfo.minutes_played}}'</td>
+                        <td class="text-center! font-semibold">{{playerStatsInfo.correctpassesmedia}}</td>
+                        <td class="text-center! font-semibold">{{playerStatsInfo.goals}}</td>
+                        <td class="text-center! font-semibold">{{playerStatsInfo.assists}}</td>
                         <td class="text-center! font-semibold">{{playerStatsInfo.media}}</td>
                     </tr>
                 </ng-template>
@@ -84,6 +84,30 @@
                         <app-horizontal-bar-chart [playerData]="playerData.season_stats[0]" class="w-full "></app-horizontal-bar-chart>
                     </div>
                 }
+            </cdk-accordion-item>
+        </cdk-accordion>
+        <cdk-accordion class="w-full sm:w-3/4 border-2 border-black ">
+            <cdk-accordion-item #accordionItem2="cdkAccordionItem" [expanded]="true">
+                <div class="w-full sm:w-3/4 border-2 border-black mt-2">
+                <div class="w-full mb-2 h-8.5 sm:h-10 px-1 bg-black flex justify-between items-center bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90%">
+                        <div class="w-full flex flex-row content-center justify-between">
+                            <span class="ml-2 text-white text-[1.2rem] font-semibold">How analize the data</span>
+                            <button (click)="accordionItem2.toggle()" class="text-white">
+                                <mat-icon fontIcon="{{accordionItem2.expanded ? 'arrow_upward' : 'arrow_downward'}}"></mat-icon>
+                            </button> 
+                        </div>
+                </div>
+            @if (accordionItem2.expanded) {    
+                <div class="w-full flex flex-col gap-y-2">
+                    @for (info of data_messages(); track info.key) {
+                        <div class="px-3 py-2">
+                            <span class="text-[1.2rem] font-semibold text-main">{{ info.key }}</span>
+                            <p class="text-[1.1rem] mt-1 bg-blue-200 p-2 rounded">{{ info.message }}</p>
+                        </div>
+                    }
+                </div>
+                }
+        </div>
             </cdk-accordion-item>
         </cdk-accordion>
     }

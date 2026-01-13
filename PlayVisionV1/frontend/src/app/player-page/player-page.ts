@@ -9,6 +9,7 @@ import { CdkAccordion, CdkAccordionItem } from "@angular/cdk/accordion";
 import { MatIcon } from "@angular/material/icon";
 import { TableModule } from "primeng/table";
 import { HorizontalBarChart } from "./components/horizontal-bar-chart/horizontal-bar-chart";
+import { DEFAULT_MESSAGES_TO_ANALIZE_DATA } from './utils/player-utils';
 
 @Component({
   selector: 'app-player-page',
@@ -21,6 +22,8 @@ export class PlayerPage {
   private activatedRoute = inject(ActivatedRoute);
   chartData: any;
   playerName = signal('');
+  // Keep as Signal to use data_messages() in template
+  data_messages = DEFAULT_MESSAGES_TO_ANALIZE_DATA;
   playerData$: Observable<PlayerDataFromAPI> = this.activatedRoute.paramMap.pipe(
     map(params => params.get('playerName') ?? ''),
     map(name => {this.playerName.set(name); return name;}),

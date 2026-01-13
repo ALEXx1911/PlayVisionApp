@@ -5,10 +5,13 @@ import { asyncScheduler, Observable, scheduled } from "rxjs";
 import { PlayerCompareDataFromAPI } from "../../models/app-models";
 import { HorizontalBarChart } from "../../player-page/components/horizontal-bar-chart/horizontal-bar-chart";
 import { MatIcon } from "@angular/material/icon";
+import { DEFAULT_MESSAGES_TO_ANALIZE_DATA } from '../../player-page/utils/player-utils';
+import { CdkAccordion, CdkAccordionItem } from "@angular/cdk/accordion";
+
 
 @Component({
     selector: 'app-compare-results',
-    imports: [AsyncPipe, HorizontalBarChart, MatIcon],
+    imports: [AsyncPipe, HorizontalBarChart, MatIcon, CdkAccordion, CdkAccordionItem],
     templateUrl: './compare-results.html',
 })
 export class CompareResults {
@@ -17,6 +20,7 @@ export class CompareResults {
     player2 = input<string>('');
 
     compareData$ = signal<Observable<PlayerCompareDataFromAPI>>(scheduled([], asyncScheduler));
+    data_messages = DEFAULT_MESSAGES_TO_ANALIZE_DATA;
 
     constructor() {
         effect(() => {
