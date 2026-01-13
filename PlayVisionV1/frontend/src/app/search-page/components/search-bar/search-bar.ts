@@ -1,85 +1,89 @@
-import { Component, EventEmitter, inject, Input, input, Output, signal } from "@angular/core";
+import { Component, effect, EventEmitter, inject, Input, input, Output, signal } from "@angular/core";
 import { RecentSearchService } from "../../services/recent-search.service";
 import { AppService } from "../../../services/app-services/app-service";
-import { FormControl, ReactiveFormsModule } from "@angular/forms";
-import { catchError, filter, map, of, shareReplay, startWith, Subject, switchMap, tap, withLatestFrom } from "rxjs";
 import { Competition, PlayerDetails, SearchTermsData, TeamModel } from "../../../models/app-models";
 import { MatIcon } from "@angular/material/icon";
 import { MatDivider } from "@angular/material/divider";
 import { MatActionList, MatListItem } from "@angular/material/list";
-import { AsyncPipe } from "@angular/common";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-search-bar',
-    imports: [MatIcon, OverlayModule, AsyncPipe, ReactiveFormsModule, MatDivider, MatActionList, MatListItem],
+    imports: [MatIcon, OverlayModule, MatDivider, MatActionList, MatListItem],
     templateUrl: './search-bar.html',
 })
 export class SearchBar {
     isSearchPage = input(false);
     overlayOpen = signal(false);
-    searchTerm = signal('');
+    searchInput = signal('');
+    shouldSearch = signal(false);
+    searchResultsData = signal<SearchTermsData | null>(null);
     readonly searchService = inject(AppService);
-    fc = new FormControl('');
-    confirm$ = new Subject<void>();
     readonly recentSearchService = inject(RecentSearchService);
     @Input({ required: false }) selectPlayerForComparison?: (player: PlayerDetails) => void;
     @Output() searchResults = new EventEmitter<SearchTermsData>();
     @Output() searchTermChange = new EventEmitter<string>();
     
-    recentSearchesData$ = this.recentSearchService.recentSearches$;
-    searchResultsData$ = this.confirm$.pipe(
-        withLatestFrom(this.fc.valueChanges.pipe(startWith(''))),
-        map(([_, term]) => (term ?? '').trim()),
-        filter(term => term.length > 0),
-        switchMap(term => 
-          this.searchService.searchTerms(term).pipe(
-            tap((r) => {
+    recentSearchesData = toSignal(this.recentSearchService.recentSearches$, { initialValue: [] });
+    
+      constructor() {
+        effect(() => {
+          if(!this.shouldSearch()){
+            return;
+          }
+          const term = this.searchInput();
+
+          if(!term || term.trim().length === 0){
+            return;
+          }
+
+          this.shouldSearch.set(false);
+
+          this.searchService.searchTerms(term).subscribe({
+            next: (results) => {
               this.recentSearchService.addRecentSearch(term);
               this.overlayOpen.set(false);
-              this.searchResults.emit(r);
+
+              this.searchResultsData.set(results);
+              this.searchResults.emit(results);
               this.searchTermChange.emit(term);
-            }),
-            catchError(() => {
+              this.shouldSearch.set(false);
+            },
+            error: () => {
               const emptyResults: SearchTermsData = {
                 search_results: [
-                  {
-                    field: 'Players Results',
-                    players_data: [] as PlayerDetails[],
-                  },
-                  {
-                    field: 'Teams Results',
-                    teams_data: [] as TeamModel[],
-                  },
-                  {
-                    field: 'Competitions Results',
-                    competitions_data: [] as Competition[]
-                  }
-                ]
-              };
-              this.searchResults.emit(emptyResults);
-              this.searchTermChange.emit(term);
-              return of(emptyResults);
-            })
-          )
-        ), 
-        shareReplay(1)
-      );
+                    {
+                      field: 'Players Results',
+                      players_data: [] as PlayerDetails[],
+                    },
+                    {
+                      field: 'Teams Results',
+                      teams_data: [] as TeamModel[],
+                    },
+                    {
+                      field: 'Competitions Results',
+                      competitions_data: [] as Competition[]
+                    }
+                  ]
+              }
+            }
+          })
+        });
+      }
 
-  searchResults_signal = toSignal(this.searchResultsData$,  { initialValue: null });
+
+  //searchResults_signal = toSignal(this.searchResultsData$,  { initialValue: null });
 
   confirmSearch(): void {
-    this.confirm$.next();
+    this.shouldSearch.set(true);
   }
 
   clearSearch(): void {
-    this.fc.setValue('');
-    this.searchTerm.set('');
+    this.searchInput.set('');
   }
   useRecentSearch(term: string): void {
-    this.fc.setValue(term);
-    this.searchTerm.set(term);
+    this.searchInput.set(term);
     this.confirmSearch();
   }
 

@@ -9,9 +9,9 @@
                 <button mat-icon-button (click)="confirmSearch()" class="cursor-pointer mx-2 mt-0.5">
                     <mat-icon class="text-xl">search</mat-icon>
                 </button>
-                <input #searchInput name="searchInput" type ="text" [formControl]="fc" placeholder="Search..." class="text-xl text-gray-500 w-70 outline-0 bg-inherit "
+                <input #searchInputEl name="searchInput" type ="text" [value]="searchInput()" (input)="searchInput.set(searchInputEl.value)" placeholder="Search..." class="text-xl text-gray-500 w-70 outline-0 bg-inherit "
                     (click)="overlayOpen.set(true)" autocomplete="off" (focus)="overlayOpen.set(true)" (keydown.enter)="confirmSearch(); $event.preventDefault()"/>
-                    @if (fc.value) {
+                    @if (searchInput()) {
                         <button mat-icon-button (click)="clearSearch()" class="cursor-pointer">
                             <mat-icon class="absolute top-1/5 right-2">close</mat-icon>
                         </button>
@@ -22,9 +22,9 @@
                 [cdkConnectedOverlayOrigin]="overlayPosition" (overlayOutsideClick)="overlayOpen.set(false)">
                 <div class="w-100 rounded-b-lg  bg-white pb-4">
                     <mat-divider/>
-                        @if (recentSearchesData$ | async; as  searchResultsData) {
+                        @if (recentSearchesData(); as recentSearches) {
                             <mat-action-list class="w-full h-fit">
-                                @for (search of searchResultsData; track search) {
+                                @for (search of recentSearches; track search) {
                                     <mat-list-item (click)="useRecentSearch(search)" class="w-full h-2 flex items-center!">
                                         <mat-icon matListItemIcon>history</mat-icon>
                                         <p matListItemTitle class="ml-3 text-[1.1rem]">{{search}}</p>

@@ -126,13 +126,11 @@ export class AppService {
     if(player1Name == undefined && player2Name !== undefined){
       encodedPlayerName2 = encodeURIComponent(player2Name);
       qparams = qparams.set("player2", encodedPlayerName2);
-    console.log("AAAa");
     }
 
     if(player1Name !== undefined && player2Name == undefined){
       encodedPlayerName1 = encodeURIComponent(player1Name);
       qparams = qparams.set("player1", encodedPlayerName1);
-    console.log("BBBBBB");
     }
 
     if(player1Name !== undefined && player2Name !== undefined){
