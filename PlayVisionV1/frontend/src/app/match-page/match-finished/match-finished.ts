@@ -6,6 +6,7 @@ import { AsyncPipe } from "@angular/common";
 import { FinishedMatchFromAPI, MatchDataFromAPI } from "../../models/app-models";
 import { AppService } from "../../services/app-services/app-service";
 import { map, Observable, switchMap } from "rxjs";
+import { DEFAULT_MESSAGES_TO_ANALYZE_MATCH_DATA } from '../../player-page/utils/player-utils';
 
 @Component({
     selector: 'app-match-finished',
@@ -16,7 +17,7 @@ export class MatchFinished {
     readonly appService = inject(AppService);
     private activeRoute = inject(ActivatedRoute);
     showPlayersChanges = signal(false);
-
+    readonly data_messages = DEFAULT_MESSAGES_TO_ANALYZE_MATCH_DATA.asReadonly();
     readonly matchData: InputSignal<MatchDataFromAPI> = input.required<MatchDataFromAPI>();
 
     finishedMatch$: Observable<FinishedMatchFromAPI> = this.activeRoute.paramMap.pipe(

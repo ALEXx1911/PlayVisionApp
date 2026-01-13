@@ -20,10 +20,14 @@ export class AppService {
     return this.homeDataCache$!;
   }
   
+  private countriesDataCache$?: Observable<CountriesDataFromAPI>;
   getAllCompetitions():Observable<CountriesDataFromAPI>{
-    return this.http.get<CountriesDataFromAPI>(`${this.apiHost}competitions/`,{
-      mode: "cors",
-    });
+    if (!this.countriesDataCache$) {
+      this.countriesDataCache$ = this.http.get<CountriesDataFromAPI>(`${this.apiHost}competitions/`,{
+        mode: "cors",
+      }).pipe(shareReplay(1));
+    }
+    return this.countriesDataCache$!;
   }
   private competitionDetailsCache = new Map<string, Observable<DataFromCompetitionAPI>>();
   getCompetitionDetails(competition:string):Observable<DataFromCompetitionAPI>{
@@ -76,25 +80,42 @@ export class AppService {
     });
   }
 
+  private matchCache = new Map<number, Observable<MatchDataFromAPI>>();
+
   getMatchDetails(matchId:number):Observable<MatchDataFromAPI>{
-    const encodedIdMatch = encodeURIComponent(matchId);
-    return this.http.get<MatchDataFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
-    mode: "cors",
-    });
+    if (!this.matchCache.has(matchId)) {
+      const encodedIdMatch = encodeURIComponent(matchId);
+      const request$ = this.http.get<MatchDataFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+        mode: "cors",
+      }).pipe(shareReplay(1));
+      this.matchCache.set(matchId, request$);
+    }
+    return this.matchCache.get(matchId)!;
   }
 
+  private previewMatchCache = new Map<number, Observable<ToPlayMatchFromAPI>>();
   getPreviewMatchDetails(matchId:number):Observable<ToPlayMatchFromAPI>{
     const encodedIdMatch = encodeURIComponent(matchId);
-    return this.http.get<ToPlayMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
-    mode: "cors",
-    });
+    if (!this.previewMatchCache.has(matchId)) {
+      const request$ = this.http.get<ToPlayMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+        mode: "cors",
+      }).pipe(shareReplay(1));
+      this.previewMatchCache.set(matchId, request$);
+    }
+    return this.previewMatchCache.get(matchId)!;
   }
 
+  private finishedMatchCache = new Map<number, Observable<FinishedMatchFromAPI>>();
+
   getFinishedMatchDetails(matchId:number):Observable<FinishedMatchFromAPI>{
-    const encodedIdMatch = encodeURIComponent(matchId);
-    return this.http.get<FinishedMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
-    mode: "cors",
-    });
+    if (!this.finishedMatchCache.has(matchId)) {
+      const encodedIdMatch = encodeURIComponent(matchId);
+      const request$ = this.http.get<FinishedMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+        mode: "cors",
+      }).pipe(shareReplay(1));
+      this.finishedMatchCache.set(matchId, request$);
+    }
+    return this.finishedMatchCache.get(matchId)!;
   }
 
   searchTerms(term: string): Observable<SearchTermsData> {

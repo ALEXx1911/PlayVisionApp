@@ -57,13 +57,18 @@ export const playerGuard: CanActivateFn = (route, state) => {
   const playerName = route.paramMap.get('playerName');
 
   if (!playerName) {
+    //console.warn('Player guard: playerName parameter is missing.');
     router.navigate(['/home']);
     return false;
   }
 
   return appService.getPlayerDetails(playerName).pipe(
-    map(() => true),
-    catchError(() => {
+    map((data) => {
+      //console.log('Player found:', data);
+      return true;
+    }),
+    catchError((error) => {
+      //console.error('Player guard error:', error, 'for playerName:', playerName);
       router.navigate(['/home']);
       return of(false);
     })
@@ -75,14 +80,20 @@ export const matchGuard: CanActivateFn = (route, state) => {
   const appService = inject(AppService);
   const matchId = route.paramMap.get('matchId');
 
-  if (!matchId || isNaN(parseInt(matchId))) {
+  if (!matchId || isNaN(parseInt(matchId, 10))) {
+    //console.warn('Match guard: matchId parameter is invalid or missing.');
     router.navigate(['/home']);
     return false;
   }
 
-  return appService.getMatchDetails(parseInt(matchId)).pipe(
-    map(() => true),
-    catchError(() => {
+  const id = parseInt(matchId, 10);
+  return appService.getMatchDetails(id).pipe(
+    map((data) => {
+      //console.log('Match found:', data);
+      return true;
+    }),
+    catchError((error) => {
+      //console.error('Match guard error:', error, 'for matchId:', id);
       router.navigate(['/home']);
       return of(false);
     })

@@ -1,7 +1,13 @@
 <div class="w-full flex flex-col items-center">
     <p class="font-semibold text-[1.2rem] mt-2">
-        Today Matches: 
-        <span class="text-[#5131f3]">{{todayDate}}</span>        
+        Matches for 
+        <span class="text-[#5131f3]">
+            2024-08-17
+        </span>
+         of season 2024/2025
+        <!--
+        <span class="text-[#5131f3]">{{todayDate}}</span>
+        -->        
     </p>
     @if (homeData$(); as homeData) {
         @for (item of homeData.competitions; track $index) {
