@@ -13,7 +13,7 @@ export const routes: Routes = [
         component: HomePage,
     },
     {
-        path: "competitions/:competitionName",
+        path: "competitions/:competitionSlug",
         canActivate: [competitionGuard],
         loadComponent: () => import("./competition-page/competition-page").then(m => m.CompetitionPage),
     },

@@ -8,7 +8,7 @@ import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromC
 })
 export class AppService {
   private http = inject(HttpClient);
-  private apiHost = 'http://localhost:80/playVision/api/';
+  private apiHost = 'http://localhost:8000/playVision/api/';
 
   private homeDataCache$?: Observable<HomeDataAPI>;
   getHomeData():Observable<HomeDataAPI>{

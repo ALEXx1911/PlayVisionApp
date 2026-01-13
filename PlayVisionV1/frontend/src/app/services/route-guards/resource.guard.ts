@@ -33,13 +33,18 @@ export const competitionGuard: CanActivateFn = (route, state) => {
   const competitionSlug = route.paramMap.get('competitionSlug');
 
   if (!competitionSlug) {
+    //console.warn('Competition guard: competitionSlug parameter is missing.');
     router.navigate(['/home']);
     return false;
   }
 
   return appService.getCompetitionDetails(competitionSlug).pipe(
-    map(() => true),
-    catchError(() => {
+    map((data) => {
+      //console.log('Competition found:', data);
+      return true;
+    }),
+    catchError((error) => {
+      //console.error('Competition guard error:', error, 'for competitionSlug:', competitionSlug);
       router.navigate(['/home']);
       return of(false);
     })

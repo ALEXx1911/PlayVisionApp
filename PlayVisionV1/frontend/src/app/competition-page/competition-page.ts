@@ -22,18 +22,18 @@ export class CompetitionPage {
   readonly activatedRoute = inject(ActivatedRoute);
   readonly rows = 20;
   readonly rowHeight = 40;
-  competitionName = signal('');
-  //Asegurar de que este componente siempre se pase
+  competitionSlug = signal('');
+  //Ensures that when the route parameter changes, the competition data is fetched accordingly
   competitionData$: Observable<DataFromCompetitionAPI> = this.activatedRoute.paramMap.pipe(
-      map(params => params.get('competitionName') ?? ''),
-      map(name => {this.competitionName.set(name); return name;}),
-      switchMap(name => this.competitionService.getCompetitionDetails(name))
+      map(params => params.get('competitionSlug') ?? ''),
+      map(slug => {this.competitionSlug.set(slug); return slug;}),
+      switchMap(slug => this.competitionService.getCompetitionDetails(slug))
     );
 
   competitionMatches$: Observable<CompetitionMatchesFromAPI> = this.activatedRoute.paramMap.pipe(
-    map(params => params.get('competitionName') ?? ''),
-    map(name => {this.competitionName.set(name); return name;}),
-    switchMap(name => this.competitionService.getCompetitionMatches(name,0,this.rows))
+    map(params => params.get('competitionSlug') ?? ''),
+    map(slug => {this.competitionSlug.set(slug); return slug;}),
+    switchMap(slug => this.competitionService.getCompetitionMatches(slug,0,this.rows))
   );
   
   matches = Array.from<Match>({length:0});
