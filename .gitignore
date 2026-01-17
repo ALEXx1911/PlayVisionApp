@@ -7,6 +7,7 @@
 /PlayVisionV1/backend/config/__pycache__/
 /PlayVisionV1/backend/apps/playvisionapi/migrations/__pycache__/
 /PlayVisionV1/backend/apps/playvisionapi/utils/__pycache__/
+/PlayVisionV1/backend/apps/playvisionapi/api/__pycache__/
 
 #Ignore images
 /PlayVisionV1/backend/media/competitionlogo/
