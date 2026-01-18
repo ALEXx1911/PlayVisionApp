@@ -2,7 +2,7 @@
 
 set -e
 
-# Esperar a que PostgreSQL esté realmente listo
+# Wait for PostgreSQL to be ready
 while ! pg_isready -h "${POSTGRES_HOST:-db}" -p "${POSTGRES_PORT:-5432}" -U "${POSTGRES_USER:-postgres}" > /dev/null 2>&1; do
   echo "Waiting for Postgres to be ready..."
   sleep 2
