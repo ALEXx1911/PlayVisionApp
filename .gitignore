@@ -2,14 +2,12 @@
 /PlayVisionV1/backend/venv/
 /PlayVisionV1/.env
 /PlayVisionV1/backend/staticfiles/
-/PlayVisionV1/backend/apps/playvisionapi/management/commands/__pycache__/
-/PlayVisionV1/backend/apps/playvisionapi/__pycache__/
 /PlayVisionV1/backend/config/__pycache__/
-/PlayVisionV1/backend/apps/playvisionapi/migrations/__pycache__/
-/PlayVisionV1/backend/apps/playvisionapi/utils/__pycache__/
-/PlayVisionV1/backend/apps/playvisionapi/api/__pycache__/
+*__pycache__*/
 
 #Ignore images
 /PlayVisionV1/backend/media/competitionlogo/
 /PlayVisionV1/backend/media/countryflags/
 /PlayVisionV1/backend/media/teamlogos/
+
+.coverage

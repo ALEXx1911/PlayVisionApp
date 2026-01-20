@@ -10,8 +10,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 #Return list of competitions grouped by country
 @api_view(["GET"])
 def competition_list(request):
-    comp_qs = Competition.objects.filter(competition_type = 'league').order_by('title')
-    countries_qs = Country.objects.prefetch_related(Prefetch("competition_country",queryset=comp_qs))
+    competition_qs = Competition.objects.filter(competition_type = 'league').order_by('title')
+    countries_qs = Country.objects.prefetch_related(Prefetch("competition_country",queryset=competition_qs))
     serializer = CountryCompetitionSerializer(countries_qs,many=True)
     return Response({
         "countries" : serializer.data

@@ -5,10 +5,10 @@ from .api import teams , players , competitions , matches , home , search , most
 urlpatterns = [ 
     path("api/home/", home.homepage),
     #URLS for Teams
-    path("api/teams/<str:title>/", teams.team_details),
+    path("api/teams/<str:title>/", teams.team_details, name='team-details'),
 
     #URLS for Competitions
-    path("api/competitions/", competitions.competition_list),
+    path("api/competitions/", competitions.competition_list, name='competition-list'),
     path("api/competitions/<str:ctitle>/", competitions.competition_details),
     path("api/competitions/<str:ctitle>/matches/", competitions.competition_matches),
 

@@ -11,7 +11,7 @@ from ..utils.utils import FORMATION_POSITIONS
 @api_view(["GET"])
 def homepage(request):
     date_str = request.query_params.get("date")
-    positions = FORMATION_POSITIONS.get("4-3-3",[])
+    players_positions_in_lineup = FORMATION_POSITIONS.get("4-3-3",[])
     top_player_lineup = []
     if date_str :
         target_date = parse_date(date_str)
@@ -22,7 +22,7 @@ def homepage(request):
         target_date = timezone.localdate()
         actual_season = 2024 #datetime.now().year
         
-    for position in positions:
+    for position in players_positions_in_lineup:
         player_obj = (
             PlayerSeasonStats.objects
             .filter(player__position=position, season__year_start=actual_season)
