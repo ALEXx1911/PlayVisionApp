@@ -6,14 +6,28 @@ from apps.playvisionapi.test.factories import competition_factory
 @pytest.mark.django_db
 class TestCompetitionAPI:
     def test_competition_list_success(self, api_client, competition_factory):
-        competition1 = competition_factory(title="La Liga", slug="la-liga")
-        competition2 = competition_factory(title="Premier League", slug="premier-league")
+        competition_factory(title="La Liga", slug="la-liga")
+        competition_factory(title="Premier League", slug="premier-league")
 
         url = reverse('competition-list')
         response = api_client.get(url)
 
         assert response.status_code == status.HTTP_200_OK
-        assert isinstance(response.data['countries'][0]['competitions'], list)
-        assert response.data['countries'][0]['competitions'][0]['title'] in ["La Liga", "Premier League"]
-        assert len(response.data['countries'][0]['competitions']) >= 0
+        countries = response.data.get('countries', [])
 
+        assert isinstance(countries, list)
+        assert len(countries) >= 1
+
+        country1_competitions = countries[0].get('competitions', [])
+        assert isinstance(country1_competitions, list)
+        assert len(country1_competitions) >= 1
+
+        country2_competitions = countries[1].get('competitions', [])
+        assert isinstance(country2_competitions, list)
+        assert len(country2_competitions) >= 1
+        
+        assert isinstance(country1_competitions[0],dict)
+        assert isinstance(country2_competitions[0],dict)
+
+        assert "La Liga" in country1_competitions[0].get('title') and "la-liga" in country1_competitions[0].get('slug')
+        assert "Premier League" in country2_competitions[0].get('title') and "premier-league" in country2_competitions[0].get('slug')

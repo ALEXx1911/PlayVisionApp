@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from ..models import Team, Season, PlayerSeasonStats, TeamInsights, Match
-from ..serializer import TeamSerializer, TeamInsightsSerializer, PlayerSeasonStatsSerializer, CompetitionMatchesListSerializer
+from ..serializer import TeamSerializer, TeamInsightsSerializer, PlayerSeasonStatsSerializer, MatchSerializer
 from ..utils.utils import get_last_matches_results
 
 #Return detailed information about a specific team
@@ -28,7 +28,7 @@ def team_details(request, title):
     team_serializer = TeamSerializer(team_obj)
     team_insights_serializer = TeamInsightsSerializer(team_insights_obj,many=True)
     player_season_serializer = PlayerSeasonStatsSerializer(player_season_stats_obj,many=True)
-    team_matches_serializer = CompetitionMatchesListSerializer(team_matches_obj,many=True)
+    team_matches_serializer = MatchSerializer(team_matches_obj,many=True)
     return Response({
         "team" : team_serializer.data,
         "insights" : team_insights_serializer.data,

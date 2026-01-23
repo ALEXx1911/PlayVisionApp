@@ -18,4 +18,4 @@ if [ "$SEED_DB" = "true" ]; then
   python manage.py seed
 fi
 
-python -m gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --worker-class sync --timeout 120
+python -m gunicorn --config gunicorn_config.py config.wsgi:application --bind 0.0.0.0:8000

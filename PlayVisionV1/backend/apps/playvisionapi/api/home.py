@@ -4,7 +4,7 @@ from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.db.models import Prefetch
 from ..models import PlayerSeasonStats, Season, Match, Competition
-from ..serializer import PlayerSeasonStatsSerializer, CompetitionsMatchesSerializer, PlayerLineupSerializer
+from ..serializer import PlayerSeasonStatsSerializer, HomeCompetitionsMatchesSerializer, PlayerLineupSerializer
 from ..utils.utils import FORMATION_POSITIONS
 
 #Return homepage data which includes top season players, competitions and matches of the day
@@ -47,7 +47,7 @@ def homepage(request):
     top_media_player_serializer = PlayerSeasonStatsSerializer(top_media_player_qs,many=True)
     most_yellow_card_serializer = PlayerSeasonStatsSerializer(most_yellow_card_qs,many=True)
     top_goalkeepers_serializer = PlayerSeasonStatsSerializer(top_goalkeepers_qs,many=True)
-    competitions_matches_serializer = CompetitionsMatchesSerializer(competition_qs, many=True, context ={"request":request})
+    competitions_matches_serializer = HomeCompetitionsMatchesSerializer(competition_qs, many=True, context ={"request":request})
     top_player_lineup_serializer = PlayerLineupSerializer(top_player_lineup,many=True)
     return Response({
         "competitions" : competitions_matches_serializer.data,
