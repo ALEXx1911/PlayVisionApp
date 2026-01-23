@@ -4,7 +4,7 @@ from rest_framework import status
 from apps.playvisionapi.test.factories import competition_factory
 
 @pytest.mark.django_db
-class TestCompetitionAPI:
+class TestCompetitionListAPI:
     def test_competition_list_success(self, api_client, competition_factory):
         competition_factory(title="La Liga", slug="la-liga")
         competition_factory(title="Premier League", slug="premier-league")

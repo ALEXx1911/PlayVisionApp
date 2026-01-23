@@ -1,4 +1,4 @@
-# PlayVisionApp
+# PlayVisionApp⚽​
 
 A full-stack web application for querying and visualizing football data and statistics. PlayVision allows users to access information about teams, players, matches, and tournaments, displaying relevant data in a clear and detailed manner.
 
@@ -75,7 +75,7 @@ python manage.py migrate
 ```
 - Tests:
 ```bash
-python manage.py test
+python pytest
 ```
 
 ### Frontend (Angular)

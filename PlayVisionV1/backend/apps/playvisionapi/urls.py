@@ -9,20 +9,20 @@ urlpatterns = [
 
     #URLS for Competitions
     path("api/competitions/", competitions.competition_list, name='competition-list'),
-    path("api/competitions/<str:ctitle>/", competitions.competition_details),
+    path("api/competitions/<str:ctitle>/", competitions.competition_details, name='competition-details'),
     path("api/competitions/<str:ctitle>/matches/", competitions.competition_matches),
 
     #URLS for Player
-    path("api/players/<str:pname>/", players.player_details),
+    path("api/players/<str:pname>/", players.player_details, name='player-details'),
 
-    #URLS for Matchs
-    path("api/matchs/<int:matchid>/", matches.match_details),
+    #URLS for Matches
+    path("api/matches/<int:matchid>/", matches.match_details, name='match-details'),
 
     #URLS for Searchs
-    path("api/search/", search.search_page),
+    path("api/search/", search.search_page, name='search-page'),
 
     #URLS for Compare Players
-    path("api/compare/players/", search.compare_players),
+    path("api/compare/players/", search.compare_players, name='compare-players'),
 
     #URLS for Most Searched Items
     path("api/mostsearched/items", most_searched.most_searched_items),
