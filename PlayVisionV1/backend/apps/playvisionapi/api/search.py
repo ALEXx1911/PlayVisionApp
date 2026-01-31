@@ -7,9 +7,14 @@ from ..serializer import PlayerSerializer, TeamSerializer, CompetitionSerializer
 #Return search results for players, teams, and competitions
 @api_view (["GET"])
 def search_page(request):
+    
+    if not request.query_params.get("searchTerm"):
+        return Response({"detail":"The search term cannot be empty."},status=400)
+    
     searchParam = request.query_params.get("searchTerm").strip()
     
-    if not searchParam or searchParam.strip() == "":
+
+    if searchParam.strip() == "":
         return Response({"detail":"The search term cannot be empty."},status=400)
     
     player_obj = Player.objects.filter(pname=searchParam)
@@ -17,11 +22,11 @@ def search_page(request):
     competition_obj = Competition.objects.filter(title=searchParam)
 
     if not player_obj.exists():
-        player_obj = Player.objects.filter(pname__istartswith=searchParam)
+        player_obj = Player.objects.filter(pname__icontains=searchParam)
     if not team_obj.exists():
-        team_obj = Team.objects.filter(title__istartswith=searchParam)
+        team_obj = Team.objects.filter(title__icontains=searchParam)
     if not competition_obj.exists():
-        competition_obj = Competition.objects.filter(title__istartswith=searchParam)
+        competition_obj = Competition.objects.filter(title__icontains=searchParam)
 
     player_serializer = PlayerSerializer(player_obj,many=True)
     team_serializer = TeamSerializer(team_obj,many=True)
