@@ -59,8 +59,8 @@ def search_page(request):
 @api_view (["GET"])
 def compare_players(request):
     season_param = request.query_params.get("season")
-    player1_slug = request.query_params.get("player1")
-    player2_slug = request.query_params.get("player2")
+    player1_slug = request.query_params.get("player1").strip().lower() if request.query_params.get("player1") else ""
+    player2_slug = request.query_params.get("player2").strip().lower() if request.query_params.get("player2") else ""
     player_label = ""
 
     if not season_param:
@@ -70,24 +70,20 @@ def compare_players(request):
     season_obj = Season.objects.filter(year_start = season_param).first()
 
     if not player1_slug and not player2_slug:
-        return Response({"detail":"The player name is required."},status=400)
+        return Response({"detail":"The names of both players are required."},status=400)
 
     if (not player1_slug and player2_slug) or (player1_slug and not player2_slug):
-        player_label = "player 1" if player1_slug else "player 2"
-        player_qs = get_object_or_404(Player, slug = player1_slug.strip())
-        player_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player_qs,season = season_obj)
-        
-        player_serializer = PlayerSerializer(player_qs,many=False)
-        player_season_stat_serializer = PlayerSeasonStatSerializerBasic(player_season_stats_qs,many =False)
-        return Response({
-            "player_data" : player_serializer.data,
-            "season_stats" : player_season_stat_serializer.data,
-            "label": player_label
-        })
+        return Response({"detail":"The names of both players are required."},status=400)
+    
+    if player1_slug == "" and player2_slug == "":
+        return Response({"detail":"The names of both players are required."},status=400)
 
-    player1_qs = get_object_or_404(Player, slug = player1_slug.strip())
+    if player1_slug == player2_slug:
+        return Response({"detail":"The names of the two players cannot be the same."},status=400)
+
+    player1_qs = get_object_or_404(Player, slug = player1_slug.strip().lower())
     player1_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player1_qs,season = season_obj)
-    player2_qs = get_object_or_404(Player, slug = player2_slug.strip())
+    player2_qs = get_object_or_404(Player, slug = player2_slug.strip().lower())
     player2_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player2_qs,season = season_obj)
 
     player_serializer = PlayerSerializer(player1_qs,many=False)

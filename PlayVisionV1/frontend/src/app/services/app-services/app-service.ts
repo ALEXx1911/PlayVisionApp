@@ -142,17 +142,6 @@ export class AppService {
     let encodedPlayerName1;
     let encodedPlayerName2;
     let qparams = new HttpParams();
-    
-    
-    if(player1Name == undefined && player2Name !== undefined){
-      encodedPlayerName2 = encodeURIComponent(player2Name);
-      qparams = qparams.set("player2", encodedPlayerName2);
-    }
-
-    if(player1Name !== undefined && player2Name == undefined){
-      encodedPlayerName1 = encodeURIComponent(player1Name);
-      qparams = qparams.set("player1", encodedPlayerName1);
-    }
 
     if(player1Name !== undefined && player2Name !== undefined){
       encodedPlayerName1 = encodeURIComponent(player1Name);
