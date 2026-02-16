@@ -18,7 +18,7 @@ class TestPlayerAPI:
         )
         assert player_response.status_code == status.HTTP_200_OK
         assert set(player_response.data.keys()) >= {'player_data', 'season_stats', 'competition_stats'}
-        assert player_response.data['player_data']['pname'] == "Test Player"
+        assert player_response.data['player_data']['pname'] == player.pname
 
     def test_player_details_include_season_stats(
             self, 
@@ -63,15 +63,37 @@ class TestPlayerAPI:
         assert player_response.status_code == status.HTTP_404_NOT_FOUND
 
 @pytest.fixture
-def player_setup(player_factory, season_factory,competition_factory,team_factory,player_competition_stats_factory,player_season_stats_factory):
+def player_setup(
+    player_factory, 
+    create_season_object,
+    competition_factory,
+    team_factory,
+    player_competition_stats_factory,
+    player_season_stats_factory
+    ):
     def _make(player_name="Test Player",player_slug="test-player", season_year=2024, goals_data=10, assists_data=5, media_data=8.5, yellow_cards_data=2, cleansheets_data=5):
         
-        default_season = season_factory(year_start=season_year, year_end=season_year + 1)
+        default_season = create_season_object(season_year)
         default_player = player_factory(pname=player_name, slug=player_slug)
         default_team = team_factory(title="Test Team", slug="test-team")
         default_competition = competition_factory(title="Test Competition", slug="test-competition")
-        default_player_competition_stats = player_competition_stats_factory(player=default_player, competition=default_competition, season=default_season, goals=goals_data , assists=assists_data, media=media_data, yellow_cards=yellow_cards_data, cleansheets=cleansheets_data)
-        default_player_season_stats = player_season_stats_factory(player=default_player, team=default_team, season=default_season, goals=goals_data, assists=assists_data)
+        default_player_competition_stats = player_competition_stats_factory(
+            player=default_player, 
+            competition=default_competition, 
+            season=default_season, 
+            goals=goals_data , 
+            assists=assists_data, 
+            media=media_data, 
+            yellow_cards=yellow_cards_data, 
+            cleansheets=cleansheets_data
+            )
+        default_player_season_stats = player_season_stats_factory(
+            player=default_player, 
+            team=default_team, 
+            season=default_season, 
+            goals=goals_data, 
+            assists=assists_data
+            )
         return default_season , default_player , default_player_competition_stats , default_player_season_stats
     
     return _make

@@ -11,7 +11,7 @@ class TestCompetitionAPI:
             api_client,
             competition_setup,
         ):
-        competition, season = competition_setup()
+        competition_setup()
         response = api_client.get(self.URL)
 
         assert response.status_code == status.HTTP_200_OK
@@ -25,81 +25,81 @@ class TestCompetitionAPI:
 
     def test_competition_include_top_scorers(
             self,
-            competition_setup, 
-            api_client, 
-            player_factory, 
-            player_competition_stats_factory
+            api_client,
+            create_players_with_competition_stats
         ):
-        competition, season = competition_setup()
-        player = player_factory(pname="Leo")
-        player_competition_stats_factory(player=player, competition=competition, season=season, goals=10)
-        response = api_client.get(f"{self.URL}?season={season.year_start}")
+        players_data = create_players_with_competition_stats(
+            player1_name="Leo",
+            player1_slug="leo",)
+        season = 2024
+
+        response = api_client.get(f"{self.URL}?season={season}")
 
         assert response.status_code == status.HTTP_200_OK
         assert 'top_scorers' in response.data
         assert len(response.data['top_scorers']) >= 1
-        assert response.data['top_scorers'][0]['player']['pname'] == "Leo" and response.data['top_scorers'][0]['goals'] == 10
+        assert response.data['top_scorers'][0]['player']['pname'] == players_data['player1']['pname']
 
     def test_competition_include_top_media_players(
             self, 
             api_client,
-            competition_setup, 
-            player_factory, 
-            player_competition_stats_factory
+            create_players_with_competition_stats
         ):
-        competition, season = competition_setup()
-        player1 = player_factory(pname="Paul")
-        player2 = player_factory(pname="Marco Polo")
-        player_competition_stats_factory(player=player1, competition=competition, season=season, media=9.0)
-        player_competition_stats_factory(player=player2, competition=competition, season=season, media=9.5)
+        season = 2024
+        players_list = create_players_with_competition_stats(
+            player1_name="Cristiano",
+            player1_slug="cristiano",
+            player2_name="Neymar",
+            player2_slug="neymar",
+        )
 
-        response = api_client.get(f"{self.URL}?season={season.year_start}")
-        print(response.status_code)
+        response = api_client.get(f"{self.URL}?season={season}")
 
         assert response.status_code == status.HTTP_200_OK
         assert 'top_media_players' in response.data
         assert len(response.data['top_media_players']) >= 1
-        assert response.data['top_media_players'][0]['media'] == '9.50'
+        assert float(response.data['top_media_players'][0]['media']) == float(players_list['player1']['competition_stats'].media)
 
     def test_competition_include_most_yellow_cards(
             self, 
-            api_client, 
-            competition_setup, 
-            player_factory, 
-            player_competition_stats_factory
+            api_client,
+            create_players_with_competition_stats
         ):
-        competition, season = competition_setup()
-        player1 = player_factory(pname="Carlitos")
-        player2 = player_factory(pname="Rafael")
-        player_competition_stats_factory(player=player1, competition=competition, season=season, yellow_cards=4)
-        player_competition_stats_factory(player=player2, competition=competition, season=season, yellow_cards=8)
+        season = 2024
+        players_data = create_players_with_competition_stats(
+            player1_name="Sergio",
+            player1_slug="sergio",
+            player2_name="Carlos",
+            player2_slug="carlos",
+        )
 
-        response = api_client.get(f"{self.URL}?season={season.year_start}")
+        response = api_client.get(f"{self.URL}?season={season}")
 
         assert response.status_code == status.HTTP_200_OK
         assert 'most_yellow_cards' in response.data
         assert len(response.data['most_yellow_cards']) >= 1
-        assert response.data['most_yellow_cards'][0]['yellow_cards'] == 8
+        assert response.data['most_yellow_cards'][0]['yellow_cards'] == players_data['player1']['competition_stats'].yellow_cards
 
     def test_competition_include_top_goalkeepers(
             self, 
             api_client, 
-            competition_setup, 
-            player_factory, 
-            player_competition_stats_factory
+            competition_setup,
+            create_players_with_competition_stats
             ):
-        competition, season = competition_setup()
-        player1 = player_factory(pname="Tek")
-        player2 = player_factory(pname="Andre")
-        player_competition_stats_factory(player=player1, competition=competition, season=season, cleansheets=6)
-        player_competition_stats_factory(player=player2, competition=competition, season=season, cleansheets=10)
+        season = 2024
+        players_list = create_players_with_competition_stats(
+            player1_name="Manuel",
+            player1_slug="manuel",
+            player2_name="Jan",
+            player2_slug="jan",
+        )
 
-        response = api_client.get(f"{self.URL}?season={season.year_start}")
+        response = api_client.get(f"{self.URL}?season={season}")
 
         assert response.status_code == status.HTTP_200_OK
         assert 'top_goalkeepers' in response.data
         assert len(response.data['top_goalkeepers']) >= 1
-        assert response.data['top_goalkeepers'][0]['cleansheets'] == 10
+        assert response.data['top_goalkeepers'][0]['cleansheets'] == players_list['player1']['competition_stats'].cleansheets
 
     def test_competition_not_found(self, api_client):
         url = reverse('competition-details', kwargs={'ctitle': 'non-existent-competition'})
@@ -108,9 +108,52 @@ class TestCompetitionAPI:
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
 @pytest.fixture
-def competition_setup(competition_factory, create_season_object):
-    def _make(title="La Liga", slug="la-liga",season_year=2024):
-        default_competition = competition_factory(title=title, slug=slug)
-        default_season = create_season_object(season_year)
-        return default_competition , default_season
+def create_players_with_competition_stats(
+    player_factory,
+    competition_setup,
+    player_competition_stats_factory
+):
+    def _make(
+            player1_name="Player One", 
+            player1_slug="player-one",
+            player2_name="Player Two", 
+            player2_slug="player-two",
+            season_year=2024
+        ):
+        competition = competition_setup()
+        player1 = player_factory(
+            pname=player1_name,
+            slug=player1_slug,
+            position="DC"
+        )
+        player2 = player_factory(
+            pname=player2_name,
+            slug=player2_slug,
+            position="GK"
+        )
+
+        player1_competition_stats = player_competition_stats_factory(
+            player=player1,
+            competition=competition,
+            season__year_start=season_year
+        )
+        
+        player2_competition_stats = player_competition_stats_factory(
+            player=player2,
+            competition=competition, 
+            season__year_start=season_year
+        )
+        players_results = {
+            "player1": {
+                "pname": player1.pname,
+                "slug": player1.slug,
+                "competition_stats": player1_competition_stats
+            },
+            "player2": {
+                "pname": player2.pname,
+                "slug": player2.slug,
+                "competition_stats": player2_competition_stats
+            }
+        }
+        return players_results
     return _make

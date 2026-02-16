@@ -12,11 +12,12 @@ class TestMatchDetailsAPI:
             api_client, 
             match_setup, 
             ):
-        _, _, match = match_setup()
+        match = match_setup()
 
         response = api_client.get(self.URL)
 
         assert response.status_code == status.HTTP_200_OK
+        assert response.data['data']['status'] == match.status
         assert set(response.data.keys()) >= {'data', 'match_stats', 'match_events'}
 
     def test_match_details_include_stats(
@@ -24,7 +25,7 @@ class TestMatchDetailsAPI:
             api_client, 
             match_setup
             ):
-        _, _, match = match_setup()
+        match_setup()
 
         response = api_client.get(self.URL)
 
@@ -38,14 +39,14 @@ class TestMatchDetailsAPI:
             api_client, 
             match_setup
             ):
-        _, _, match = match_setup()
+        match = match_setup()
 
         response = api_client.get(self.URL)
 
         assert response.status_code == status.HTTP_200_OK
         assert 'match_events' in response.data
         assert len(response.data['match_events']) >= 1
-        assert response.data['match_events'][0]['event_type'] == "Goal"
+        assert response.data['match_events'][0]['event_type'] == match.match_events.first().event_type
 
     def test_match_not_found(
             self, 
@@ -58,33 +59,27 @@ class TestMatchDetailsAPI:
         
 
 @pytest.fixture
-def match_setup(player_factory, season_factory,competition_factory,team_factory, match_factory, match_stats_factory, match_event_factory):
-    def _make(player_name="Test Player",player_slug="test-player", season_year=2024 , home_goals_data=2, away_goals_data=1,status_data="FT",event_type_data="Goal"):
+def match_setup(
+    player_factory, 
+    create_season_object,
+    competition_factory,
+    team_factory, 
+    match_factory, 
+    match_stats_factory, 
+    match_event_factory
+    ):
+    def _make(season_year=2024 , home_goals_data=2, away_goals_data=1,status_data="FT",event_type_data="Goal"):
         default_team1 = team_factory(title="Test Team", slug="test-team")
         default_team2 = team_factory(title="Test Team 2", slug="test-team-2")
-        default_season = season_factory(year_start=season_year, year_end=season_year + 1)
+        default_season = create_season_object(season_year)
         default_competition = competition_factory(title="Test Competition", slug="test-competition")
         default_match = match_factory(id=1,home_goals=home_goals_data, away_goals=away_goals_data,status=status_data, home_team=default_team1, away_team=default_team2, competition=default_competition, season=default_season)
         
-        default_player = player_factory(pname=player_name, slug=player_slug)
+        default_player = player_factory(pname="Test Player", slug="test-player")
         
         match_stats_factory(match=default_match)
         match_event_factory(match=default_match, event_type=event_type_data, player=default_player, minute=23)
-        return default_season, default_player, default_match
-    
-    return _make
 
-@pytest.fixture
-def empty_match_setup(player_factory, season_factory,competition_factory,team_factory, match_factory):
-    def _make(player_name="Test Player",player_slug="test-player", season_year=2024 , home_goals_data=2, away_goals_data=1,status_data="FT"):
-        default_team1 = team_factory(title="Test Team", slug="test-team")
-        default_team2 = team_factory(title="Test Team 2", slug="test-team-2")
-        default_season = season_factory(year_start=season_year, year_end=season_year + 1)
-        default_competition = competition_factory(title="Test Competition", slug="test-competition")
-        default_match = match_factory(id=2,home_goals=home_goals_data, away_goals=away_goals_data,status=status_data, home_team=default_team1, away_team=default_team2, competition=default_competition, season=default_season)
-        
-        default_player = player_factory(pname=player_name, slug=player_slug)
-        
-        return default_season, default_player, default_match
+        return default_match
     
     return _make

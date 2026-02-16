@@ -42,7 +42,7 @@ class TestSearchPageAPI:
             api_client, 
             player_factory,
             ):
-        player_factory(pname="Example player", slug="example-player")
+        player_1 = player_factory(pname="Example player", slug="example-player")
         player_factory(pname="EXAMPLE soccer player", slug="example-soccer-player")
 
         response = api_client.get(
@@ -53,14 +53,14 @@ class TestSearchPageAPI:
         assert response.status_code == status.HTTP_200_OK
         assert results[0]["field"] == "Players Results"
         assert len(results[0]["players_data"])  > 1
-        assert results[0]["players_data"][0]["pname"] == "Example player"
+        assert results[0]["players_data"][0]["pname"] == player_1.pname
 
     def test_search_page_partial_match(
             self, 
             api_client, 
             team_factory,
         ):
-        team_factory(title="Manchester United", slug="manchester-united")
+        test_team = team_factory(title="Manchester United", slug="manchester-united")
 
         response = api_client.get(
             f"{self.URL}?searchTerm=Manchester"
@@ -70,7 +70,7 @@ class TestSearchPageAPI:
         assert response.status_code == status.HTTP_200_OK
         assert len(results) == 1
         assert results[0]["field"] == "Teams Results"
-        assert results[0]["teams_data"][0]["title"] == "Manchester United"
+        assert results[0]["teams_data"][0]["title"] == test_team.title
     
     def test_search_page_empty_term(
             self, 

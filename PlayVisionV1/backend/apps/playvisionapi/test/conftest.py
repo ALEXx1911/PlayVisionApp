@@ -59,13 +59,22 @@ def create_players_with_stats(
             "player1": {
                 "pname": player1.pname,
                 "slug": player1.slug,
-                "season_stats": player1_season_stats
+                "season_stats": player1_season_stats,
+                "team": default_team
             },
             "player2": {
                 "pname": player2.pname,
                 "slug": player2.slug,
-                "season_stats": player2_season_stats
+                "season_stats": player2_season_stats,
+                "team": default_team
             }
         })
         return players_results
+    return _make
+
+@pytest.fixture
+def competition_setup(competition_factory):
+    def _make(title="La Liga", slug="la-liga"):
+        default_competition = competition_factory(title=title, slug=slug)
+        return default_competition
     return _make
