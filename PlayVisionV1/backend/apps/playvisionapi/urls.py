@@ -3,12 +3,12 @@ from rest_framework import routers
 from .api import teams , players , competitions , matches , home , search , most_searched
 
 urlpatterns = [ 
-    path("api/home/", home.homepage),
+    path("api/home/", home.homepage, name='home-page'),
     #URLS for Teams
     path("api/teams/<str:title>/", teams.team_details, name='team-details'),
 
     #URLS for Competitions
-    path("api/competitions/", competitions.competition_list, name='competition-list'),
+    path("api/competitions/", competitions.competition_list, name='competitions-list'),
     path("api/competitions/<str:ctitle>/", competitions.competition_details, name='competition-details'),
     path("api/competitions/<str:ctitle>/matches/", competitions.competition_matches),
 

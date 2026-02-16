@@ -6,38 +6,51 @@ from apps.playvisionapi.test.factories import match_factory, team_factory, compe
 
 @pytest.mark.django_db
 class TestMatchDetailsAPI:
-    def test_match_details_success(self, api_client, match_setup):
+    URL = reverse('match-details', kwargs={'matchid': 1})
+    def test_match_details_success(
+            self, 
+            api_client, 
+            match_setup, 
+            ):
         _, _, match = match_setup()
 
-        url = reverse('match-details', kwargs={'matchid': match.id})
-        response = api_client.get(url)
+        response = api_client.get(self.URL)
 
         assert response.status_code == status.HTTP_200_OK
         assert set(response.data.keys()) >= {'data', 'match_stats', 'match_events'}
 
-    def test_match_details_include_stats(self, api_client, match_setup):
+    def test_match_details_include_stats(
+            self, 
+            api_client, 
+            match_setup
+            ):
         _, _, match = match_setup()
 
-        url = reverse('match-details', kwargs={'matchid': match.id})
-        response = api_client.get(url)
+        response = api_client.get(self.URL)
 
         assert response.status_code == status.HTTP_200_OK
         assert 'match_stats' in response.data
         assert len(response.data['match_stats']) >= 1
         assert isinstance(response.data['match_stats'][0]['home_data'], int)
 
-    def test_match_details_include_events(self, api_client, match_setup):
+    def test_match_details_include_events(
+            self, 
+            api_client, 
+            match_setup
+            ):
         _, _, match = match_setup()
 
-        url = reverse('match-details', kwargs={'matchid': match.id})
-        response = api_client.get(url)
+        response = api_client.get(self.URL)
 
         assert response.status_code == status.HTTP_200_OK
         assert 'match_events' in response.data
         assert len(response.data['match_events']) >= 1
         assert response.data['match_events'][0]['event_type'] == "Goal"
 
-    def test_match_not_found(self, api_client):
+    def test_match_not_found(
+            self, 
+            api_client
+            ):
         url = reverse('match-details', kwargs={'matchid': 9999})
         response = api_client.get(url)
 

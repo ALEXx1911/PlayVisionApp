@@ -10,17 +10,23 @@ from ..utils.utils import FORMATION_POSITIONS
 #Return homepage data which includes top season players, competitions and matches of the day
 @api_view(["GET"])
 def homepage(request):
-    date_str = request.query_params.get("date")
+
+    try:
+        date_str = request.query_params.get("date")
+
+        if not date_str:
+            target_date = timezone.localdate()
+            actual_season = 2024 #datetime.now().year
+
+        else:
+            target_date = parse_date(date_str)
+            actual_season = target_date.year
+        
+    except Exception as e:
+            return Response({"detail":"Invalid format"},status=400)
+
     players_positions_in_lineup = FORMATION_POSITIONS.get("4-3-3",[])
     top_player_lineup = []
-    if date_str :
-        target_date = parse_date(date_str)
-        actual_season = target_date.year
-        if target_date is None:
-            return Response({"detail":"Invalid format"},status=400)
-    else:
-        target_date = timezone.localdate()
-        actual_season = 2024 #datetime.now().year
         
     for position in players_positions_in_lineup:
         player_obj = (

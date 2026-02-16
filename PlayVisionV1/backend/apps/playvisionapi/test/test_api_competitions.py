@@ -5,13 +5,16 @@ from apps.playvisionapi.test.factories import competition_factory
 
 @pytest.mark.django_db
 class TestCompetitionListAPI:
-    def test_competition_list_success(self, api_client, competition_factory):
+    URL = reverse('competitions-list')
+    def test_competition_list_success(
+            self, 
+            api_client, 
+            competition_factory,
+        ):
         competition_factory(title="La Liga", slug="la-liga")
         competition_factory(title="Premier League", slug="premier-league")
 
-        url = reverse('competition-list')
-        response = api_client.get(url)
-
+        response = api_client.get(self.URL)
         assert response.status_code == status.HTTP_200_OK
         countries = response.data.get('countries', [])
 

@@ -5,34 +5,47 @@ from apps.playvisionapi.test.factories import player_factory,team_factory, playe
 
 @pytest.mark.django_db
 class TestPlayerAPI:
-    def test_player_details_success(self, api_client, player_setup):
+    URL = reverse('player-details', kwargs={'pname': 'test-player'})
+    def test_player_details_success(
+            self, 
+            api_client, 
+            player_setup,
+            ):
         season,player,_, _ = player_setup()
 
-        url = reverse('player-details', kwargs={'pname': player.slug})
-        player_response = api_client.get(f"{url}?season={season.year_start}")
-
+        player_response = api_client.get(
+            f"{self.URL}?season={season.year_start}"
+        )
         assert player_response.status_code == status.HTTP_200_OK
         assert set(player_response.data.keys()) >= {'player_data', 'season_stats', 'competition_stats'}
         assert player_response.data['player_data']['pname'] == "Test Player"
 
-    def test_player_details_include_season_stats(self, api_client, player_setup):
+    def test_player_details_include_season_stats(
+            self, 
+            api_client, 
+            player_setup
+            ):
         season, player, _, player_season_stats = player_setup()
 
-        url = reverse('player-details', kwargs={'pname': player.slug})
-        player_response = api_client.get(f"{url}?season={season.year_start}")
-
+        player_response = api_client.get(
+            f"{self.URL}?season={season.year_start}"
+        )
         assert player_response.status_code == status.HTTP_200_OK
         assert 'season_stats' in player_response.data
         assert player_response.data['season_stats'][0]['goals'] == player_season_stats.goals and \
         isinstance(player_response.data['season_stats'][0]['goals'], int)
         assert player_response.data['season_stats'][0]['assists'] == player_season_stats.assists
 
-    def test_player_details_include_competitions_stats(self, api_client, player_setup):
+    def test_player_details_include_competitions_stats(
+            self, 
+            api_client, 
+            player_setup
+            ):
         season, player, player_competition_stats, _ = player_setup()
 
-        url = reverse('player-details', kwargs={'pname': player.slug})
-        player_response = api_client.get(f"{url}?season={season.year_start}")
-
+        player_response = api_client.get(
+            f"{self.URL}?season={season.year_start}"
+            )
         assert player_response.status_code == status.HTTP_200_OK
         assert 'competition_stats' in player_response.data
         assert len(player_response.data['competition_stats']) >= 1
@@ -40,7 +53,10 @@ class TestPlayerAPI:
         isinstance(player_response.data['competition_stats'][0]['goals'], int)
         assert player_response.data['competition_stats'][0]['assists'] == player_competition_stats.assists
 
-    def test_player_not_found(self, api_client):
+    def test_player_not_found(
+            self, 
+            api_client
+            ):
         url = reverse('player-details', kwargs={'pname': 'non-existent-player'})
         player_response = api_client.get(url)
 
