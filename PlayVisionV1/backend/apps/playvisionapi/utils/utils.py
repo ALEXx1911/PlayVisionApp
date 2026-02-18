@@ -48,6 +48,11 @@ match_stats_header = [
 ]
 
 def get_last_matches_results(last_five_results, team):
+   """ 
+   Determines the results of the last five matches for a given team.
+   And return a list of results where 'W' stands for a win, 'L' for a loss, and 'D' for a draw. 
+   The results are ordered from oldest to most recent.
+   """
    results = []
    for match in last_five_results:
        if team.title == match.home_team.title and match.home_goals > match.away_goals:

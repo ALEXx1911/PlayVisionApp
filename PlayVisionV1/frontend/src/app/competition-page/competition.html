@@ -2,13 +2,13 @@
     @if (competitionData$ | async; as competition) {
         <div class="w-full sm:w-3/4 text-white my-2.5 h-32 rounded-xl overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]">
             <div class="w-full h-full flex items-center justify-center gap-10">
-                <img class=" w-35 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{competition.competition.logo_url}}"/>
+                <img class=" w-35 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{competition.competition_data.logo_url}}"/>
                 <div class="font-semibold tracking-[0] leading-[normal]">
                     <div class="flex items-center gap-5 mb-1">
                         <span class="text-xl">Competition data:</span>
                     </div>
-                    <p class="text-[1.1rem]">Name: {{competition.competition.title}}</p>
-                    <p class="text-[1.1rem]">Country {{competition.competition.country}}</p>
+                    <p class="text-[1.1rem]">Name: {{competition.competition_data.title}}</p>
+                    <p class="text-[1.1rem]">Country {{competition.competition_data.country}}</p>
                     <p class="text-[1.1rem]">Actual Season: 2024/2025</p>
                 </div>
             </div>

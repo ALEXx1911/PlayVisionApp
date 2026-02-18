@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'apps.playvisionapi',
     'django_seed',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,14 @@ CORS_ALLOWED_ORIGINS = [
 # Default media settings 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+#Rest Framework and API documentation settings
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'PlayVision API',
+    'DESCRIPTION': 'API for PlayVision application providing football data and insights.',
+    'VERSION': '1.0.0',
+}

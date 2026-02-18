@@ -1,12 +1,57 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes, inline_serializer
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from rest_framework import serializers
 from ..models import Team, Season, PlayerSeasonStats, TeamInsights, Match
-from ..serializer import TeamSerializer, TeamInsightsSerializer, PlayerSeasonStatsSerializer, MatchSerializer
+from ..serializer import TeamSerializer, TeamInsightsSerializer ,PlayerSeasonStatsSerializer, MatchSerializer
 from ..utils.utils import get_last_matches_results
 
 #Return detailed information about a specific team
+@extend_schema(
+    description="Return detailed information about a specific team, " \
+    "like its insights, player stats for a specific season, matches and last five results.",
+    parameters=[
+        OpenApiParameter(
+            name="title",
+            type=str,
+            location=OpenApiParameter.PATH,
+            description="The slug of the team to get details for",
+            required=True,
+            examples=[OpenApiExample("team-title", value="real-madrid")]
+        ),
+        OpenApiParameter(
+            name="season",
+            type=str,
+            location=OpenApiParameter.QUERY,
+            description="The season to get team details for",
+            required=False,
+        )
+    ],
+    responses={
+        200: inline_serializer(
+            name='TeamDetailsResponse',
+            fields={
+                'team': TeamSerializer(),
+                'insights': TeamInsightsSerializer(many=True),
+                'player_stats': PlayerSeasonStatsSerializer(many=True),
+                'matches': MatchSerializer(many=True),
+                'last_five_results': ["W", "D", "L", "W", "W"]
+            }
+        ),
+        404: OpenApiTypes.OBJECT
+    },
+    examples=[
+        OpenApiExample(
+            'Error Team Not Found',
+            value={"detail": "No Team matches the given query."},
+            status_codes=[404]
+        )
+    ],
+    auth=None,
+    tags=["Teams"]
+)
 @api_view(["GET"])
 def team_details(request, title):
     season_param = request.query_params.get("season")

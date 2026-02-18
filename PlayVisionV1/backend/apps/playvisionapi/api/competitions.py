@@ -1,13 +1,28 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes, inline_serializer
 from django.db.models import Prefetch
-from ..models import Competition, Country , Season, TeamCompetitionStats, Match, PlayerCompetitionStats
+from rest_framework import serializers
+from ..models import Competition, Country, Season, TeamCompetitionStats, Match, PlayerCompetitionStats
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from ..serializer import CompetitonTeamStatSerializer, PlayerCompetitionStatsSerializer, CountryCompetitionSerializer, CompetitionMatchesListSerializer
+from ..serializer import CompetitionSerializer, TeamCompetitionStatSerializer, PlayerCompetitionStatsSerializer, CountryCompetitionSerializer, CompetitionMatchesListSerializer
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 #Return list of competitions grouped by country
+@extend_schema(
+    description="Return a list of competitions grouped by country",
+    responses={
+        200: inline_serializer(
+            name='CompetitionListResponse',
+            fields={
+                'countries': CountryCompetitionSerializer(many=True)
+            }
+        )
+    },
+    auth=None,
+    tags=["Competitions"]
+)
 @api_view(["GET"])
 def competition_list(request):
     competition_qs = Competition.objects.filter(competition_type = 'league').order_by('title')
@@ -18,6 +33,52 @@ def competition_list(request):
     })
 
 #Return competition details including top players and last matches by team
+@extend_schema(
+    description="Return competition details including last matches and top players "
+    "(like: top scorers, top media players, most yellow cards, top goalkeepers) by team. "
+    "Season parameter is optional, if not provided it will return the current season details.",
+    parameters=[
+        OpenApiParameter(
+            name="ctitle",
+            type=str,
+            location=OpenApiParameter.PATH,
+            description="The slug of the competition to get details for",
+            required=True,
+            examples=[OpenApiExample("competition-slug", value="la-liga")]
+        ),
+        OpenApiParameter(
+            name="season",
+            type=int,
+            location=OpenApiParameter.QUERY,
+            description="The season to get competition details for (e.g., 2024)",
+            required=False,
+            examples=[OpenApiExample("season-year", value=2024)]
+        )
+    ],
+    responses={
+        200: inline_serializer(
+            name='CompetitionDetailsResponse',
+            fields={
+                'competition_data': CompetitionSerializer(),
+                'team_competition_stats': TeamCompetitionStatSerializer(many=True),
+                'top_scorers': PlayerCompetitionStatsSerializer(many=True),
+                'top_media_players': PlayerCompetitionStatsSerializer(many=True),
+                'most_yellow_cards': PlayerCompetitionStatsSerializer(many=True),
+                'top_goalkeepers': PlayerCompetitionStatsSerializer(many=True),
+            }
+        ),
+        404: OpenApiTypes.OBJECT
+    },
+    examples=[
+        OpenApiExample(
+            'Error Competition Not Found',
+            value={"detail": "No Competition matches the given query."},
+            status_codes=[404]
+        )
+    ],
+    auth=None,
+    tags=["Competitions"]
+)
 @api_view(["GET"])
 def competition_details(request,ctitle):
     season_param = request.query_params.get("season")
@@ -29,8 +90,9 @@ def competition_details(request,ctitle):
     season_obj = Season.objects.filter(year_start=season_param).first()
     competition_qs = get_object_or_404(Competition, slug=ctitle)
     stats_qs = TeamCompetitionStats.objects.filter(competition=competition_qs,season=season_obj).select_related("team")
+
     team_ids = list(stats_qs.values_list("id",flat=True))
-    matches_qs = Match.objects.filter(competition=competition_qs,season=season_obj).filter(
+    matches_qs = Match.objects.filter(competition=competition_qs,season=season_obj,status="Finished").filter(
         Q(home_team__id__in=team_ids) | Q(away_team__id__in=team_ids)
     ).select_related("home_team","away_team").order_by("-match_date")
     last_matches_by_team = {team_id: [] for team_id in team_ids}
@@ -55,16 +117,18 @@ def competition_details(request,ctitle):
     most_yellow_card_qs = PlayerCompetitionStats.objects.filter(season = season_obj).order_by("-yellow_cards")[:5]
     top_goalkeepers_qs = PlayerCompetitionStats.objects.filter(season = season_obj).order_by("-cleansheets")[:5]
 
-    competition_serializer = CompetitonTeamStatSerializer(competition_qs,many=False,context={
+    team_competition_stats_serializer = TeamCompetitionStatSerializer(stats_qs,many=True,context={
         "last_matches_by_team": last_matches_by_team
     })
+    competition_serializer = CompetitionSerializer(competition_qs)
     top_goals_player_serializer = PlayerCompetitionStatsSerializer(top_goals_player_qs,many=True)
     top_media_player_serializer = PlayerCompetitionStatsSerializer(top_media_player_qs,many=True)
     most_yellow_card_serializer = PlayerCompetitionStatsSerializer(most_yellow_card_qs,many=True)
     top_goalkeepers_serializer = PlayerCompetitionStatsSerializer(top_goalkeepers_qs,many=True)
     
     return Response({
-        "competition": competition_serializer.data,
+        "competition_data": competition_serializer.data,
+        "team_competition_stats": team_competition_stats_serializer.data,
         "top_scorers" : top_goals_player_serializer.data,
         "top_media_players" : top_media_player_serializer.data,
         "most_yellow_cards" : most_yellow_card_serializer.data,
@@ -72,6 +136,59 @@ def competition_details(request,ctitle):
     })
 
 #Return competition matches with pagination
+@extend_schema(
+    description="Return competition matches using pagination with start and limit parameters. Also filter by season.",
+    parameters=[
+        OpenApiParameter(
+            name="ctitle",
+            type=str,
+            location=OpenApiParameter.PATH,
+            description="The slug of the competition",
+            required=True,
+            examples=[OpenApiExample("competition-slug", value="la-liga")]
+        ),
+        OpenApiParameter(
+            name="start",
+            type=int,
+            location=OpenApiParameter.QUERY,
+            description="Starting index for pagination",
+            required=False
+        ),
+        OpenApiParameter(
+            name="limit",
+            type=int,
+            location=OpenApiParameter.QUERY,
+            description="Number of items per page",
+            required=False
+        ),
+        OpenApiParameter(
+            name="season",
+            type=int,
+            location=OpenApiParameter.QUERY,
+            description="Season year",
+            required=False
+        )
+    ],
+    responses={
+        200: inline_serializer(
+            name='CompetitionMatchesResponse',
+            fields={
+                'matches': CompetitionMatchesListSerializer(many=True),
+                'total': serializers.IntegerField()
+            }
+        ),
+        404: OpenApiTypes.OBJECT
+    },
+    examples=[
+        OpenApiExample(
+            'Error Competition Not Found',
+            value={"detail": "No Competition matches the given query."},
+            status_codes=[404]
+        )
+    ],
+    auth=None,
+    tags=["Competitions"],
+)
 @api_view(["GET"])
 def competition_matches(request,ctitle):
     start = int(request.query_params.get("start",0))

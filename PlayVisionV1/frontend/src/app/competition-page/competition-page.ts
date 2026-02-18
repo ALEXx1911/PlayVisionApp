@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { AppService } from '../services/app-services/app-service';
 import { LeagueTable } from "./components/league-table";
 import { AsyncPipe } from '@angular/common';
-import { CompetitionMatchesFromAPI, DataFromCompetitionAPI, Match, TeamCompetitionStat } from '../models/app-models';
+import { CompetitionMatchesFromAPI, CompetitionDataFromAPI, Match, TeamCompetitionStat } from '../models/app-models';
 import {CdkAccordionModule } from '@angular/cdk/accordion';
 import { MatIcon } from "@angular/material/icon";
 import { StatsTable } from "./components/stats-tables/stats-tables";
@@ -24,7 +24,7 @@ export class CompetitionPage {
   readonly rowHeight = 40;
   competitionSlug = signal('');
   //Ensures that when the route parameter changes, the competition data is fetched accordingly
-  competitionData$: Observable<DataFromCompetitionAPI> = this.activatedRoute.paramMap.pipe(
+  competitionData$: Observable<CompetitionDataFromAPI> = this.activatedRoute.paramMap.pipe(
       map(params => params.get('competitionSlug') ?? ''),
       map(slug => {this.competitionSlug.set(slug); return slug;}),
       switchMap(slug => this.competitionService.getCompetitionDetails(slug))
@@ -39,12 +39,20 @@ export class CompetitionPage {
   matches = Array.from<Match>({length:0});
 
   
-  readonly eje:DataFromCompetitionAPI;
+  readonly eje:CompetitionDataFromAPI;
 
   constructor(){
 
 
-    this.eje = { competition: { id: 1, title: "Liga", slug: "liga", country : "spain", competition_type: "league", logo_url:"xd",  team_competition_stats: [] as TeamCompetitionStat[] } ,
+    this.eje = { 
+      competition_data: { id: 1, 
+        title: "Liga", 
+        slug: "liga", 
+        country : "spain", 
+        competition_type: "league", 
+        logo_url:"xd"  
+      } ,
+    team_competition_stats: [] as TeamCompetitionStat[], 
     top_scorers: [] as any[],
     most_yellow_cards: [] as any[],
     top_media_players: [] as any[],

@@ -1,14 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, DataFromCompetitionAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData, PlayerCompareDataFromAPI, MostSearchedPlayers,  } from '../../models/app-models';
+import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, CompetitionDataFromAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData, PlayerCompareDataFromAPI, MostSearchedPlayers,  } from '../../models/app-models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppService {
   private http = inject(HttpClient);
-  private apiHost = 'http://localhost:80/playVision/api/';
+  private apiHost = 'http://localhost:80/playVision/api/v1/';
 
   private homeDataCache$?: Observable<HomeDataAPI>;
   getHomeData():Observable<HomeDataAPI>{
@@ -29,12 +29,12 @@ export class AppService {
     }
     return this.countriesDataCache$!;
   }
-  private competitionDetailsCache = new Map<string, Observable<DataFromCompetitionAPI>>();
-  getCompetitionDetails(competition:string):Observable<DataFromCompetitionAPI>{
+  private competitionDetailsCache = new Map<string, Observable<CompetitionDataFromAPI>>();
+  getCompetitionDetails(competition:string):Observable<CompetitionDataFromAPI>{
     //const params = new HttpParams()
     //  .set("title",competition);
     if (!this.competitionDetailsCache.has(competition)) {
-      const request$ = this.http.get<DataFromCompetitionAPI>(`${this.apiHost}competitions/${competition}`,{
+      const request$ = this.http.get<CompetitionDataFromAPI>(`${this.apiHost}competitions/${competition}`,{
         mode: "cors",
         //params
       }).pipe(shareReplay(1));

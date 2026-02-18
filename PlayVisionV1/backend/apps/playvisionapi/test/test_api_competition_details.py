@@ -16,7 +16,8 @@ class TestCompetitionAPI:
 
         assert response.status_code == status.HTTP_200_OK
         assert set(response.data.keys()) >= {
-            'competition', 
+            'competition_data',
+            'team_competition_stats',
             'top_scorers', 
             'top_media_players',
             'most_yellow_cards',

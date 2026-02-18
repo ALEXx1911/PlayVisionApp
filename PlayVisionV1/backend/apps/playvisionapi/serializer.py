@@ -92,14 +92,7 @@ class HomeCompetitionsMatchesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competition
         fields = ("id", "title","slug", "country","country_logo_url","competition_matches")
-
-class CompetitonTeamStatSerializer(serializers.ModelSerializer):
-    team_competition_stats = TeamCompetitionStatSerializer(many=True,read_only=True)
-    class Meta:
-        model = Competition
-        fields = ("id", "title", "slug", "country", "competition_type","logo_url","team_competition_stats")
-
-
+        
 class CountryCompetitionSerializer(serializers.ModelSerializer):
     competitions = CompetitionSerializer(many=True, read_only=True, source='competition_country')
     class Meta:

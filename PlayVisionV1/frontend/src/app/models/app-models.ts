@@ -71,7 +71,6 @@ export interface Competition{
     country: string,
     competition_type: string,
     logo_url: string
-    team_competition_stats: TeamCompetitionStat[]
 }
 
 export interface CompetitionShort{
@@ -191,8 +190,9 @@ export interface CompetitionMatchesFromAPI{
     total_matches: number,
 }
 
-export interface DataFromCompetitionAPI{
-    competition:Competition,
+export interface CompetitionDataFromAPI{
+    competition_data:Competition,
+    team_competition_stats: TeamCompetitionStat[],
     top_scorers: PlayerStat[],
     most_yellow_cards: PlayerStat[],
     top_media_players: PlayerStat[],
