@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes, inline_serializer
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse, inline_serializer
 from django.db.models import Q
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
@@ -38,15 +38,23 @@ from ..utils.utils import match_stats_header
                 'match_events': MatchEventSerializer(many=True)
             }
         ),
-        404: OpenApiTypes.OBJECT
-    },
-    examples=[
-        OpenApiExample(
-            'Match Not Found',
-            value={"detail":"Not Match found with the provided ID."},
-            status_codes=[404]
+        404: OpenApiResponse(
+            response=inline_serializer(
+                name='MatchNotFoundResponse',
+                fields={
+                    "detail": serializers.CharField()
+                }
+            ),
+            description="Match not found with the provided ID.",
+            examples=[
+                OpenApiExample(
+                    'Match Not Found',
+                    value={"detail":"Not Match found with the provided ID."},
+                    description="Match not found with the provided ID."
+                )
+            ]
         )
-    ],
+    },
     auth=None,
     tags=["Matches"],
 )

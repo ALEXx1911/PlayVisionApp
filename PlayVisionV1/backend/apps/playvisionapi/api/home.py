@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes, inline_serializer
+from rest_framework import serializers
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse, inline_serializer
 from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.db.models import Prefetch
@@ -36,15 +37,23 @@ from ..utils.utils import FORMATION_POSITIONS
                     'top_player_lineup': PlayerLineupSerializer(many=True)
               }
          ),
-         400: OpenApiTypes.OBJECT
-    },
-    examples=[
-         OpenApiExample(
-              'Invalid Date Format',
-              value={"detail":"Invalid format"},
-              status_codes=[400]
+         400: OpenApiResponse(
+              response=inline_serializer(
+                   name='InvalidDateFormatResponse',
+                   fields={
+                        'detail': serializers.CharField()
+                   }
+              ),
+              description="Invalid date format",
+              examples=[
+                   OpenApiExample(
+                        'Invalid Date Format',
+                        value={"detail":"Invalid format"},
+                        description="The provided date is not in the correct YYYY-MM-DD format"
+                   )
+              ]
          )
-    ],
+    },
     auth=None,
     tags=["Home"]
 )

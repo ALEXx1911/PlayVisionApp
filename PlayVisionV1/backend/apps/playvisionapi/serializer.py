@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from .models import PlayerSeasonStats , Player, Team, TeamInsights , TeamCompetitionStats , Match, MatchStats, MatchEvent, Competition , Country , PlayerCompetitionStats
 from .utils.utils import get_last_matches_results
 
@@ -15,6 +16,7 @@ class TeamCompetitionStatSerializer(serializers.ModelSerializer):
         model = TeamCompetitionStats
         fields = ("team","matches_played","win","draw","lose","goals_for","goals_against","goal_difference","point","last_results")
 
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_last_results(self, obj):
         mapping = self.context.get("last_matches_by_team",{})
         team_id = obj.team.id

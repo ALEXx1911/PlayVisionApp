@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes, inline_serializer
+from rest_framework import serializers
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse, inline_serializer
 from django.shortcuts import get_object_or_404
 from ..models import Player, Season, PlayerSeasonStats, PlayerCompetitionStats
 from ..serializer import PlayerSerializer, PlayerSeasonStatsSerializer, PlayerCompetitionStatsSerializer
@@ -37,15 +38,23 @@ from ..serializer import PlayerSerializer, PlayerSeasonStatsSerializer, PlayerCo
                 'competition_stats': PlayerCompetitionStatsSerializer(many=True)
             }
         ),
-        404: OpenApiTypes.OBJECT
-    },
-    examples=[
-        OpenApiExample(
-            'Player Not Found',
-            value={"detail":"Not Player found with the provided slug."},
-            status_codes=[404]
+        404: OpenApiResponse(
+            response=inline_serializer(
+                name='PlayerNotFoundResponse',
+                fields={
+                    'detail': serializers.CharField()
+                }
+            ),
+            description="Player not found with the provided slug",
+            examples = [
+                OpenApiExample(
+                    'Player Not Found',
+                    value={"detail":"No Player matches the given query."},
+                    description="Player not found with the provided slug"
+                )
+            ]
         )
-    ],
+    },
     auth=None,
     tags=["Players"]
 )
