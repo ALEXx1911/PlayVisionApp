@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from .api import teams , players , competitions , matches , home , search , most_searched
+from .api import teams , players , competitions , matches , home , search , most_searched , compare_players
 
 urlpatterns = [ 
     path("api/v1/home/", home.homepage, name='home-page'),
@@ -23,7 +23,7 @@ urlpatterns = [
     path("api/v1/search/", search.search_page, name='search-page'),
 
     #URLS for Compare Players
-    path("api/v1/compare/players/", search.compare_players, name='compare-players'),
+    path("api/v1/compare/players/", compare_players.compare_players, name='compare-players'),
 
     #URLS for Most Searched Items
     path("api/v1/mostsearched/items", most_searched.most_searched_items),

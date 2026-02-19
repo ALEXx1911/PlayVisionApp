@@ -17,8 +17,12 @@ class TestMatchDetailsAPI:
         response = api_client.get(self.URL)
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['data']['status'] == match.status
-        assert set(response.data.keys()) >= {'data', 'match_stats', 'match_events'}
+        assert response.data['match_data']['status'] == match.status
+        assert set(response.data.keys()) >= {
+            'match_data', 
+            'match_stats', 
+            'match_events'
+        }
 
     def test_match_details_include_stats(
             self, 
