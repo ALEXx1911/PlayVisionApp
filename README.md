@@ -46,6 +46,9 @@ docker compose restart backend
 
 4) Access the app:
 - Web: http://localhost (Nginx exposes port 80).
+- **API Documentation:**
+  - Swagger UI: http://localhost/playVision/api/docs/
+  - OpenAPI Schema (JSON): http://localhost/playVision/api/schema/
 - Useful logs:
 ```bash
 docker compose logs -f nginx
@@ -68,6 +71,9 @@ python manage.py migrate
 python manage.py runserver 0.0.0.0:8000
 ```
 - API available at http://localhost:8000
+- **API Documentation (local):**
+  - Swagger UI: http://localhost:8000/playVision/api/docs/
+  - OpenAPI Schema: http://localhost:8000/playVision/api/schema/
 - Migrations:
 ```bash
 python manage.py makemigrations

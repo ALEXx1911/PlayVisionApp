@@ -1,9 +1,25 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, inline_serializer
 from ..models import Player, Team, Competition
 from ..serializer import PlayerSerializer, TeamSerializer, CompetitionSerializer
 
 #Return most searched items including players, teams, and competitions
+@extend_schema(
+    description="Return the 5 most searched items including players, teams, and competitions. ",
+    responses={
+        200: inline_serializer(
+            name='MostSearchedItemsResponse',
+            fields={
+                'most_searched_competitions': CompetitionSerializer(many=True),
+                'most_searched_teams': TeamSerializer(many=True),
+                'most_searched_players': PlayerSerializer(many=True)
+            }
+        )
+    },
+    auth=None,
+    tags=["Most Searched"]
+)
 @api_view (["GET"])
 def most_searched_items(request):
     # In the future, implement logic to track and retrieve most searched items
@@ -22,6 +38,19 @@ def most_searched_items(request):
     })
 
 #Return most searched players
+@extend_schema(
+    description="Return the 10 most searched players.",
+    responses={
+        200: inline_serializer(
+            name='MostSearchedPlayersResponse',
+            fields={
+                'most_searched_players': PlayerSerializer(many=True)
+            }
+        )
+    },
+    auth=None,
+    tags=["Most Searched"]
+)
 @api_view (["GET"])
 def most_searched_players(request):
     # In the future, implement logic to track and retrieve most searched players

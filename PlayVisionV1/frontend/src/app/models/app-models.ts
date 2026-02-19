@@ -93,7 +93,7 @@ export interface Match{
 }
 
 export interface MatchDataFromAPI{
-    data: Match,
+    match_data: Match,
     home_team: TeamCompetitionStat,
     away_team: TeamCompetitionStat,
     home_last_matches: Match[],
@@ -116,7 +116,7 @@ export interface MatchStat{
 }
 
 export interface ToPlayMatchFromAPI{
-    data: Match,
+    match_data: Match,
     home_team_stats: TeamCompetitionStat,
     away_team_stats: TeamCompetitionStat,
     home_last_matches: Match[],
@@ -124,7 +124,7 @@ export interface ToPlayMatchFromAPI{
 }
 
 export interface FinishedMatchFromAPI{
-    data: Match,
+    match_data: Match,
     match_events: MatchEvent[],
     match_stats: MatchStat[],
 }

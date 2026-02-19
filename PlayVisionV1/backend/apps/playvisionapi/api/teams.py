@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes, inline_serializer
+from rest_framework import serializers
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse, inline_serializer
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework import serializers
@@ -40,15 +41,23 @@ from ..utils.utils import get_last_matches_results
                 'last_five_results': ["W", "D", "L", "W", "W"]
             }
         ),
-        404: OpenApiTypes.OBJECT
-    },
-    examples=[
-        OpenApiExample(
-            'Error Team Not Found',
-            value={"detail": "No Team matches the given query."},
-            status_codes=[404]
+        404: OpenApiResponse(
+            response=inline_serializer(
+                name='TeamNotFoundResponse',
+                fields={
+                    'detail': serializers.CharField()
+                }
+            ),
+            description="Team not found",
+            examples=[
+                OpenApiExample(
+                    'Error Team Not Found',
+                    value={"detail": "No Team matches the given query."},
+                    description="Response when the specified team is not found in the database."
+                )
+            ]
         )
-    ],
+    },
     auth=None,
     tags=["Teams"]
 )

@@ -1,10 +1,106 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from ..models import Player, Team, Competition , Season , PlayerSeasonStats
-from ..serializer import PlayerSerializer, TeamSerializer, CompetitionSerializer , PlayerSeasonStatSerializerBasic
+from rest_framework import serializers
+from drf_spectacular.utils import extend_schema, OpenApiResponse , OpenApiParameter, OpenApiExample, inline_serializer
+from ..models import Player, Team, Competition
+from ..serializer import PlayerSerializer, TeamSerializer, CompetitionSerializer
 
 #Return search results for players, teams, and competitions
+@extend_schema(
+    description="Return search results for players, teams, and competitions based on the provided search term." \
+    "The search will look for exact matches first and then partial matches if no exact matches are found.",
+    parameters=[
+        OpenApiParameter(
+            name="searchTerm",
+            type=str,
+            location=OpenApiParameter.QUERY,
+            description="The term to search for in players, teams, and competitions.",
+            required=True,
+            examples=[OpenApiExample("search-term-example", value="Lamine")]
+        )
+    ],
+    responses={
+        200: OpenApiResponse(
+            response=inline_serializer(
+                name='SearchResultsResponse',
+                fields={
+                    'search_results': inline_serializer(
+                        name='SearchResults',
+                        fields={
+                            'field': serializers.CharField(),
+                            'players_data': PlayerSerializer(many=True),
+                            'teams_data': TeamSerializer(many=True),
+                            'competitions_data': CompetitionSerializer(many=True)
+                        }
+                    )
+                }
+            ),
+            description="Successful search results for players, teams, and competitions",
+            examples=[
+                OpenApiExample(
+                'Successful Search',
+                value={
+                    "search_results": [
+                        {
+                            "field": "Players Results",
+                            "players_data": [
+                                {
+                                    "id": 1,
+                                    "pname": "Lamine Yamal",
+                                    "slug": "lamine-yamal",
+                                    "position": "Attacking Midfielder",
+                                    "age": 17,
+                                }
+                            ],
+                        },
+                        {
+                            "field": "Teams Results",
+                            "teams_data": [
+                                {
+                                    "id": 1,
+                                    "title": "Barcelona",
+                                    "slug": "barcelona",
+                                    "country": "Spain",
+                                }
+                            ],
+                        },
+                        {
+                            "field": "Competitions Results",
+                            "competitions_data": [
+                                {
+                                    "id": 1,
+                                    "title": "La Liga",
+                                    "slug": "la-liga",
+                                    "country": "Spain",
+                                }
+                            ],
+                        },
+                    ]
+            },
+            description="Successful search with results for players, teams, and competitions"
+            )
+            ]
+        ),
+        400: OpenApiResponse(
+            response=inline_serializer(
+                name='SearchErrorResponse',
+                fields={
+                    'detail': serializers.CharField()
+                }
+            ),
+            description="Bad request due to missing or empty search term",
+            examples=[
+                OpenApiExample(
+                    'Empty Search Term',
+                    value={"detail":"The search term cannot be empty."},
+                    status_codes=[400]
+                )
+            ]
+        )
+    },
+    auth=None,
+    tags=["Search and Compare"]
+)
 @api_view (["GET"])
 def search_page(request):
     
@@ -34,66 +130,26 @@ def search_page(request):
     search_results = []
     if player_serializer.data:
         search_results.append(
-        {
-            "field":"Players Results",
-            "players_data": player_serializer.data}
+            {
+                "field":"Players Results",
+                "players_data": player_serializer.data
+            }
         )
     if team_serializer.data:
         search_results.append(
-        {
-            "field":"Teams Results",
-            "teams_data": team_serializer.data},
+            {
+                "field":"Teams Results",
+                "teams_data": team_serializer.data
+            },
         )
     if competition_serializer.data:
-        search_results.append(    
-        {
-            "field":"Competitions Results",
-            "competitions_data": competition_serializer.data}
+        search_results.append(
+            {
+                "field":"Competitions Results",
+                "competitions_data": competition_serializer.data
+            }
         )
 
     return Response({
         "search_results" : search_results,
-    })
-
-#Return comparison data for two players
-@api_view (["GET"])
-def compare_players(request):
-    season_param = request.query_params.get("season")
-    player1_slug = request.query_params.get("player1").strip().lower() if request.query_params.get("player1") else ""
-    player2_slug = request.query_params.get("player2").strip().lower() if request.query_params.get("player2") else ""
-    player_label = ""
-
-    if not season_param:
-        #season_param = datetime.now().year
-        season_param = 2024
-    
-    season_obj = Season.objects.filter(year_start = season_param).first()
-
-    if not player1_slug and not player2_slug:
-        return Response({"detail":"The names of both players are required."},status=400)
-
-    if (not player1_slug and player2_slug) or (player1_slug and not player2_slug):
-        return Response({"detail":"The names of both players are required."},status=400)
-    
-    if player1_slug == "" and player2_slug == "":
-        return Response({"detail":"The names of both players are required."},status=400)
-
-    if player1_slug == player2_slug:
-        return Response({"detail":"The names of the two players cannot be the same."},status=400)
-
-    player1_qs = get_object_or_404(Player, slug = player1_slug.strip().lower())
-    player1_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player1_qs,season = season_obj)
-    player2_qs = get_object_or_404(Player, slug = player2_slug.strip().lower())
-    player2_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player2_qs,season = season_obj)
-
-    player_serializer = PlayerSerializer(player1_qs,many=False)
-    player_season_stat_serializer = PlayerSeasonStatSerializerBasic(player1_season_stats_qs,many =False)
-    player2_serializer = PlayerSerializer(player2_qs,many=False)
-    player2_season_stat_serializer = PlayerSeasonStatSerializerBasic(player2_season_stats_qs,many =False)
-
-    return Response({
-        "player1_data" : player_serializer.data,
-        "player1_season_stats" : player_season_stat_serializer.data,
-        "player2_data" : player2_serializer.data,
-        "player2_season_stats" : player2_season_stat_serializer.data
     })

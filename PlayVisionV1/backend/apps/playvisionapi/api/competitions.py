@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes, inline_serializer
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, inline_serializer, OpenApiResponse
 from django.db.models import Prefetch
 from rest_framework import serializers
 from ..models import Competition, Country, Season, TeamCompetitionStats, Match, PlayerCompetitionStats
@@ -11,7 +11,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 #Return list of competitions grouped by country
 @extend_schema(
-    description="Return a list of competitions grouped by country",
+    operation_id="competition_list",
+    description="Return a list of competitions grouped by country.",
     responses={
         200: inline_serializer(
             name='CompetitionListResponse',
@@ -34,6 +35,7 @@ def competition_list(request):
 
 #Return competition details including top players and last matches by team
 @extend_schema(
+    operation_id="competition_details",
     description="Return competition details including last matches and top players "
     "(like: top scorers, top media players, most yellow cards, top goalkeepers) by team. "
     "Season parameter is optional, if not provided it will return the current season details.",
@@ -56,26 +58,37 @@ def competition_list(request):
         )
     ],
     responses={
-        200: inline_serializer(
-            name='CompetitionDetailsResponse',
-            fields={
-                'competition_data': CompetitionSerializer(),
-                'team_competition_stats': TeamCompetitionStatSerializer(many=True),
-                'top_scorers': PlayerCompetitionStatsSerializer(many=True),
-                'top_media_players': PlayerCompetitionStatsSerializer(many=True),
-                'most_yellow_cards': PlayerCompetitionStatsSerializer(many=True),
-                'top_goalkeepers': PlayerCompetitionStatsSerializer(many=True),
-            }
+        200: OpenApiResponse(
+            response=inline_serializer(
+                name='CompetitionDetailsResponse',
+                fields={
+                    'competition_data': CompetitionSerializer(),
+                    'team_competition_stats': TeamCompetitionStatSerializer(many=True),
+                    'top_scorers': PlayerCompetitionStatsSerializer(many=True),
+                    'top_media_players': PlayerCompetitionStatsSerializer(many=True),
+                    'most_yellow_cards': PlayerCompetitionStatsSerializer(many=True),
+                    'top_goalkeepers': PlayerCompetitionStatsSerializer(many=True),
+                }
+            ),
+            description="Successful retrieval of competition details with team stats and top players"
         ),
-        404: OpenApiTypes.OBJECT
-    },
-    examples=[
-        OpenApiExample(
-            'Error Competition Not Found',
-            value={"detail": "No Competition matches the given query."},
-            status_codes=[404]
+        404: OpenApiResponse(
+            response=inline_serializer(
+                name='CompetitionNotFoundResponse',
+                fields={
+                    'detail': serializers.CharField()
+                }
+            ),
+            description="Competition not found",
+            examples=[
+                OpenApiExample(
+                    'Competition Not Found',
+                    value={"detail": "No Competition matches the given query."},
+                    description="The competition with the provided slug does not exist"
+                )
+            ]
         )
-    ],
+    },
     auth=None,
     tags=["Competitions"]
 )
@@ -137,6 +150,7 @@ def competition_details(request,ctitle):
 
 #Return competition matches with pagination
 @extend_schema(
+    operation_id="competition_matches",
     description="Return competition matches using pagination with start and limit parameters. Also filter by season.",
     parameters=[
         OpenApiParameter(
@@ -170,22 +184,33 @@ def competition_details(request,ctitle):
         )
     ],
     responses={
-        200: inline_serializer(
-            name='CompetitionMatchesResponse',
-            fields={
-                'matches': CompetitionMatchesListSerializer(many=True),
-                'total': serializers.IntegerField()
-            }
+        200: OpenApiResponse(
+            response=inline_serializer(
+                name='CompetitionMatchesResponse',
+                fields={
+                    'matches': CompetitionMatchesListSerializer(many=True),
+                    'total': serializers.IntegerField()
+                }
+            ),
+            description="Paginated list of competition matches"
         ),
-        404: OpenApiTypes.OBJECT
-    },
-    examples=[
-        OpenApiExample(
-            'Error Competition Not Found',
-            value={"detail": "No Competition matches the given query."},
-            status_codes=[404]
+        404: OpenApiResponse(
+            response=inline_serializer(
+                name='CompetitionMatchesNotFoundResponse',
+                fields={
+                    'detail': serializers.CharField()
+                }
+            ),
+            description="Competition not found",
+            examples=[
+                OpenApiExample(
+                    'Competition Not Found',
+                    value={"detail": "No Competition matches the given query."},
+                    description="The competition with the provided slug does not exist"
+                )
+            ]
         )
-    ],
+    },
     auth=None,
     tags=["Competitions"],
 )
