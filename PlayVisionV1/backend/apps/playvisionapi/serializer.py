@@ -9,12 +9,18 @@ class TeamSerializer(serializers.ModelSerializer):
         model = Team
         fields = "__all__"
 
+class TeamShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ("title","slug","logo_url")
+
 class TeamCompetitionStatSerializer(serializers.ModelSerializer):
     team = TeamSerializer(many=False,read_only=True)
     last_results = serializers.SerializerMethodField()
     class Meta:
         model = TeamCompetitionStats
-        fields = ("team","matches_played","win","draw","lose","goals_for","goals_against","goal_difference","point","last_results")
+        fields = ("team","matches_played","win","draw","lose","goals_for","goals_against",
+                  "goal_difference","point","last_results")
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_last_results(self, obj):
@@ -25,7 +31,7 @@ class TeamCompetitionStatSerializer(serializers.ModelSerializer):
         return results
 
 class PlayerSerializer(serializers.ModelSerializer):
-    team = TeamSerializer(read_only=True)
+    team = TeamShortSerializer(read_only=True)
     class Meta:
         model = Player
         fields = "__all__"
@@ -37,7 +43,7 @@ class PlayerSerializer(serializers.ModelSerializer):
             fields[f] = self.fields[f]
         return fields
     
-class PlayerSeasonStatSerializerBasic(serializers.ModelSerializer):
+class PlayerSeasonStatSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlayerSeasonStats
         fields = "__all__"
@@ -47,21 +53,25 @@ class PlayerListDataSerializer(serializers.ModelSerializer):
     team_logo_url = serializers.CharField(source='team.logo_url', read_only=True)
     class Meta:
         model = Player
-        fields = ("slug","pname","lastname","common_name","nationality_flag","position","team_name","team_logo_url")
+        fields = ("slug","common_name","nationality_flag","position","team_name","team_logo_url")
 
-class PlayerSeasonStatsSerializer(serializers.ModelSerializer):
+class PlayerSeasonStatsListWithCountryFlagSerializer(serializers.ModelSerializer):
+    player_slug = serializers.CharField(source='player.slug', read_only=True)
+    player_common_name = serializers.CharField(source='player.common_name', read_only=True) 
+    country_flag = serializers.CharField(source='player.nationality_flag', read_only=True)
+    class Meta:
+        model = PlayerSeasonStats
+        fields = ("player_slug","player_common_name","country_flag","matches_played",
+                  "minutes_played", "goals", "assists", "yellow_cards", "red_cards",
+                   "correct_passes_media","media")
+        
+class PlayerSeasonStatsListWithTeamDataSerializer(serializers.ModelSerializer):
     player = PlayerListDataSerializer(read_only=True)
     class Meta:
         model = PlayerSeasonStats
-        fields = "__all__"
-        extra_field = ["player"]
-    
-    def get_fields(self):
-        fields = super().get_fields()
-        for f in getattr(self.Meta,"extra_fields",[]):
-            fields[f] = self.fields[f]
-        return fields
-
+        fields = ("player","matches_played","minutes_played", "goals", "assists",
+                  "yellow_cards", "red_cards","correct_passes_media","media")
+        
 class PlayerCompetitionStatsSerializer(serializers.ModelSerializer):
     player = PlayerListDataSerializer(read_only=True)
     class Meta:
@@ -74,7 +84,34 @@ class PlayerCompetitionStatsSerializer(serializers.ModelSerializer):
         for f in getattr(self.Meta,"extra_fields",[]):
             fields[f] = self.fields[f]
         return fields
+    
+class PlayerTopScorerSerializer(serializers.ModelSerializer):
+    player = PlayerListDataSerializer(read_only=True)
+    class Meta:
+        model = PlayerSeasonStats
+        fields = ("player","matches_played","minutes_played","goals","penalty_goals",
+                  "head_goals","freekick_goals","media")
+        
+class PlayerTopMediaSerializer(serializers.ModelSerializer):
+    player = PlayerListDataSerializer(read_only=True)
+    class Meta:
+        model = PlayerSeasonStats
+        fields = ("player","matches_played","minutes_played","goals","assists",
+                  "yellow_cards","red_cards","correct_passes_media","media")
+        
+class PlayerMostYellowCardsSerializer(serializers.ModelSerializer):
+    player = PlayerListDataSerializer(read_only=True)
+    class Meta:
+        model = PlayerSeasonStats
+        fields = ("player","matches_played","minutes_played","yellow_cards",
+                  "red_cards","media")
 
+class PlayerTopGoalkeepersSerializer(serializers.ModelSerializer):
+    player = PlayerListDataSerializer(read_only=True)
+    class Meta:
+        model = PlayerSeasonStats
+        fields = ("player","matches_played","minutes_played","cleansheets",
+                  "media")
 
 class CompetitionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -82,18 +119,19 @@ class CompetitionSerializer(serializers.ModelSerializer):
         fields = ("id", "title","slug", "country", "competition_type","logo_url")
 
 class CompetitionMatchesListSerializer(serializers.ModelSerializer):
-    home_team = TeamSerializer(read_only=True)
-    away_team = TeamSerializer(read_only=True)
+    home_team = TeamShortSerializer(read_only=True)
+    away_team = TeamShortSerializer(read_only=True)
     class Meta:
         model = Match
-        fields = ("id","match_date","home_goals","away_goals","stadium","description","status","home_team","away_team")
+        fields = ("id","match_date","home_goals","away_goals","stadium","description",
+                  "status","home_team","away_team")
 
 class HomeCompetitionsMatchesSerializer(serializers.ModelSerializer):
     competition_matches = CompetitionMatchesListSerializer(many=True,read_only=True)
     country_logo_url = serializers.CharField(source='country.flag_url', read_only=True)
     class Meta:
         model = Competition
-        fields = ("id", "title","slug", "country","country_logo_url","competition_matches")
+        fields = ("id", "title","slug","country_logo_url","competition_matches")
         
 class CountryCompetitionSerializer(serializers.ModelSerializer):
     competitions = CompetitionSerializer(many=True, read_only=True, source='competition_country')
@@ -107,12 +145,13 @@ class CompetitionListSerializer(serializers.ModelSerializer):
         fields = ("title","slug","logo_url")
 
 class MatchSerializer(serializers.ModelSerializer):
-    home_team = TeamSerializer(read_only=True)
-    away_team = TeamSerializer(read_only=True)
+    home_team = TeamShortSerializer(read_only=True)
+    away_team = TeamShortSerializer(read_only=True)
     competition = CompetitionListSerializer(read_only=True)
     class Meta:
         model = Match
-        fields = ("match_date","home_goals","away_goals","stadium","start_time","status","description","home_team","away_team","competition")
+        fields = ("match_date","home_goals","away_goals","stadium","start_time",
+                  "status","description","home_team","away_team","competition")
 
 class MatchEventSerializer(serializers.ModelSerializer):
     player_name = PlayerListDataSerializer(read_only=True, source='player')
@@ -120,15 +159,17 @@ class MatchEventSerializer(serializers.ModelSerializer):
     out_player = PlayerListDataSerializer(read_only=True, source='player_out')
     class Meta:
         model = MatchEvent
-        fields = ("event_type","minute","description","player_name","assist_player","out_player")
+        fields = ("event_type","minute","description","player_name","assist_player",
+                  "out_player")
 
 class MatchStatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchStats
         fields = ("home_shots","away_shots","home_shots_ontarget","away_shots_ontarget",
                   "home_corners","away_corners","home_possession","away_possession",
-                  "home_passes","away_passes","home_fouls","away_fouls","home_yellow_cards","away_yellow_cards",
-                  "home_red_cards","away_red_cards","home_offsides","away_offsides")
+                  "home_passes","away_passes","home_fouls","away_fouls",
+                  "home_yellow_cards","away_yellow_cards","home_red_cards",
+                  "away_red_cards","home_offsides","away_offsides")
 
 class PlayerLineupSerializer(serializers.ModelSerializer):
     pname= serializers.CharField(source='player.common_name', read_only=True)
@@ -144,3 +185,14 @@ class TeamInsightsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamInsights
         fields = ("insight_type","title","description","category")
+
+class SearchPlayerItemSerializer(serializers.ModelSerializer):
+    team_name = serializers.CharField(source='team.title', read_only=True)
+    class Meta:
+        model = Player
+        fields = ("slug","pname","lastname","position","nationality_flag","team_name")
+
+class SearchTeamItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ("slug","title","logo_url")

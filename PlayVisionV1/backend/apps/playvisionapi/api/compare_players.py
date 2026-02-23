@@ -4,7 +4,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExampl
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 from ..models import Player, Season , PlayerSeasonStats
-from ..serializer import PlayerSerializer, PlayerSeasonStatSerializerBasic
+from ..serializer import PlayerSerializer, PlayerSeasonStatSerializer
 
 #Return comparison data for two players
 @extend_schema(
@@ -42,9 +42,9 @@ from ..serializer import PlayerSerializer, PlayerSeasonStatSerializerBasic
                 name='ComparePlayersResponse',
                 fields={
                     'player1_data': PlayerSerializer(),
-                    'player1_season_stats': PlayerSeasonStatSerializerBasic(),
+                    'player1_season_stats': PlayerSeasonStatSerializer(),
                     'player2_data': PlayerSerializer(),
-                    'player2_season_stats': PlayerSeasonStatSerializerBasic()
+                    'player2_season_stats': PlayerSeasonStatSerializer()
                 }
             ),
             description="Successful comparison of two players",
@@ -144,9 +144,9 @@ def compare_players(request):
     player2_season_stats_qs = get_object_or_404(PlayerSeasonStats, player = player2_qs,season = season_obj)
 
     player_serializer = PlayerSerializer(player1_qs,many=False)
-    player_season_stat_serializer = PlayerSeasonStatSerializerBasic(player1_season_stats_qs,many =False)
+    player_season_stat_serializer = PlayerSeasonStatSerializer(player1_season_stats_qs,many =False)
     player2_serializer = PlayerSerializer(player2_qs,many=False)
-    player2_season_stat_serializer = PlayerSeasonStatSerializerBasic(player2_season_stats_qs,many =False)
+    player2_season_stat_serializer = PlayerSeasonStatSerializer(player2_season_stats_qs,many =False)
 
     return Response({
         "player1_data" : player_serializer.data,

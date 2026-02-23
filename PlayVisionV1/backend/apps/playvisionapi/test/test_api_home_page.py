@@ -37,9 +37,9 @@ class TestHomePageAPI:
     ):
         
         create_players_with_stats(
-            player1_name="Top Scorer",
+            player1_common_name="Top Scorer",
             player1_slug="top-scorer",
-            player2_name="Second Scorer",
+            player2_common_name="Second Scorer",
             player2_slug="second-scorer",
         )
 
@@ -77,8 +77,8 @@ class TestHomePageAPI:
         season = 2023
 
         create_players_with_stats(
-            player1_name="Player One",
-            player2_name="Player Two",
+            player1_common_name="Player One",
+            player2_common_name="Player Two",
             season_year=season
         )
         response = api_client.get(f"{self.URL}?date=2023-08-17")

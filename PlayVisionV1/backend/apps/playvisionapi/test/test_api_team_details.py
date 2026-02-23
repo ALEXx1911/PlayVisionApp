@@ -96,7 +96,8 @@ class TestTeamAPI:
         assert team_response.status_code == status.HTTP_200_OK
         assert 'player_stats' in team_response.data
         assert len(team_response.data['player_stats']) == len(players_list)
-        assert team_response.data['player_stats'][0]['player']['pname'] == players_list['player1']['pname']
+        print(team_response.data['player_stats'][0])
+        assert team_response.data['player_stats'][0]['player_common_name'] == players_list['player1']['common_name']
     
     def test_team_details_not_found(
             self, 

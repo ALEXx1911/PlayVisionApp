@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema, OpenApiResponse , OpenApiParameter, OpenApiExample, inline_serializer
 from ..models import Player, Team, Competition
-from ..serializer import PlayerSerializer, TeamSerializer, CompetitionSerializer
+from ..serializer import PlayerSerializer, TeamSerializer, CompetitionSerializer,\
+    SearchPlayerItemSerializer, SearchTeamItemSerializer
 
 #Return search results for players, teams, and competitions
 @extend_schema(
@@ -124,8 +125,8 @@ def search_page(request):
     if not competition_obj.exists():
         competition_obj = Competition.objects.filter(title__icontains=searchParam)
 
-    player_serializer = PlayerSerializer(player_obj,many=True)
-    team_serializer = TeamSerializer(team_obj,many=True)
+    player_serializer = SearchPlayerItemSerializer(player_obj,many=True)
+    team_serializer = SearchTeamItemSerializer(team_obj,many=True)
     competition_serializer = CompetitionSerializer(competition_obj,many=True)
     search_results = []
     if player_serializer.data:

@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, inline_serializer
 from ..models import Player, Team, Competition
-from ..serializer import PlayerSerializer, TeamSerializer, CompetitionSerializer
+from ..serializer import SearchPlayerItemSerializer, SearchTeamItemSerializer, CompetitionSerializer
 
 #Return most searched items including players, teams, and competitions
 @extend_schema(
@@ -12,8 +12,8 @@ from ..serializer import PlayerSerializer, TeamSerializer, CompetitionSerializer
             name='MostSearchedItemsResponse',
             fields={
                 'most_searched_competitions': CompetitionSerializer(many=True),
-                'most_searched_teams': TeamSerializer(many=True),
-                'most_searched_players': PlayerSerializer(many=True)
+                'most_searched_teams': SearchTeamItemSerializer(many=True),
+                'most_searched_players': SearchPlayerItemSerializer(many=True)
             }
         )
     },
@@ -28,8 +28,8 @@ def most_searched_items(request):
     most_searched_competitions_qs = Competition.objects.all()[:5]
 
     most_searched_competitions_serializer = CompetitionSerializer(most_searched_competitions_qs,many=True)
-    most_searched_teams_serializer = TeamSerializer(most_searched_teams_qs,many=True)
-    most_searched_players_serializer = PlayerSerializer(most_searched_players_qs,many=True)
+    most_searched_teams_serializer = SearchTeamItemSerializer(most_searched_teams_qs,many=True)
+    most_searched_players_serializer = SearchPlayerItemSerializer(most_searched_players_qs,many=True)
 
     return Response({
         "most_searched_competitions": most_searched_competitions_serializer.data,
@@ -44,7 +44,7 @@ def most_searched_items(request):
         200: inline_serializer(
             name='MostSearchedPlayersResponse',
             fields={
-                'most_searched_players': PlayerSerializer(many=True)
+                'most_searched_players': SearchPlayerItemSerializer(many=True)
             }
         )
     },
@@ -55,7 +55,7 @@ def most_searched_items(request):
 def most_searched_players(request):
     # In the future, implement logic to track and retrieve most searched players
     most_searched_players_qs = Player.objects.all()[:10]
-    most_searched_players_serializer = PlayerSerializer(most_searched_players_qs,many=True)
+    most_searched_players_serializer = SearchPlayerItemSerializer(most_searched_players_qs,many=True)
 
     return Response({
         "most_searched_players": most_searched_players_serializer.data,

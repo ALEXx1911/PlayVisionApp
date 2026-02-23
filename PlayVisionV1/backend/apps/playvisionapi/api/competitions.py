@@ -6,7 +6,9 @@ from rest_framework import serializers
 from ..models import Competition, Country, Season, TeamCompetitionStats, Match, PlayerCompetitionStats
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from ..serializer import CompetitionSerializer, TeamCompetitionStatSerializer, PlayerCompetitionStatsSerializer, CountryCompetitionSerializer, CompetitionMatchesListSerializer
+from ..serializer import CompetitionSerializer, TeamCompetitionStatSerializer, \
+    PlayerTopScorerSerializer, PlayerTopMediaSerializer , PlayerMostYellowCardsSerializer,\
+    PlayerTopGoalkeepersSerializer, CountryCompetitionSerializer, CompetitionMatchesListSerializer
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 #Return list of competitions grouped by country
@@ -64,10 +66,10 @@ def competition_list(request):
                 fields={
                     'competition_data': CompetitionSerializer(),
                     'team_competition_stats': TeamCompetitionStatSerializer(many=True),
-                    'top_scorers': PlayerCompetitionStatsSerializer(many=True),
-                    'top_media_players': PlayerCompetitionStatsSerializer(many=True),
-                    'most_yellow_cards': PlayerCompetitionStatsSerializer(many=True),
-                    'top_goalkeepers': PlayerCompetitionStatsSerializer(many=True),
+                    'top_scorers': PlayerTopScorerSerializer(many=True),
+                    'top_media_players': PlayerTopMediaSerializer(many=True),
+                    'most_yellow_cards': PlayerMostYellowCardsSerializer(many=True),
+                    'top_goalkeepers': PlayerTopGoalkeepersSerializer(many=True),
                 }
             ),
             description="Successful retrieval of competition details with team stats and top players"
@@ -134,10 +136,10 @@ def competition_details(request,ctitle):
         "last_matches_by_team": last_matches_by_team
     })
     competition_serializer = CompetitionSerializer(competition_qs)
-    top_goals_player_serializer = PlayerCompetitionStatsSerializer(top_goals_player_qs,many=True)
-    top_media_player_serializer = PlayerCompetitionStatsSerializer(top_media_player_qs,many=True)
-    most_yellow_card_serializer = PlayerCompetitionStatsSerializer(most_yellow_card_qs,many=True)
-    top_goalkeepers_serializer = PlayerCompetitionStatsSerializer(top_goalkeepers_qs,many=True)
+    top_goals_player_serializer = PlayerTopScorerSerializer(top_goals_player_qs,many=True)
+    top_media_player_serializer = PlayerTopMediaSerializer(top_media_player_qs,many=True)
+    most_yellow_card_serializer = PlayerMostYellowCardsSerializer(most_yellow_card_qs,many=True)
+    top_goalkeepers_serializer = PlayerTopGoalkeepersSerializer(top_goalkeepers_qs,many=True)
     
     return Response({
         "competition_data": competition_serializer.data,
