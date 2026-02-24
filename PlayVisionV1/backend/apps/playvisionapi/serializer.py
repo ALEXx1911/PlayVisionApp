@@ -194,6 +194,8 @@ class SearchPlayerItemSerializer(serializers.ModelSerializer):
         fields = ("slug","pname","lastname","position","nationality_flag","team_name")
 
 class SearchTeamItemSerializer(serializers.ModelSerializer):
+    country_flag_url = serializers.ImageField(source='country.flag_url', read_only=True)
+    national_league = serializers.CharField(source='competition.title', read_only=True)
     class Meta:
         model = Team
-        fields = ("slug","title","logo_url")
+        fields = ("slug","title","logo_url","country_flag_url","national_league")

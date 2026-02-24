@@ -11,5 +11,6 @@ export interface TeamSearchResultItem{
     slug: string,
     title: string,
     logo_url: string,
-    country_flag: string,
+    national_league: string,
+    country_flag_url: string,
 }
