@@ -1,3 +1,7 @@
+import { PlayerSearchResultItem, TeamSearchResultItem } from "./most-searched-models/most-searched-items";
+import { MostYellowCardData, TopGoalkeeperData, TopMediaPlayerData, TopScorersData } from "./player-models/player-models";
+import { PlayersListWithFlag } from "./team-models/team-models";
+
 export interface Player{
     pname: string,
     lastname: string,
@@ -40,7 +44,8 @@ export interface TeamModel{
 export interface TeamDataFromAPI{
     team: TeamModel,
     insights: TeamInsights[],
-    player_stats: PlayerStat[],
+    player_stats: PlayersListWithFlag[],
+    team_lineup: PlayerSlotLineup[],
     matches: Match[],
     last_five_results: string[],
 }
@@ -193,18 +198,18 @@ export interface CompetitionMatchesFromAPI{
 export interface CompetitionDataFromAPI{
     competition_data:Competition,
     team_competition_stats: TeamCompetitionStat[],
-    top_scorers: PlayerStat[],
-    most_yellow_cards: PlayerStat[],
-    top_media_players: PlayerStat[],
-    top_goalkeepers: PlayerStat[],
+    top_scorers: TopScorersData[],
+    most_yellow_cards: MostYellowCardData[],
+    top_media_players: TopMediaPlayerData[],
+    top_goalkeepers: TopGoalkeeperData[],
 }
 
 export interface HomeDataAPI{
     competitions: CompetitionMatches[],
-    top_scorers: PlayerStat[],
-    most_yellow_cards: PlayerStat[],
-    top_media_players: PlayerStat[],
-    top_goalkeepers: PlayerStat[],
+    top_scorers: TopScorersData[],
+    most_yellow_cards: MostYellowCardData[],
+    top_media_players: TopMediaPlayerData[],
+    top_goalkeepers: TopGoalkeeperData[],
     top_players_lineup: PlayerSlotLineup[],
 }
 
@@ -223,11 +228,11 @@ export interface SearchTermsData{
     search_results: [
         {
             field: string,
-            players_data: PlayerDetails[]
+            players_data: PlayerSearchResultItem[]
         },
         {
             field: string,
-            teams_data: TeamModel[]
+            teams_data: TeamSearchResultItem[]
         },
         {
             field: string,
@@ -244,11 +249,11 @@ export interface PlayerCompareDataFromAPI{
 }
 
 export interface MostSearchedItems{
-    most_searched_players: PlayerDetails[],
-    most_searched_teams:  TeamModel[],
+    most_searched_players: PlayerSearchResultItem[],
+    most_searched_teams:  TeamSearchResultItem[],
     most_searched_competitions: Competition[],
 }
 
 export interface MostSearchedPlayers{
-    most_searched_players: PlayerDetails[],
+    most_searched_players: PlayerSearchResultItem[],
 }

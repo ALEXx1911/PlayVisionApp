@@ -34,7 +34,7 @@ export class TeamPage {
     const data = this.teamData$();
     if (!data) return [];
 
-    return mapPlayersDataToFormationSlots(data.team.preferred_formation, data.player_stats);
+    return mapPlayersDataToFormationSlots(data.team.preferred_formation, data.team_lineup);
   });
 
 }

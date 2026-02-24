@@ -1,5 +1,5 @@
 @if(matchData$ | async; as matchData) {
-    @switch (matchData.data.status) {
+    @switch (matchData.match_data.status) {
         @case ("Finished") {
             <app-match-finished [matchData]="matchData"></app-match-finished>
         }

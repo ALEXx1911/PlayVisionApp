@@ -40,6 +40,9 @@ class Team(models.Model):
     coach = models.CharField(max_length=200, null=True)
     preferred_formation = models.CharField(max_length=100,null=True, default="4-3-3")
 
+    country = models.ForeignKey("Country",related_name="team_country",on_delete=models.CASCADE,null=True)
+    competition = models.ForeignKey(Competition,related_name="team_national_competition",on_delete=models.CASCADE,null=True)
+
     def __str__(self):
         return self.title
     
@@ -145,7 +148,7 @@ class Player(models.Model):
     age = models.IntegerField()
     height = models.DecimalField(decimal_places=2,max_digits=5,null=True,default=0)
     nationality = models.CharField(max_length=100)
-    nationality_flag = models.ImageField(upload_to="flags/")
+    nationality_flag = models.ImageField(upload_to="countryflags/")
     position = models.CharField(max_length=100,choices=PlayerPosition.choices, default=PlayerPosition.CM)
     foot = models.CharField(max_length=100)
     team_dorsal = models.IntegerField()

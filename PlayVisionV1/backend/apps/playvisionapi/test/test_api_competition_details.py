@@ -30,7 +30,7 @@ class TestCompetitionAPI:
             create_players_with_competition_stats
         ):
         players_data = create_players_with_competition_stats(
-            player1_name="Leo",
+            player1_common_name="Leo",
             player1_slug="leo",)
         season = 2024
 
@@ -39,7 +39,7 @@ class TestCompetitionAPI:
         assert response.status_code == status.HTTP_200_OK
         assert 'top_scorers' in response.data
         assert len(response.data['top_scorers']) >= 1
-        assert response.data['top_scorers'][0]['player']['pname'] == players_data['player1']['pname']
+        assert response.data['top_scorers'][0]['player']['common_name'] == players_data['player1']['common_name']
 
     def test_competition_include_top_media_players(
             self, 
@@ -48,9 +48,9 @@ class TestCompetitionAPI:
         ):
         season = 2024
         players_list = create_players_with_competition_stats(
-            player1_name="Cristiano",
+            player1_common_name="Cristiano",
             player1_slug="cristiano",
-            player2_name="Neymar",
+            player2_common_name="Neymar",
             player2_slug="neymar",
         )
 
@@ -68,9 +68,9 @@ class TestCompetitionAPI:
         ):
         season = 2024
         players_data = create_players_with_competition_stats(
-            player1_name="Sergio",
+            player1_common_name="Sergio",
             player1_slug="sergio",
-            player2_name="Carlos",
+            player2_common_name="Carlos",
             player2_slug="carlos",
         )
 
@@ -89,9 +89,9 @@ class TestCompetitionAPI:
             ):
         season = 2024
         players_list = create_players_with_competition_stats(
-            player1_name="Manuel",
+            player1_common_name="Manuel",
             player1_slug="manuel",
-            player2_name="Jan",
+            player2_common_name="Jan",
             player2_slug="jan",
         )
 
@@ -116,19 +116,23 @@ def create_players_with_competition_stats(
 ):
     def _make(
             player1_name="Player One", 
+            player1_common_name="Player One Common",
             player1_slug="player-one",
             player2_name="Player Two", 
+            player2_common_name="Player Two Common",
             player2_slug="player-two",
             season_year=2024
         ):
         competition = competition_setup()
         player1 = player_factory(
             pname=player1_name,
+            common_name=player1_common_name,
             slug=player1_slug,
             position="DC"
         )
         player2 = player_factory(
             pname=player2_name,
+            common_name=player2_common_name,
             slug=player2_slug,
             position="GK"
         )
@@ -146,12 +150,12 @@ def create_players_with_competition_stats(
         )
         players_results = {
             "player1": {
-                "pname": player1.pname,
+                "common_name": player1.common_name,
                 "slug": player1.slug,
                 "competition_stats": player1_competition_stats
             },
             "player2": {
-                "pname": player2.pname,
+                "common_name": player2.common_name,
                 "slug": player2.slug,
                 "competition_stats": player2_competition_stats
             }

@@ -4,7 +4,7 @@ from rest_framework import serializers
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse, inline_serializer
 from django.shortcuts import get_object_or_404
 from ..models import Player, Season, PlayerSeasonStats, PlayerCompetitionStats
-from ..serializer import PlayerSerializer, PlayerSeasonStatsSerializer, PlayerCompetitionStatsSerializer
+from ..serializer import PlayerSerializer, PlayerSeasonStatSerializer, PlayerCompetitionStatsSerializer
 
 #Return detailed information about a specific player
 @extend_schema(
@@ -34,7 +34,7 @@ from ..serializer import PlayerSerializer, PlayerSeasonStatsSerializer, PlayerCo
             name='PlayerDetailsResponse',
             fields={
                 'player_data': PlayerSerializer(),
-                'season_stats': PlayerSeasonStatsSerializer(many=True),
+                'season_stats': PlayerSeasonStatSerializer(many=True),
                 'competition_stats': PlayerCompetitionStatsSerializer(many=True)
             }
         ),
@@ -72,7 +72,7 @@ def player_details(request,pname):
     player_competition_stats_qs = PlayerCompetitionStats.objects.filter(player = player_qs, season = season_obj)
     
     player_serializer = PlayerSerializer(player_qs,many=False)
-    player_season_stat_serializer = PlayerSeasonStatsSerializer(player_season_stats_qs,many =True)
+    player_season_stat_serializer = PlayerSeasonStatSerializer(player_season_stats_qs,many =True)
     player_competition_stats_serializer = PlayerCompetitionStatsSerializer(player_competition_stats_qs,many = True)
     return Response({
         "player_data" : player_serializer.data,

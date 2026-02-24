@@ -6,7 +6,8 @@ from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.db.models import Prefetch
 from ..models import PlayerSeasonStats, Season, Match, Competition
-from ..serializer import PlayerSeasonStatsSerializer, HomeCompetitionsMatchesSerializer, PlayerLineupSerializer
+from ..serializer import PlayerTopScorerSerializer,PlayerTopMediaSerializer,\
+PlayerTopGoalkeepersSerializer,PlayerMostYellowCardsSerializer, HomeCompetitionsMatchesSerializer, PlayerLineupSerializer
 from ..utils.utils import FORMATION_POSITIONS
 
 #Return homepage data which includes top season players, competitions and matches of the day
@@ -30,10 +31,10 @@ from ..utils.utils import FORMATION_POSITIONS
               name = 'HomePageResponse',
               fields={
                     'competitions': HomeCompetitionsMatchesSerializer(many=True),
-                    'top_scorers': PlayerSeasonStatsSerializer(many=True),
-                    'top_media': PlayerSeasonStatsSerializer(many=True),
-                    'most_yellow_cards': PlayerSeasonStatsSerializer(many=True),
-                    'top_goalkeepers': PlayerSeasonStatsSerializer(many=True),
+                    'top_scorers': PlayerTopScorerSerializer(many=True),
+                    'top_media': PlayerTopMediaSerializer(many=True),
+                    'most_yellow_cards': PlayerMostYellowCardsSerializer(many=True),
+                    'top_goalkeepers': PlayerTopGoalkeepersSerializer(many=True),
                     'top_player_lineup': PlayerLineupSerializer(many=True)
               }
          ),
@@ -103,12 +104,12 @@ def homepage(request):
          competition_qs, 
          many=True, 
          context ={
-              "request":request
+            "request":request
         })
-    top_goals_player_serializer = PlayerSeasonStatsSerializer(top_goals_player_qs,many=True)
-    top_media_player_serializer = PlayerSeasonStatsSerializer(top_media_player_qs,many=True)
-    most_yellow_card_serializer = PlayerSeasonStatsSerializer(most_yellow_card_qs,many=True)
-    top_goalkeepers_serializer = PlayerSeasonStatsSerializer(top_goalkeepers_qs,many=True)
+    top_goals_player_serializer = PlayerTopScorerSerializer(top_goals_player_qs,many=True)
+    top_media_player_serializer = PlayerTopMediaSerializer(top_media_player_qs,many=True)
+    most_yellow_card_serializer = PlayerMostYellowCardsSerializer(most_yellow_card_qs,many=True)
+    top_goalkeepers_serializer = PlayerTopGoalkeepersSerializer(top_goalkeepers_qs,many=True)
     top_player_lineup_serializer = PlayerLineupSerializer(top_player_lineup,many=True)
     
     return Response({

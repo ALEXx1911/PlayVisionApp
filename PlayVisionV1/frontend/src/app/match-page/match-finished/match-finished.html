@@ -1,30 +1,30 @@
     <div class="flex flex-col items-center px-1">
         <div class="w-full sm:w-3/4 text-white my-2.5 h-32 rounded-xl overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]">
             <div class="w-full h-full flex items-center justify-center gap-10">
-                <img class=" w-30 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{matchData().data.competition.logo_url}}"/>
+                <img class=" w-30 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{matchData().match_data.competition.logo_url}}"/>
                 <div class="font-semibold tracking-[0] leading-[normal]">
                     <div class="flex items-center gap-5 mb-1">
                         <span class="text-xl">Match data:</span>
                     </div>
-                    <p class="text-[1.1rem]">Stadium: {{matchData().data.stadium}}</p>
-                    <p class="text-[1.1rem]">Match Date: {{matchData().data.match_date}}</p>
-                    <p class="text-[1.1rem]">Round: {{matchData().data.description}}</p>
+                    <p class="text-[1.1rem]">Stadium: {{matchData().match_data.stadium}}</p>
+                    <p class="text-[1.1rem]">Match Date: {{matchData().match_data.match_date}}</p>
+                    <p class="text-[1.1rem]">Round: {{matchData().match_data.description}}</p>
                 </div>
             </div>
         </div>
         <div class="w-full sm:w-3/4 font-bold text-white mt-2.5 h-[fit] rounded-t-md overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]
             flex text-sm p-2">
             <div class="w-full h-full flex flex-col items-center">
-                <img src="{{matchData().data.home_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
-                <span [routerLink]="['/teams',matchData().data.home_team.title]" class="text-xl cursor-pointer" >{{matchData().data.home_team.title}}</span>
+                <img src="{{matchData().match_data.home_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
+                <span [routerLink]="['/teams',matchData().match_data.home_team.title]" class="text-xl cursor-pointer" >{{matchData().match_data.home_team.title}}</span>
             </div>
             <div class="w-full h-full flex flex-col items-center mt-1">
-                <p class="text-xl mb-1">{{matchData().data.status}}</p>
-                <p class="text-2xl">{{matchData().data.home_goals}} - {{matchData().data.away_goals}}</p>
+                <p class="text-xl mb-1">{{matchData().match_data.status}}</p>
+                <p class="text-2xl">{{matchData().match_data.home_goals}} - {{matchData().match_data.away_goals}}</p>
             </div>
             <div class="w-full h-full flex flex-col items-center">
-                <img src="{{matchData().data.away_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
-                <span [routerLink]="['/teams',matchData().data.away_team.title]"  class="text-xl cursor-pointer">{{matchData().data.away_team.title}}</span>
+                <img src="{{matchData().match_data.away_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
+                <span [routerLink]="['/teams',matchData().match_data.away_team.title]"  class="text-xl cursor-pointer">{{matchData().match_data.away_team.title}}</span>
             </div>
         </div>
         @if(finishedMatch$ | async; as finishedMatch) {
@@ -33,7 +33,7 @@
                     <div class="w-full grid grid-cols-3 grid-rows-1 justify-items-center">
                                 @switch (eventData.event_type) {
                                     @case ('Goal') {
-                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.data.home_team.title 
+                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.match_data.home_team.title 
                                     ? 'col-start-1 col-end-2' : 'col-start-3 col-end-4'}}">    
                                         <p class="mr-1.5 font-semibold">{{eventData.player_name.pname}}</p>
                                         <mat-icon [fontIcon]="'sports_soccer'" class="mb-0.5"></mat-icon>
@@ -42,7 +42,7 @@
 
                                 }
                                 @case ('Yellow Card') {
-                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.data.home_team.title 
+                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.match_data.home_team.title 
                                     ? 'col-start-1 col-end-2' : 'col-start-3 col-end-4'}}">
                                         <p class="mr-1.5 font-semibold">{{eventData.player_name.pname}}</p>
                                         <img src="yellow_card.png" alt="" class="w-5 h-6.5 mb-0.5 border-2 border-black"/>
@@ -50,7 +50,7 @@
                                     <p class="row-start-1 font-bold row-end-2 col-start-2 col-end-3 sm:text-lg">{{eventData.minute}}'</p>
                                 }
                                 @case ('Red Card') {
-                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.data.home_team.title 
+                                    <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.match_data.home_team.title 
                                     ? 'col-start-1 col-end-2' : 'col-start-3 col-end-4'}}">
                                         <p class="mr-1.5 font-semibold">{{eventData.player_name.pname}}</p>
                                         <img src="red_card.png" alt="" class="w-5 h-6.5 mb-0.5 border-2 border-black"/>
@@ -59,7 +59,7 @@
                                 }
                                 @case ('Substitution') {
                                     @if (showPlayersChanges() == true) {
-                                        <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.data.home_team.title 
+                                        <div class="row-start-1 row-end-2 sm:text-lg flex flex-row items-end {{eventData.player_name.team_name == finishedMatch.match_data.home_team.title 
                                         ? 'col-start-1 col-end-2' : 'col-start-3 col-end-4'}}">
                                             <div class="w-full flex flex-col items-center">
                                                 <div class="flex flex-row">
