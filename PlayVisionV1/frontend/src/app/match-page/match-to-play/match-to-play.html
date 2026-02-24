@@ -2,34 +2,34 @@
     @if(toPlayMatchData$ | async; as matchData){
         <div class="w-full sm:w-3/4 text-white my-2.5 h-32 rounded-xl overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]">
             <div class="w-full h-full flex items-center justify-center gap-10">
-                <img class=" w-30 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{matchData.data.competition.logo_url}}"/>
+                <img class=" w-30 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{matchData.match_data.competition.logo_url}}"/>
                 <div class="font-semibold tracking-[0] leading-[normal]">
                     <div class="flex items-center gap-5 mb-1">
                         <span class="text-xl">Match data:</span>
                     </div>
-                    <p class="text-[1.1rem]">Competition: {{matchData.data.competition.title}}</p>
-                    <p class="text-[1.1rem]">Match Date: {{matchData.data.match_date}}</p>
-                    <p class="text-[1.1rem]">Round: {{matchData.data.description}}</p>
+                    <p class="text-[1.1rem]">Competition: {{matchData.match_data.competition.title}}</p>
+                    <p class="text-[1.1rem]">Match Date: {{matchData.match_data.match_date}}</p>
+                    <p class="text-[1.1rem]">Round: {{matchData.match_data.description}}</p>
                 </div>
             </div>
         </div>
         <div class="w-full sm:w-3/4 font-bold text-white mt-2.5 h-[fit] rounded-md overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]
                     flex text-sm p-2">
                     <div class="w-full h-full flex flex-col items-center">
-                        <img src="{{matchData.data.home_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
-                        <span [routerLink]="['/teams',matchData.data.home_team]" class="text-xl cursor-pointer" >
-                            {{matchData.data.home_team.title}}
+                        <img src="{{matchData.match_data.home_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
+                        <span [routerLink]="['/teams',matchData.match_data.home_team]" class="text-xl cursor-pointer" >
+                            {{matchData.match_data.home_team.title}}
                         </span>
                     </div>
                     <div class="w-full h-full flex flex-col items-center mt-1">
-                        <p class="text-xl mb-1">{{matchData.data.status}}</p>
-                        <p class="text-xl mb-1">{{matchData.data.start_time.substring(0,5)}}</p>
-                        <p class="text-xl mb-1">{{matchData.data.stadium}}</p>
+                        <p class="text-xl mb-1">{{matchData.match_data.status}}</p>
+                        <p class="text-xl mb-1">{{matchData.match_data.start_time.substring(0,5)}}</p>
+                        <p class="text-xl mb-1">{{matchData.match_data.stadium}}</p>
                     </div>
                     <div class="w-full h-full flex flex-col items-center">
-                        <img src="{{matchData.data.away_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
-                        <span [routerLink]="['/teams',matchData.data.away_team.title]"  class="text-xl cursor-pointer">
-                            {{matchData.data.away_team.title}}
+                        <img src="{{matchData.match_data.away_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
+                        <span [routerLink]="['/teams',matchData.match_data.away_team.title]"  class="text-xl cursor-pointer">
+                            {{matchData.match_data.away_team.title}}
                         </span>
                     </div>
         </div>
@@ -50,9 +50,9 @@
                     <tr class="text-center bg-red-200">
                         <td>1</td>
                         <td>
-                            <img src="{{matchData.data.home_team.logo_url}}" alt="Logo" class="w-6 h-6 inline-block"/>
+                            <img src="{{matchData.match_data.home_team.logo_url}}" alt="Logo" class="w-6 h-6 inline-block"/>
                         </td>
-                        <td>{{matchData.data.home_team.title}}</td>
+                        <td>{{matchData.match_data.home_team.title}}</td>
                         <td>{{matchData.home_team_stats.point}}</td>
                         <td>{{matchData.home_team_stats.matches_played}}</td>
                         <td>{{matchData.home_team_stats.win}}</td>
@@ -78,10 +78,10 @@
                     <tr class="text-center text-[1rem] font-semibold bg-blue-200">
                         <td>1</td>
                         <td>
-                            <img src="{{matchData.data.away_team.logo_url}}" alt="Logo" class="w-6 h-6 inline-block"/>
+                            <img src="{{matchData.match_data.away_team.logo_url}}" alt="Logo" class="w-6 h-6 inline-block"/>
                             
                         </td>
-                        <td>{{matchData.data.away_team.title}}</td>
+                        <td>{{matchData.match_data.away_team.title}}</td>
                         <td>{{matchData.away_team_stats.point}}</td>
                         <td>{{matchData.away_team_stats.matches_played}}</td>
                         <td>{{matchData.away_team_stats.win}}</td>

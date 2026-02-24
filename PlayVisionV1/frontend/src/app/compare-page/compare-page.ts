@@ -1,11 +1,12 @@
 import { Component, computed, inject, Signal, signal } from '@angular/core';
 import { SearchBar } from "../search-page/components/search-bar/search-bar";
 import { AppService } from '../services/app-services/app-service';
-import { PlayerDetails, SearchTermsData } from '../models/app-models';
+import { SearchTermsData } from '../models/app-models';
 import { DEFAULT_PLAYER, DEFAULT_SEARCH_RESULTS } from './utils/utils';
 import { AsyncPipe } from '@angular/common';
 import { MatIcon } from "@angular/material/icon";
 import { CompareResults } from "./compare-results/compare-results";
+import { PlayerSearchResultItem } from '../models/most-searched-models/most-searched-items';
 
 @Component({
   selector: 'app-compare-page',
@@ -20,8 +21,8 @@ export class ComparePage {
   isSubmited = signal(false);
   hasSearched = signal(false);
   currentSearchTerm = signal('');
-  player1 = signal<PlayerDetails>(DEFAULT_PLAYER);
-  player2 = signal<PlayerDetails>(DEFAULT_PLAYER);
+  player1 = signal<PlayerSearchResultItem>(DEFAULT_PLAYER);
+  player2 = signal<PlayerSearchResultItem>(DEFAULT_PLAYER);
   
   player1Selected = signal(false);
   player2Selected = signal(false);
@@ -38,7 +39,7 @@ export class ComparePage {
     this.currentSearchTerm.set(term);
   }
 
-  selectPlayerForComparison(player: PlayerDetails): void {
+  selectPlayerForComparison(player: PlayerSearchResultItem): void {
     if (!this.player1Selected()) {
       this.player1.set(player);
       this.player1Selected.set(true);
@@ -64,7 +65,7 @@ export class ComparePage {
     }
   }
 
-  hasPlayersData(item: any): item is { field: string, players_data: PlayerDetails[] } {
+  hasPlayersData(item: any): item is { field: string, players_data: PlayerSearchResultItem[] } {
     return 'players_data' in item;
   }
 }

@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework import serializers
 from ..models import Team, Season, PlayerSeasonStats, TeamInsights, Match
-from ..serializer import TeamSerializer, TeamInsightsSerializer ,PlayerSeasonStatsListWithCountryFlagSerializer, MatchSerializer
-from ..utils.utils import get_last_matches_results
+from ..serializer import TeamSerializer, TeamInsightsSerializer ,PlayerSeasonStatsListWithCountryFlagSerializer, MatchSerializer, PlayerLineupSerializer
+from ..utils.utils import get_last_matches_results, get_team_lineup , FORMATION_POSITIONS
 
 #Return detailed information about a specific team
 @extend_schema(
@@ -79,6 +79,9 @@ def team_details(request, title):
 
     last_five_results = get_last_matches_results(last_five_results_obj,team_obj)
 
+    team_lineup = get_team_lineup(FORMATION_POSITIONS["4-3-3"], season_param, team_obj)
+    top_player_lineup_serializer = PlayerLineupSerializer(team_lineup, many=True)
+
     team_serializer = TeamSerializer(team_obj)
     team_insights_serializer = TeamInsightsSerializer(team_insights_obj,many=True)
     player_season_serializer = PlayerSeasonStatsListWithCountryFlagSerializer(player_season_stats_obj,many=True)
@@ -87,6 +90,7 @@ def team_details(request, title):
         "team" : team_serializer.data,
         "insights" : team_insights_serializer.data,
         "player_stats" : player_season_serializer.data,
+        "team_lineup": top_player_lineup_serializer.data,
         "matches" : team_matches_serializer.data,
         "last_five_results": last_five_results
     })

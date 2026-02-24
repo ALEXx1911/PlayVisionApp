@@ -50,27 +50,28 @@ class PlayerSeasonStatSerializer(serializers.ModelSerializer):
 
 class PlayerListDataSerializer(serializers.ModelSerializer):
     team_name = serializers.CharField(source='team.title', read_only=True)
-    team_logo_url = serializers.CharField(source='team.logo_url', read_only=True)
+    team_logo_url = serializers.ImageField(source='team.logo_url', read_only=True)
     class Meta:
         model = Player
         fields = ("slug","common_name","nationality_flag","position","team_name","team_logo_url")
 
 class PlayerSeasonStatsListWithCountryFlagSerializer(serializers.ModelSerializer):
     player_slug = serializers.CharField(source='player.slug', read_only=True)
+    player_position = serializers.CharField(source='player.position', read_only=True)
     player_common_name = serializers.CharField(source='player.common_name', read_only=True) 
-    country_flag = serializers.CharField(source='player.nationality_flag', read_only=True)
+    country_flag = serializers.ImageField(source='player.nationality_flag', read_only=True)
     class Meta:
         model = PlayerSeasonStats
-        fields = ("player_slug","player_common_name","country_flag","matches_played",
+        fields = ("player_slug","player_common_name","country_flag","player_position","matches_played",
                   "minutes_played", "goals", "assists", "yellow_cards", "red_cards",
-                   "correct_passes_media","media")
+                   "tackles","correct_passes_media","media")
         
 class PlayerSeasonStatsListWithTeamDataSerializer(serializers.ModelSerializer):
     player = PlayerListDataSerializer(read_only=True)
     class Meta:
         model = PlayerSeasonStats
         fields = ("player","matches_played","minutes_played", "goals", "assists",
-                  "yellow_cards", "red_cards","correct_passes_media","media")
+                  "yellow_cards", "red_cards","tackles","correct_passes_media","media")
         
 class PlayerCompetitionStatsSerializer(serializers.ModelSerializer):
     player = PlayerListDataSerializer(read_only=True)
@@ -97,21 +98,21 @@ class PlayerTopMediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlayerSeasonStats
         fields = ("player","matches_played","minutes_played","goals","assists",
-                  "yellow_cards","red_cards","correct_passes_media","media")
+                  "correct_passes_media","media")
         
 class PlayerMostYellowCardsSerializer(serializers.ModelSerializer):
     player = PlayerListDataSerializer(read_only=True)
     class Meta:
         model = PlayerSeasonStats
         fields = ("player","matches_played","minutes_played","yellow_cards",
-                  "red_cards","media")
+                  "red_cards","tackles","media")
 
 class PlayerTopGoalkeepersSerializer(serializers.ModelSerializer):
     player = PlayerListDataSerializer(read_only=True)
     class Meta:
         model = PlayerSeasonStats
         fields = ("player","matches_played","minutes_played","cleansheets",
-                  "media")
+                  "yellow_cards","media")
 
 class CompetitionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -176,7 +177,7 @@ class PlayerLineupSerializer(serializers.ModelSerializer):
     dorsal = serializers.IntegerField(source='player.team_dorsal', read_only=True)
     position = serializers.CharField(source='player.position', read_only=True)
     team_name = serializers.CharField(source='team.title', read_only=True)
-    team_logo_url = serializers.CharField(source='team.logo_url', read_only=True)
+    team_logo_url = serializers.ImageField(source='team.logo_url', read_only=True)
     class Meta:
         model = PlayerSeasonStats
         fields = ("pname","position","dorsal","media","team_name","team_logo_url")

@@ -39,7 +39,6 @@ class TestCompetitionAPI:
         assert response.status_code == status.HTTP_200_OK
         assert 'top_scorers' in response.data
         assert len(response.data['top_scorers']) >= 1
-        print(players_data['player1'])
         assert response.data['top_scorers'][0]['player']['common_name'] == players_data['player1']['common_name']
 
     def test_competition_include_top_media_players(
@@ -131,8 +130,6 @@ def create_players_with_competition_stats(
             slug=player1_slug,
             position="DC"
         )
-        print("Aaaaa")
-        print(player1)
         player2 = player_factory(
             pname=player2_name,
             common_name=player2_common_name,

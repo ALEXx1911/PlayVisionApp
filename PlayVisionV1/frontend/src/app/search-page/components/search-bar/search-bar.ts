@@ -1,12 +1,13 @@
 import { Component, effect, EventEmitter, inject, Input, input, Output, signal } from "@angular/core";
 import { RecentSearchService } from "../../services/recent-search.service";
 import { AppService } from "../../../services/app-services/app-service";
-import { Competition, PlayerDetails, SearchTermsData, TeamModel } from "../../../models/app-models";
+import { Competition, SearchTermsData} from "../../../models/app-models";
 import { MatIcon } from "@angular/material/icon";
 import { MatDivider } from "@angular/material/divider";
 import { MatActionList, MatListItem } from "@angular/material/list";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { PlayerSearchResultItem, TeamSearchResultItem } from "../../../models/most-searched-models/most-searched-items";
 
 @Component({
     selector: 'app-search-bar',
@@ -21,7 +22,7 @@ export class SearchBar {
     searchResultsData = signal<SearchTermsData | null>(null);
     readonly searchService = inject(AppService);
     readonly recentSearchService = inject(RecentSearchService);
-    @Input({ required: false }) selectPlayerForComparison?: (player: PlayerDetails) => void;
+    @Input({ required: false }) selectPlayerForComparison?: (player: PlayerSearchResultItem) => void;
     @Output() searchResults = new EventEmitter<SearchTermsData>();
     @Output() searchTermChange = new EventEmitter<string>();
     
@@ -55,11 +56,11 @@ export class SearchBar {
                 search_results: [
                     {
                       field: 'Players Results',
-                      players_data: [] as PlayerDetails[],
+                      players_data: [] as PlayerSearchResultItem[],
                     },
                     {
                       field: 'Teams Results',
-                      teams_data: [] as TeamModel[],
+                      teams_data: [] as TeamSearchResultItem[],
                     },
                     {
                       field: 'Competitions Results',
@@ -91,11 +92,11 @@ export class SearchBar {
     this.recentSearchService.deleteRecentSearch(search);
   }
 
-  hasPlayersData(item: any): item is { field: string, players_data: PlayerDetails[] } {
+  hasPlayersData(item: any): item is { field: string, players_data: PlayerSearchResultItem[] } {
     return 'players_data' in item;
   }
 
-  hasTeamsData(item: any): item is { field: string, teams_data: TeamModel[] } {
+  hasTeamsData(item: any): item is { field: string, teams_data: TeamSearchResultItem[] } {
     return 'teams_data' in item;
   }
 

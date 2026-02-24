@@ -1,3 +1,5 @@
+from apps.playvisionapi.models import PlayerSeasonStats
+
 match_stats_header = [
     {
         "field":"Shots",
@@ -67,6 +69,26 @@ def get_last_matches_results(last_five_results, team):
            results.append('D')
    results.reverse()
    return results
+
+def get_team_lineup(lineup,season,team=""):
+   """
+   Return the top players for a given team and season based on their media rating.
+   """
+   
+   result = []
+   
+   for position in lineup:
+      player_obj = (
+         PlayerSeasonStats.objects
+         .filter(player__position=position, season__year_start=season, team=team)
+         .order_by("-media")
+         .select_related("player","team")
+         .first()
+      )
+      if player_obj:
+            result.append(player_obj)
+   
+   return result  
 
 FORMATION_POSITIONS = {
     "4-3-3": [

@@ -17,7 +17,7 @@
                                     <div class="flex flex-col">
                                         <p class="font-bold">Name: {{playerItem.pname}} {{playerItem.lastname}}</p>
                                         <p>Position: {{playerItem.position}}</p>
-                                        <p>Team: {{playerItem.team.title}}</p>
+                                        <p>Team: {{playerItem.team_name}}</p>
                                         <div class="flex items-center">Nationality: <img src="{{playerItem.nationality_flag}}" alt="country_flag" class="w-6 h-6 ml-1"></div>
                                     </div>
                                 </div>
@@ -76,8 +76,10 @@
                             <div class="flex flex-col">
                                 <p class="font-bold">Name: {{playerItem.pname}} {{playerItem.lastname}}</p>
                                 <p>Position: {{playerItem.position}}</p>
-                                <p>Team: {{playerItem.team.title}}</p>
-                                <div class="flex items-center">Nationality: <img src="{{playerItem.nationality_flag}}" alt="country_flag" class="w-6 h-6 ml-1"></div>
+                                <p>Team: {{playerItem.team_name}}</p>
+                                <div class="flex items-center">Nationality: 
+                                    <img src="{{playerItem.nationality_flag}}" alt="country_flag" class="w-6 h-6 ml-1">
+                                </div>
                             </div>
                         </div>
                     }

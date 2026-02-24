@@ -1,4 +1,5 @@
 import { PlayerSlotLineup, PlayerStat } from "../../models/app-models";
+import { PlayersListWithFlag, PlayerSlot } from "../../models/team-models/team-models";
 
 type PlayerPosition = 
     | 'GK' 
@@ -101,20 +102,20 @@ export function mapPlayersToFormationSlots(formationKey: string, playersLineup: 
     }).filter(Boolean) as PlayerSlotWithCoords[];
 }
 
-export function mapPlayersDataToFormationSlots(formationKey: string, playersLineup: PlayerStat[]): PlayerSlotWithCoords[] {
+export function mapPlayersDataToFormationSlots(formationKey: string, playersLineup: PlayerSlotLineup[]): PlayerSlotWithCoords[] {
     const formation = FORMATIONS[formationKey];
 
     return formation.map(slot => {
-        const playerSlot = playersLineup.find(p => p.player.position === slot.label);
+        const playerSlot = playersLineup.find(p => p.position === slot.label);
         if (!playerSlot) return null;
         
         return{
-            pname: playerSlot.player.common_name,
-            position: playerSlot.player.position,
+            pname: playerSlot.pname,
+            position: playerSlot.position,
             media: playerSlot.media,
-            dorsal: playerSlot.player.team_dorsal,
-            team_name: playerSlot.player.team_name,
-            team_logo_url: playerSlot.player.team_logo_url,
+            dorsal: playerSlot.dorsal,
+            team_name: playerSlot.team_name,
+            team_logo_url: playerSlot.team_logo_url,
             x: slot.x,
             y: slot.y,
         }

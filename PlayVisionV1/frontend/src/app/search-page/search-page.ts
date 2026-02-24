@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { AppService } from '../services/app-services/app-service';
 import {  ReactiveFormsModule } from '@angular/forms';
 import { OverlayModule } from "@angular/cdk/overlay";
-import { Competition, PlayerDetails, SearchTermsData, TeamModel } from '../models/app-models';
+import { Competition, SearchTermsData, } from '../models/app-models';
 import { SearchBar } from "./components/search-bar/search-bar";
 import { RouterLink } from "@angular/router";
 import { AsyncPipe } from '@angular/common';
+import { PlayerSearchResultItem, TeamSearchResultItem } from '../models/most-searched-models/most-searched-items';
 
 @Component({
   selector: 'app-search-page',
@@ -22,11 +23,11 @@ export class SearchPage {
     search_results: [
       {
         field: 'Players Results',
-        players_data: [] as PlayerDetails[],
+        players_data: [] as PlayerSearchResultItem[],
       },
       {
         field: 'Teams Results',
-        teams_data: [] as TeamModel[],
+        teams_data: [] as TeamSearchResultItem[],
       },
       {
         field: 'Competitions Results',
@@ -44,11 +45,11 @@ export class SearchPage {
   onSearchTermChange(term: string): void {
     this.currentSearchTerm.set(term);
   }
-  hasPlayersData(item: any): item is { field: string, players_data: PlayerDetails[] } {
+  hasPlayersData(item: any): item is { field: string, players_data: PlayerSearchResultItem[] } {
     return 'players_data' in item;
   }
 
-  hasTeamsData(item: any): item is { field: string, teams_data: TeamModel[] } {
+  hasTeamsData(item: any): item is { field: string, teams_data: TeamSearchResultItem[] } {
     return 'teams_data' in item;
   }
 

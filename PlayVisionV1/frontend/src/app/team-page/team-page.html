@@ -43,12 +43,12 @@
             <ng-template #body let-rowData>
                 <tr class="hover:bg-black/15! text-[1rem] font-semibold">
                     <td class="text-center!">
-                        <a [routerLink]="['/players', rowData.player.slug]" class="cursor-pointer">
-                            {{rowData.player.common_name}}
+                        <a [routerLink]="['/players', rowData.player_slug]" class="cursor-pointer">
+                            {{rowData.player_common_name}}
                         </a>
                     </td>
-                    <td><img src="{{rowData.player.nationality_flag}}" alt="flag"></td>
-                    <td class="text-center!">{{rowData.player.position}}</td>
+                    <td><img src="{{rowData.country_flag}}" alt="flag"></td>
+                    <td class="text-center!">{{rowData.player_position}}</td>
                     <td class="text-center!">{{rowData.matches_played}}</td>
                     <td class="text-center!">{{rowData.minutes_played}}'</td>
                     <td class="text-center!">{{rowData.goals}}</td>
@@ -56,7 +56,7 @@
                     <td class="text-center!">{{rowData.yellow_cards}}</td>
                     <td class="text-center!">{{rowData.red_cards}}</td>
                     <td class="text-center!">{{rowData.tackles}}</td>
-                    <td class="text-center!">{{rowData.correctpassesmedia}}</td>
+                    <td class="text-center!">{{rowData.correct_passes_media}}</td>
                     <td class="text-center!">{{rowData.media}}</td>
                 </tr>
             </ng-template>

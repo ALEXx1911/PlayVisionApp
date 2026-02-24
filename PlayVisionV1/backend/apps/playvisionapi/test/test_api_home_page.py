@@ -13,8 +13,6 @@ class TestHomePageAPI:
     ):
         _, _, match = home_setup()
         response = api_client.get(self.URL)
-        print("Response Data:")
-        print(response.data)
         assert response.status_code == status.HTTP_200_OK
         assert set(response.data.keys()) >= {
             "competitions",
