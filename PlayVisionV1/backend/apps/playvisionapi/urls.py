@@ -7,6 +7,7 @@ urlpatterns = [
     path("api/v1/home/", home.homepage, name='home-page'),
     #URLS for Teams
     path("api/v1/teams/<str:title>/", teams.team_details, name='team-details'),
+    path("api/v1/teams/<str:title>/matches/", teams.team_matches, name='team-matches'),
 
     #URLS for Competitions
     path("api/v1/competitions/", competitions.competition_list, name='competitions-list'),
