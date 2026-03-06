@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, CompetitionDataFromAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData, PlayerCompareDataFromAPI, MostSearchedPlayers,  } from '../../models/app-models';
+import { CountriesDataFromAPI, HomeDataAPI, CompetitionMatchesFromAPI, CompetitionDataFromAPI, TeamDataFromAPI, PlayerDataFromAPI, MatchDataFromAPI, ToPlayMatchFromAPI, FinishedMatchFromAPI, MostSearchedItems, SearchTermsData, PlayerCompareDataFromAPI, MostSearchedPlayers, TeamMatches,  } from '../../models/app-models';
 
 @Injectable({
   providedIn: 'root',
@@ -44,20 +44,40 @@ export class AppService {
   
   }
 
-  private competitionMatchesCache = new Map<string, Observable<CompetitionMatchesFromAPI>>();
-  getCompetitionMatches(competition:string,start:number,limit:number):Observable<CompetitionMatchesFromAPI>{
-    let qparams = new HttpParams()
-      .set("start", start.toString())
+  getCompetitionMatches(competition:string,start:number,limit:number,season?:number):Observable<CompetitionMatchesFromAPI>{
+    let params = new HttpParams()
+      .set("offset", start.toString())
       .set("limit", limit.toString());
-    if (!this.competitionMatchesCache.has(competition)) {
-      const  request$ = this.http.get<CompetitionMatchesFromAPI>(`${this.apiHost}competitions/${competition}/matches`,{
-        mode: "cors",
-        params: qparams
-      }).pipe(shareReplay(1));
-      this.competitionMatchesCache.set(competition, request$);
+
+    if (season){
+      params = params.set("season", season.toString());
     }
-    return this.competitionMatchesCache.get(competition)!;
+    
+    return this.http.get<CompetitionMatchesFromAPI>(
+      `${this.apiHost}competitions/${competition}/matches`,{
+        mode: "cors",
+        params
+    });
   }
+
+  getTeamMatches(teamName:string,offset:number,limit:number,season?:number):Observable<TeamMatches>{
+
+    const encodedTeamName = encodeURIComponent(teamName);
+    let params = new HttpParams()
+    .set("offset", offset.toString())
+    .set("limit", limit.toString());
+
+    if(season){
+      params = params.set("season", season.toString());
+    }
+
+    return this.http.get<TeamMatches>(
+      `${this.apiHost}teams/${encodedTeamName}/matches`,{
+        mode: "cors",
+        params
+    });
+  }
+
 
   private teamCache = new Map<string, Observable<TeamDataFromAPI>>();
 
@@ -65,9 +85,10 @@ export class AppService {
     const encodedTeamName = encodeURIComponent(teamName);
     
     if (!this.teamCache.has(encodedTeamName)) {
-      const request$ = this.http.get<TeamDataFromAPI>(`${this.apiHost}teams/${encodedTeamName}`,{
-        mode: "cors",
-      }).pipe(shareReplay(1));
+      const request$ = this.http.get<TeamDataFromAPI>(
+        `${this.apiHost}teams/${encodedTeamName}`,{
+          mode: "cors",
+        }).pipe(shareReplay(1));
       this.teamCache.set(encodedTeamName, request$);
     }
     return this.teamCache.get(encodedTeamName)!;

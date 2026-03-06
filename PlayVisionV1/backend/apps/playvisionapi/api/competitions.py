@@ -153,7 +153,7 @@ def competition_details(request,ctitle):
 #Return competition matches with pagination
 @extend_schema(
     operation_id="competition_matches",
-    description="Return competition matches using pagination with start and limit parameters. Also filter by season.",
+    description="Return paginated  matches of a specific competition for a season.",
     parameters=[
         OpenApiParameter(
             name="ctitle",
@@ -164,25 +164,27 @@ def competition_details(request,ctitle):
             examples=[OpenApiExample("competition-slug", value="la-liga")]
         ),
         OpenApiParameter(
-            name="start",
+            name="offset",
             type=int,
             location=OpenApiParameter.QUERY,
-            description="Starting index for pagination",
-            required=False
+            description="Pagination offset (starts in 0)",
+            required=False,
+            examples=[OpenApiExample("offset-example", value=0)]
         ),
         OpenApiParameter(
             name="limit",
             type=int,
             location=OpenApiParameter.QUERY,
-            description="Number of items per page",
-            required=False
+            description="Maximum matches to return per request",
+            required=False,
+            examples=[OpenApiExample("limit-example", value=10)]
         ),
         OpenApiParameter(
             name="season",
             type=int,
             location=OpenApiParameter.QUERY,
             description="Season year",
-            required=False
+            required=False,
         )
     ],
     responses={
@@ -191,10 +193,29 @@ def competition_details(request,ctitle):
                 name='CompetitionMatchesResponse',
                 fields={
                     'matches': CompetitionMatchesListSerializer(many=True),
-                    'total': serializers.IntegerField()
+                    'total': serializers.IntegerField(),
+                    'offset': serializers.IntegerField(),
+                    'limit': serializers.IntegerField(),
+                    'has_more': serializers.BooleanField(),
                 }
             ),
             description="Paginated list of competition matches"
+        ),
+        400: OpenApiResponse(
+            response=inline_serializer(
+                name='InvalidPaginationResponse',
+                fields={
+                    'detail': serializers.CharField()
+                }
+            ),
+            description="Invalid pagination parameters",
+            examples=[
+                OpenApiExample(
+                    'Error Invalid Pagination',
+                    value={"detail": "Invalid pagination params"},
+                    description="Response when offset or limit are invalid."
+                )
+            ]
         ),
         404: OpenApiResponse(
             response=inline_serializer(
@@ -218,32 +239,39 @@ def competition_details(request,ctitle):
 )
 @api_view(["GET"])
 def competition_matches(request,ctitle):
-    start = int(request.query_params.get("start",0))
-    limit = int(request.query_params.get("limit",20))
     season_param = request.query_params.get("season")
+    offset_param = request.query_params.get("offset",0)
+    limit_param = request.query_params.get("limit",20)
     
     if not season_param:
         #season_param = datetime.now().year
         season_param = 2024
         #return Response({"detail":"Formato no válido"},status=400)
     
+    try:
+        offset = int(offset_param)
+        limit = int(limit_param)
+    except (TypeError, ValueError):
+        return Response({"detail": "Invalid pagination params"}, status=400)
+
+    if offset < 0 or limit <= 0:
+        return Response({"detail": "Invalid pagination params"}, status=400)
+    
     season_obj = Season.objects.filter(year_start=season_param).first()
     competition_qs = get_object_or_404(Competition, slug=ctitle)
-    matches_qs = Match.objects.filter(season=season_obj,competition=competition_qs).order_by("description")
-    paginator = Paginator(matches_qs, limit)
-    page_number = (start // limit) + 1
+    matches_qs = Match.objects.filter(
+        season=season_obj,competition=competition_qs
+        ).order_by("description")
+    
+    total_matches = matches_qs.count()
+    paginated_matches = matches_qs[offset:offset + limit]
 
-    try:
-        page = paginator.page(page_number)
-        page_qs = page.object_list
-    except PageNotAnInteger:
-        page_qs = paginator.page(1).object_list
-    except EmptyPage:
-        page = paginator.page(paginator.num_pages)
-        page_qs = page.object_list
 
-    matches_cmpt_serializer = CompetitionMatchesListSerializer(page_qs,many=True)
+    matches_cmpt_serializer = CompetitionMatchesListSerializer(paginated_matches,many=True)
     return Response({
         "matches": matches_cmpt_serializer.data,
-        "total": paginator.count
+        "total": total_matches,
+        "offset": offset,
+        "limit": limit,
+        "has_more": offset + limit < total_matches,
     })

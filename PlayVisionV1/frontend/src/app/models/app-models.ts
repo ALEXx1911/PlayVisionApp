@@ -31,6 +31,14 @@ export interface PlayerStatBasic{
     media: number,
 }
 
+export interface TeamMatches{
+    matches: Match[],
+    total: number,
+    offset: number,
+    limit: number,
+    has_more: boolean,
+}
+
 export interface TeamModel{
     title: string;
     slug: string;
@@ -192,7 +200,10 @@ export interface CompetitionMatches {
 }
 export interface CompetitionMatchesFromAPI{
     matches: Match[],
-    total_matches: number,
+    total: number,
+    offset: number,
+    limit: number,
+    has_more: boolean,
 }
 
 export interface CompetitionDataFromAPI{

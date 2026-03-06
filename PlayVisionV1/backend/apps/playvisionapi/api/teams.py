@@ -199,7 +199,7 @@ def team_matches(request, title):
     team_matches_qs = Match.objects.filter(
         Q(away_team=team_obj) | Q(home_team=team_obj),
         season=season_obj,
-    ).order_by("-match_date")
+    ).order_by("match_date")
 
     total_matches = team_matches_qs.count()
     paginated_matches = team_matches_qs[offset:offset + limit]

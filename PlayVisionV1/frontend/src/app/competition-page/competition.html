@@ -1,5 +1,5 @@
 <div class="w-full flex flex-col items-center">
-    @if (competitionData$ | async; as competition) {
+    @if (competitionData$(); as competition) {
         <div class="w-full sm:w-3/4 text-white my-2.5 h-32 rounded-xl overflow-hidden [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)]">
             <div class="w-full h-full flex items-center justify-center gap-10">
                 <img class=" w-35 h-30 sm:w-60 sm:h-24" alt="Logo" src="{{competition.competition_data.logo_url}}"/>
@@ -13,7 +13,9 @@
                 </div>
             </div>
         </div>
-        <league-table class="w-full sm:w-3/4" [data]="(competitionData$ | async) ?? this.eje"></league-table>
+        <league-table class="w-full sm:w-3/4" 
+            [data]="competition ?? this.eje">
+        </league-table>
         <div class="w-full h-22 px-3 flex flex-col gap-1 sm:gap-0 justify-center
          items-center sm:h-18 sm:w-3/4 border-2 border-black rounded-2xl mt-2">
             <span class="flex flex-row text-[1.1rem] font-semibold">Qualified for: 
@@ -41,36 +43,31 @@
                 }
             </cdk-accordion-item>
         </cdk-accordion>
-        @if (competitionMatches$ | async; as competitionMatches) {
-            <p-table class="w-full sm:w-3/4 border-2 border-black" [value]="competitionMatches.matches" [scrollable]="true" scrollHeight="630px"
-            [rows]="rows" rowsGroupMode="subheader" groupRowsBy="matches.description">
-                <ng-template #caption>
-                    <div class="py-1 [background:linear-gradient(0deg,rgba(81,49,243,1)_0%,rgba(0,0,0,1)_73%)] text-center">
-                        <span class="text-white text-[1.3rem] font-semibold">Matches</span>
-                        <span class="text-white text-[1.3rem] font-bold">
-                            <mat-icon class="align-middle text-white ml-2" fontIcon="scoreboard"></mat-icon> 
-                        </span>
-                    </div>
-                </ng-template>
-                <ng-template #groupheader let-rowData>
-                    <tr pRowGroupHeader class="bg-linear-to-t! from-slate-950 from-43% to-[#5131f3] to-90%">
-                        <td colspan="5">
-                            <div class="text-center py-1">
-                                <span class="text-[1.1rem] font-semibold text-white">{{rowData.description}}</span>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template #body let-rowData>
-                    <tr>
-                        <td>
-                            <match-slot [matchData]="rowData" class="w-full h-fit border-2 border-main grid grid-cols-[1fr,auto,1fr] grid-rows-[auto,auto] rounded-2xl my-1.5"></match-slot>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
         
-        }
+        <div class="w-full sm:w-3/4 flex flex-col items-center border-2 border-black my-2">
+            <div class="w-full py-2 bg-linear-to-b from-slate-950 from-43% to-[#5131f3] to-90% text-center">
+                <span class="text-white text-[1.3rem] font-semibold">Matches</span>
+                <mat-icon class="align-middle text-white ml-2" fontIcon="scoreboard"></mat-icon>
+            </div>
+            <div class="w-full max-h-150 overflow-y-auto px-2"
+                #scrollContainer
+                (scroll)="onScroll($event)">
+
+                @for(match of matches(); track $index) {
+                    <match-slot 
+                        [matchData]="match" 
+                        class="w-full h-fit border-2 border-main grid grid-cols-[1fr,auto,1fr] 
+                            grid-rows-[auto,auto] rounded-2xl my-1.5">
+                    </match-slot>
+                }
+
+                @if(loading()){
+                    <div class="w-full py-4 text-center">
+                        <p-skeleton width="100%" height="3rem" />
+                    </div>
+                }
+            </div>
+        </div>
     
     }
 </div>
