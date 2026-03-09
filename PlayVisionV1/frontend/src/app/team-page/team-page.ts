@@ -4,7 +4,7 @@ import {  switchMap } from 'rxjs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { SkeletonModule } from 'primeng/skeleton';
-import { MatchSlot } from "../competition-page/components/match-slot/match-slot";
+import { HomeMatchSlot } from "../competition-page/components/home-match-slot/home-match-slot";
 import { MatIcon } from "@angular/material/icon";
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormationPitch } from "../common/formation-pitch/formation-pitch";
@@ -13,7 +13,7 @@ import { Match } from '../models/app-models';
 
 @Component({
   selector: 'app-team-page',
-  imports: [TableModule, MatchSlot, SkeletonModule, RouterLink, MatIcon, FormationPitch],
+  imports: [TableModule, HomeMatchSlot, SkeletonModule, RouterLink, MatIcon, FormationPitch],
   templateUrl: './team-page.html',
   styleUrl: './team-page.css',
 })

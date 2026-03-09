@@ -54,11 +54,11 @@
                 (scroll)="onScroll($event)">
 
                 @for(match of matches(); track $index) {
-                    <match-slot 
+                    <home-match-slot 
                         [matchData]="match" 
                         class="w-full h-fit border-2 border-main grid grid-cols-[1fr,auto,1fr] 
                             grid-rows-[auto,auto] rounded-2xl my-1.5">
-                    </match-slot>
+                    </home-match-slot>
                 }
 
                 @if(loading()){

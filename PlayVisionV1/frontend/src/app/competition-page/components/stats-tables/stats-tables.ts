@@ -1,7 +1,7 @@
 import { Component, computed, input, InputSignal } from "@angular/core";
 import { TableModule } from "primeng/table";
 import { RouterLink } from "@angular/router";
-import { MostYellowCardData, TopGoalkeeperData, TopMediaPlayerData, TopScorersData } from "../../../models/player-models/player-models";
+import { MostYellowCardData, TopGoalkeeperData, TopMediaPlayerData, TopScorersData } from "../../../models/player-models";
 
 @Component({
     selector: 'stats-tables',

@@ -1,6 +1,6 @@
-import { PlayerSearchResultItem, TeamSearchResultItem } from "./most-searched-models/most-searched-items";
-import { MostYellowCardData, TopGoalkeeperData, TopMediaPlayerData, TopScorersData } from "./player-models/player-models";
-import { PlayersListWithFlag } from "./team-models/team-models";
+import { PlayerSearchResultItem, TeamSearchResultItem } from "./most-searched-items";
+import { MostYellowCardData, TopGoalkeeperData, TopMediaPlayerData, TopScorersData } from "./player-models";
+import { PlayersListWithFlag } from "./team-models";
 
 export interface Player{
     pname: string,

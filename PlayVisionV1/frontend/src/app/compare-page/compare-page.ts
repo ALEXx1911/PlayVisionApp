@@ -6,7 +6,7 @@ import { DEFAULT_PLAYER, DEFAULT_SEARCH_RESULTS } from './utils/utils';
 import { AsyncPipe } from '@angular/common';
 import { MatIcon } from "@angular/material/icon";
 import { CompareResults } from "./compare-results/compare-results";
-import { PlayerSearchResultItem } from '../models/most-searched-models/most-searched-items';
+import { PlayerSearchResultItem } from '../models/most-searched-items';
 
 @Component({
   selector: 'app-compare-page',

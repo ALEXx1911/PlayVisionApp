@@ -8,13 +8,13 @@ import { StatsTable } from "./components/stats-tables/stats-tables";
 import { switchMap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { TableModule } from "primeng/table";
-import { MatchSlot } from "./components/match-slot/match-slot";
+import { HomeMatchSlot } from "./components/home-match-slot/home-match-slot";
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Skeleton } from "primeng/skeleton";
 
 @Component({
   selector: 'app-competition',
-  imports: [LeagueTable, CdkAccordionModule, MatIcon, StatsTable, TableModule, MatchSlot, Skeleton],
+  imports: [LeagueTable, CdkAccordionModule, MatIcon, StatsTable, TableModule, HomeMatchSlot, Skeleton],
   templateUrl: './competition.html',
   styleUrl: './competition.css',
 })

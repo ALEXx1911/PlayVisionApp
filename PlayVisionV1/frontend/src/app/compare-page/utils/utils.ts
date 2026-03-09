@@ -1,6 +1,6 @@
 import { signal } from "@angular/core";
 import { Competition, PlayerDetails,TeamModel, SearchTermsData } from "../../models/app-models";
-import { PlayerSearchResultItem, TeamSearchResultItem } from "../../models/most-searched-models/most-searched-items";
+import { PlayerSearchResultItem, TeamSearchResultItem } from "../../models/most-searched-items";
 
 export const DEFAULT_SEARCH_RESULTS =  signal<SearchTermsData>({
     search_results: [

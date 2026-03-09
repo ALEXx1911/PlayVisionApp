@@ -27,7 +27,7 @@
                     @if (accordionItem.expanded) {
                         <div class="w-full py-2 px-1 sm:p-4">
                             @for (match of item.competition_matches; track $index) {
-                                <match-slot [matchData]="match" class="w-full h-30 sm:h-fit border-2 border-main grid grid-cols-[1fr,auto,1fr] grid-rows-[auto,auto] rounded-2xl mt-2 px-0 sm:px-3"></match-slot>
+                                <home-match-slot [matchData]="match"/>
                             }
                         </div>
                     }

@@ -1,0 +1,61 @@
+<div class="w-full h-30 border-2 border-main grid grid-cols-[1fr,2fr,1fr] 
+    grid-rows-[auto,auto] rounded-2xl mt-2 sm:h-fit bg-gray-100"
+>
+    <div class="flex flex-col col-start-1 col-end-2 row-start-1 row-end-2 items-center justify-center 
+        w-30 lg:w-30"
+    >
+        <span class="w-full text-[1.2rem] font-semibold text-[#5131f3] text-center">
+            @if (matchData().status != "Finished") {
+                {{matchData().match_date}}
+            }
+            FT
+        </span>
+    </div>
+    <div class="col-start-2 col-end-3 row-start-1 row-end-2 gap-2 w-full lg:w-190 flex flex-col items-center py-2">
+        <div class="w-full h-fit flex items-center gap-4">
+            <span class="col-start-2 row-start-1 text-main font-bold text-xl bg-gray-200 px-2 rounded-lg">
+                {{matchData().home_goals}}
+            </span>
+            <img class="w-14 h-14 ml-4 lg:col-start-1 lg:col-end-2 lg:w-12 lg:h-12" 
+                src="{{matchData().home_team.logo_url}}" 
+                alt="logo1"
+            >
+            <a [routerLink]="['/teams', matchData().home_team.slug]" 
+                class="lg:col-start-2 lg:col-end-3 text-lg lg:text-lg font-semibold ml-2"
+            >
+                {{matchData().home_team.title}}
+            </a>
+        </div>
+        <div class="w-full h-fit flex items-center gap-4">
+            <span class="col-start-2 row-start-1 text-main font-bold text-xl bg-gray-200 px-2 rounded-lg">
+                {{matchData().away_goals}}
+            </span>
+            <img class="w-14 h-14 ml-4 lg:col-start-1 lg:col-end-2 lg:w-12 lg:h-12" 
+                src="{{matchData().away_team.logo_url}}" 
+                alt="logo1"
+            >
+            <a [routerLink]="['/teams', matchData().away_team.slug]" 
+                class="lg:col-start-2 lg:col-end-3 text-lg lg:text-lg font-semibold ml-2"
+            >
+                {{matchData().away_team.title}}
+            </a>
+        </div>
+    </div>
+    <div class="col-start-3 col-end-4 row-start-1 row-end-2 flex flex-col gap-y-3 w-90
+        items-center justify-center border-l-2 border-[#5131f3]"
+    >
+        <span class="w-full text-center text-lg font-semibold">
+            {{matchData().stadium}}
+        </span>
+        <div class="w-full flex items-center justify-center gap-x-3">
+            <span class="text-[1.2rem] text-[#5131f3] font-semibold text-main bg-gray-200 px-2 rounded-lg">
+                XI
+            </span>
+            <a [routerLink]="['/matches',matchData().id]">
+                <span class=" text-[#3e3a52] font-medium ">
+                    <mat-icon [fontIcon]="'ssid_chart'"></mat-icon>
+                </span>
+            </a>
+        </div>
+    </div>
+</div>

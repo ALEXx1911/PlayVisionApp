@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { AppService } from '../services/app-services/app-service';
-import { MatchSlot } from "../competition-page/components/match-slot/match-slot";
+import { HomeMatchSlot} from "../competition-page/components/home-match-slot/home-match-slot";
 import { CdkAccordion, CdkAccordionItem } from "@angular/cdk/accordion";
 import { MatIcon } from "@angular/material/icon";
 import { StatsTable } from "../competition-page/components/stats-tables/stats-tables";
@@ -12,7 +12,7 @@ import { MediaUrlPipe } from '../common/pipes/media-url.pipe';
 
 @Component({
   selector: 'app-home-page',
-  imports: [ MatchSlot, RouterLink, CdkAccordion, CdkAccordionItem, MatIcon, StatsTable, FormationPitch, MediaUrlPipe],
+  imports: [ HomeMatchSlot, RouterLink, CdkAccordion, CdkAccordionItem, MatIcon, StatsTable, FormationPitch, MediaUrlPipe],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css',
 })

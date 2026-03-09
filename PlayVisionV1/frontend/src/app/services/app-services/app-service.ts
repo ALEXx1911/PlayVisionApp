@@ -106,7 +106,7 @@ export class AppService {
   getMatchDetails(matchId:number):Observable<MatchDataFromAPI>{
     if (!this.matchCache.has(matchId)) {
       const encodedIdMatch = encodeURIComponent(matchId);
-      const request$ = this.http.get<MatchDataFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+      const request$ = this.http.get<MatchDataFromAPI>(`${this.apiHost}matches/${encodedIdMatch}`,{
         mode: "cors",
       }).pipe(shareReplay(1));
       this.matchCache.set(matchId, request$);
@@ -118,7 +118,7 @@ export class AppService {
   getPreviewMatchDetails(matchId:number):Observable<ToPlayMatchFromAPI>{
     const encodedIdMatch = encodeURIComponent(matchId);
     if (!this.previewMatchCache.has(matchId)) {
-      const request$ = this.http.get<ToPlayMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+      const request$ = this.http.get<ToPlayMatchFromAPI>(`${this.apiHost}matches/${encodedIdMatch}`,{
         mode: "cors",
       }).pipe(shareReplay(1));
       this.previewMatchCache.set(matchId, request$);
@@ -131,7 +131,7 @@ export class AppService {
   getFinishedMatchDetails(matchId:number):Observable<FinishedMatchFromAPI>{
     if (!this.finishedMatchCache.has(matchId)) {
       const encodedIdMatch = encodeURIComponent(matchId);
-      const request$ = this.http.get<FinishedMatchFromAPI>(`${this.apiHost}matchs/${encodedIdMatch}`,{
+      const request$ = this.http.get<FinishedMatchFromAPI>(`${this.apiHost}matches/${encodedIdMatch}`,{
         mode: "cors",
       }).pipe(shareReplay(1));
       this.finishedMatchCache.set(matchId, request$);
