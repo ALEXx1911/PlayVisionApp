@@ -19,13 +19,15 @@
                                 <img [src]="item.country_logo_url | mediaUrl" alt="logo" srcset="" class="w-7 h-7">
                                 <span [routerLink]="['/competitions',item.slug]" class="text-white text-[1.3rem] font-semibold cursor-pointer">{{item.title}}</span>
                             </div>
-                            <button (click)="accordionItem.toggle()" class="text-white cursor-pointer">
+                            <button (click)="accordionItem.toggle()" 
+                                class="text-white cursor-pointer"
+                            >
                                 <mat-icon [fontIcon]="accordionItem.expanded ? 'arrow_upward' : 'arrow_downward'"></mat-icon>
                             </button>
                         </div>
                     </div>
                     @if (accordionItem.expanded) {
-                        <div class="w-full py-2 px-1 sm:p-4">
+                        <div class="w-full py-2 md:px-20">
                             @for (match of item.competition_matches; track $index) {
                                 <home-match-slot [matchData]="match"/>
                             }

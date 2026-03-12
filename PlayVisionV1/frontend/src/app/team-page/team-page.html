@@ -91,15 +91,11 @@
                 <span class="text-white text-[1.3rem] font-semibold">Matches</span>
                 <mat-icon class="align-middle text-white ml-2" fontIcon="scoreboard"></mat-icon>
             </div>
-            <div class="w-full max-h-150 overflow-y-auto px-2"
+            <div class="w-full max-h-150 overflow-y-auto px-2 lg:px-20"
                 #scrollContainer
                 (scroll)="onScroll($event)">
                 @for(match of matches(); track $index) {
-                    <home-match-slot
-                        [matchData]="match" 
-                        class="w-full h-fit border-2 border-main grid grid-cols-[1fr,auto,1fr] 
-                            grid-rows-[auto,auto] rounded-2xl my-1.5">
-                    </home-match-slot>
+                    <home-match-slot [matchData]="match"/>
                 }
 
                 @if(loading()){

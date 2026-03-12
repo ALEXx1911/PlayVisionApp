@@ -1,20 +1,20 @@
 import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { AppService } from '../services/app-services/app-service';
-import { LeagueTable } from "./components/league-table";
+import { LeagueTable } from "../common/components/league-table";
 import { CompetitionDataFromAPI, Match, TeamCompetitionStat } from '../models/app-models';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { MatIcon } from "@angular/material/icon";
-import { StatsTable } from "./components/stats-tables/stats-tables";
+import { StatsTable } from "../common/components/stats-tables/stats-tables";
 import { switchMap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { TableModule } from "primeng/table";
-import { HomeMatchSlot } from "./components/home-match-slot/home-match-slot";
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Skeleton } from "primeng/skeleton";
+import { SimpleMatchSlot } from '../common/components/simple-match-slot/simple-match-slot';
 
 @Component({
   selector: 'app-competition',
-  imports: [LeagueTable, CdkAccordionModule, MatIcon, StatsTable, TableModule, HomeMatchSlot, Skeleton],
+  imports: [LeagueTable, CdkAccordionModule, MatIcon, StatsTable, TableModule, SimpleMatchSlot, Skeleton],
   templateUrl: './competition.html',
   styleUrl: './competition.css',
 })
