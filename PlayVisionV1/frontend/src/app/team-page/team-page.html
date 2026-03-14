@@ -91,7 +91,7 @@
                 <span class="text-white text-[1.3rem] font-semibold">Matches</span>
                 <mat-icon class="align-middle text-white ml-2" fontIcon="scoreboard"></mat-icon>
             </div>
-            <div class="w-full max-h-150 overflow-y-auto px-2 lg:px-20"
+            <div class="w-full max-h-150 overflow-y-auto px-2 sm:px-5 md:px-10 lg:px-20"
                 #scrollContainer
                 (scroll)="onScroll($event)">
                 @for(match of matches(); track $index) {
