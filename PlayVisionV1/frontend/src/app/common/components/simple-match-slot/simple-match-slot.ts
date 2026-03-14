@@ -1,14 +1,13 @@
 import { Component, input, InputSignal } from "@angular/core";
 import { Match } from "../../../models/app-models";
 import { RouterLink } from "@angular/router";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
-    selector: "match-slot",
-    imports: [RouterLink],
-    templateUrl: "./match-slot.html",
-
+    selector: "simple-match-slot",
+    imports: [RouterLink, MatIcon],
+    templateUrl: "./simple-match-slot.html",
 })
-export class MatchSlot{
+export class SimpleMatchSlot{
     readonly matchData: InputSignal<Match> = input.required<Match>();
 }
-//{{matchData().away_team.logo_url}}

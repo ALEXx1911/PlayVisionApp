@@ -1,6 +1,6 @@
-import { PlayerSearchResultItem, TeamSearchResultItem } from "./most-searched-models/most-searched-items";
-import { MostYellowCardData, TopGoalkeeperData, TopMediaPlayerData, TopScorersData } from "./player-models/player-models";
-import { PlayersListWithFlag } from "./team-models/team-models";
+import { PlayerSearchResultItem, TeamSearchResultItem } from "./most-searched-items";
+import { MostYellowCardData, TopGoalkeeperData, TopMediaPlayerData, TopScorersData } from "./player-models";
+import { PlayersListWithFlag } from "./team-models";
 
 export interface Player{
     pname: string,
@@ -29,6 +29,14 @@ export interface PlayerStatBasic{
     cleansheets: number,
     tackles: number,
     media: number,
+}
+
+export interface TeamMatches{
+    matches: Match[],
+    total: number,
+    offset: number,
+    limit: number,
+    has_more: boolean,
 }
 
 export interface TeamModel{
@@ -192,7 +200,10 @@ export interface CompetitionMatches {
 }
 export interface CompetitionMatchesFromAPI{
     matches: Match[],
-    total_matches: number,
+    total: number,
+    offset: number,
+    limit: number,
+    has_more: boolean,
 }
 
 export interface CompetitionDataFromAPI{

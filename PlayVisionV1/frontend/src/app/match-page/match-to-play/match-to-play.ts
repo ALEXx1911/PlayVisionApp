@@ -3,12 +3,12 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { AppService } from "../../services/app-services/app-service";
 import { map, switchMap } from "rxjs";
 import { AsyncPipe } from "@angular/common";
-import { MatchSlot } from "../../competition-page/components/match-slot/match-slot";
+import { HomeMatchSlot } from "../../common/components/home-match-slot/home-match-slot";
 import { COLS_HEADERS } from "./utils";
 
 @Component({
     selector: 'app-match-to-play',
-    imports: [RouterLink, AsyncPipe, MatchSlot],
+    imports: [RouterLink, AsyncPipe, HomeMatchSlot],
     templateUrl: './match-to-play.html',
 })
 export class MatchToPlay {

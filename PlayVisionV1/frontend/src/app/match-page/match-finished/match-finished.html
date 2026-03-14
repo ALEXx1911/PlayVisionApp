@@ -16,7 +16,7 @@
             flex text-sm p-2">
             <div class="w-full h-full flex flex-col items-center">
                 <img src="{{matchData().match_data.home_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
-                <span [routerLink]="['/teams',matchData().match_data.home_team.title]" class="text-xl cursor-pointer" >{{matchData().match_data.home_team.title}}</span>
+                <span [routerLink]="['/teams',matchData().match_data.home_team.slug]" class="text-xl cursor-pointer" >{{matchData().match_data.home_team.title}}</span>
             </div>
             <div class="w-full h-full flex flex-col items-center mt-1">
                 <p class="text-xl mb-1">{{matchData().match_data.status}}</p>
@@ -24,7 +24,7 @@
             </div>
             <div class="w-full h-full flex flex-col items-center">
                 <img src="{{matchData().match_data.away_team.logo_url}}" alt="Escudo" class="w-18 h-18"/>
-                <span [routerLink]="['/teams',matchData().match_data.away_team.title]"  class="text-xl cursor-pointer">{{matchData().match_data.away_team.title}}</span>
+                <span [routerLink]="['/teams',matchData().match_data.away_team.slug]"  class="text-xl cursor-pointer">{{matchData().match_data.away_team.title}}</span>
             </div>
         </div>
         @if(finishedMatch$ | async; as finishedMatch) {

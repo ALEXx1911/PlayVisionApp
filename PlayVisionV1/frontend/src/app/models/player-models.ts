@@ -1,4 +1,4 @@
-import { Player } from "../app-models";
+import { Player } from "./app-models";
 
 export interface TopScorersData{
     player : Player,

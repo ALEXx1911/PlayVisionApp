@@ -7,7 +7,7 @@ import { MatDivider } from "@angular/material/divider";
 import { MatActionList, MatListItem } from "@angular/material/list";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { PlayerSearchResultItem, TeamSearchResultItem } from "../../../models/most-searched-models/most-searched-items";
+import { PlayerSearchResultItem, TeamSearchResultItem } from "../../../models/most-searched-items";
 
 @Component({
     selector: 'app-search-bar',

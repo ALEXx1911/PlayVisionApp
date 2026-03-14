@@ -6,7 +6,7 @@ import { Competition, SearchTermsData, } from '../models/app-models';
 import { SearchBar } from "./components/search-bar/search-bar";
 import { RouterLink } from "@angular/router";
 import { AsyncPipe } from '@angular/common';
-import { PlayerSearchResultItem, TeamSearchResultItem } from '../models/most-searched-models/most-searched-items';
+import { PlayerSearchResultItem, TeamSearchResultItem } from '../models/most-searched-items';
 
 @Component({
   selector: 'app-search-page',

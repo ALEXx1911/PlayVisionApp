@@ -1,5 +1,5 @@
 import { PlayerSlotLineup, PlayerStat } from "../../models/app-models";
-import { PlayersListWithFlag, PlayerSlot } from "../../models/team-models/team-models";
+import { PlayersListWithFlag, PlayerSlot } from "../../models/team-models";
 
 type PlayerPosition = 
     | 'GK' 
