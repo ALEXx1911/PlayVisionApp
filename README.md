@@ -13,8 +13,23 @@ Built with Angular (frontend), Django (backend), Postgres (database), and Nginx 
 
 ## Requirements
 - Docker and Docker Compose.
-- Node.js 18+ and npm (for frontend development).
+- Node.js 18+ and npm (for frontend build).
 - Python 3.11+ (for local backend development outside Docker).
+
+## Environment Variables
+
+This project uses environment files to configure Django, Postgres, CORS and app behavior.
+
+- Template: [PlayVisionV1/.env.example](PlayVisionV1/.env.example)
+- Active file used by Docker Compose: [PlayVisionV1/.env](PlayVisionV1/.env)
+
+### Variables used
+- `SECRET_KEY`: Django secret key (must be unique per environment).
+- `DEBUG`: `True` for development, `False` for production.
+- `ALLOWED_HOSTS`: comma-separated hostnames/IPs.
+- `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: database connection settings.
+- `SEED_DB`: set to `true` only for initial data seed, then return to `false`.
+- `CORS_ALLOWED_ORIGINS`: comma-separated frontend origins.
 
 ## Quick Start (Docker)
 1) Build the frontend (required for Nginx to serve `dist`):
@@ -28,36 +43,26 @@ The app doesn't display data initially. To populate the database with test data,
 ```yaml
 SEED_DB: "true"
 ```
-Then start the services:
+3) Start services:
 ```bash
-cd ../
 docker compose up -d --build
 ```
 
-3) **After first build - Prevent data deletion:**  
-Once the database is populated, change `SEED_DB` back to `"false"` in [docker-compose.yml](PlayVisionV1/docker-compose.yml) to prevent data from being deleted on subsequent restarts:
-```yaml
-SEED_DB: "false"
-```
-Then restart:
-```bash
-docker compose restart backend
-```
+### First-time database seed
+- Edit [PlayVisionV1/.env](PlayVisionV1/.env) and set `SEED_DB=true`.
+- Run deployment.
+- Set `SEED_DB=false` and redeploy to avoid reseeding.
 
-4) Access the app:
-- Web: http://localhost (Nginx exposes port 80).
-- **API Documentation:**
-  - Swagger UI: http://localhost/playVision/api/docs/
-  - OpenAPI Schema (JSON): http://localhost/playVision/api/schema/
-- Useful logs:
+### Access
+- Web: http://localhost
+- Swagger UI: http://localhost/playVision/api/docs/
+- OpenAPI Schema: http://localhost/playVision/api/schema/
+- Logs:
 ```bash
 docker compose logs -f nginx
 docker compose logs -f backend
 docker compose logs -f db
 ```
-
-Default environment variables (backend):
-- `POSTGRES_HOST=db`, `POSTGRES_PORT=5432`, `POSTGRES_USER=myuser`, `POSTGRES_PASSWORD=mypassword`, `POSTGRES_DB=playvisiondb`, `SEED_DB=false` (see [PlayVisionV1/docker-compose.yml](PlayVisionV1/docker-compose.yml)).
 
 ## Local Development
 
