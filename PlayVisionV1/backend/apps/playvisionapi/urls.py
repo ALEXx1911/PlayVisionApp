@@ -1,13 +1,18 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework import routers
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from .admin_api.viewsets.team_viewset import TeamViewSet
 from .api import teams , players , competitions , matches , home , search , most_searched , compare_players
+
+router = routers.DefaultRouter()
+router.register(r'teams', TeamViewSet, basename='team')
 
 urlpatterns = [ 
     path("api/v1/home/", home.homepage, name='home-page'),
     #URLS for Teams
     path("api/v1/teams/<str:title>/", teams.team_details, name='team-details'),
     path("api/v1/teams/<str:title>/matches/", teams.team_matches, name='team-matches'),
+    path("api/v1/admin/", include(router.urls)),
 
     #URLS for Competitions
     path("api/v1/competitions/", competitions.competition_list, name='competitions-list'),
