@@ -7,6 +7,7 @@ class MatchStatsViewSet(viewsets.ModelViewSet):
     serializer_class = MatchStatsSerializer
     queryset = MatchStats.objects.all()
 
+    #permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     pagination_class = StandardResultsSetPagination
 
     filter_backends = [filters.SearchFilter]
