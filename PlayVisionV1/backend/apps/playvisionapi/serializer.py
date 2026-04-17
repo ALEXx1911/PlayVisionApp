@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
-from .models import PlayerSeasonStats , Player, Team, TeamInsights , TeamCompetitionStats , Match, MatchStats, MatchEvent, Competition , Country , PlayerCompetitionStats
+from .models import PlayerSeasonStats , Player, Team, Season, TeamInsights , TeamCompetitionStats , Match, MatchStats, MatchEvent, Competition , Country , PlayerCompetitionStats
 from .utils.utils import get_last_matches_results
 
 
@@ -199,3 +199,13 @@ class SearchTeamItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ("slug","title","logo_url","country_flag_url","national_league")
+
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = "__all__"
+
+class SeasonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Season
+        fields = "__all__"
