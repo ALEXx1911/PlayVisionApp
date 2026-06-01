@@ -1,7 +1,8 @@
-from django.urls import path
-from rest_framework import routers
+from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from .api import teams , players , competitions , matches , home , search , most_searched , compare_players
+from .router import router
+
 
 urlpatterns = [ 
     path("api/v1/home/", home.homepage, name='home-page'),
@@ -33,4 +34,7 @@ urlpatterns = [
     #URLS for Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema")),
+    
+    #URLS for Admin API
+    path("api/v1/admin/", include(router.urls)),
 ]
